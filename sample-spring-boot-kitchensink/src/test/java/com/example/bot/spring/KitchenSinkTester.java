@@ -83,5 +83,17 @@ public class KitchenSinkTester {
 		}
 		assertThat(!thrown);
 		assertThat(result.equals("Hey, how things going?"));
+		
+		thrown =false;
+		result = null;
+		try {
+			result = this.databaseEngine.search("abc def");
+		}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown);
+		assertThat(result.equals("def"));
+
+		
 	}
 }
