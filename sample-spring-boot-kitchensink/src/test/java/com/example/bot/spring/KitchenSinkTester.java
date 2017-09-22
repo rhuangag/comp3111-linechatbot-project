@@ -92,4 +92,18 @@ public void testFound2() throws Exception {
 	assertThat(!thrown);
 	assertThat(result.equals("Hey, how things going?"));
     }
+
+
+@Test
+public void testFound3() throws Exception {
+	boolean thrown = false;
+	String result = null;
+	try {
+		result = this.databaseEngine.search("I am fine Zain");
+	} catch (Exception e) {
+		thrown = true;
+	}
+	assertThat(!thrown);
+	assertThat(result.equals("Great!"));
+    }
 }
