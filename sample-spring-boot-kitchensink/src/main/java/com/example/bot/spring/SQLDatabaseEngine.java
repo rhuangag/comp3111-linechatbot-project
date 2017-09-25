@@ -20,6 +20,28 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		BufferedReader br = null;
 		InputStreamReader isr = null;
 		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT response "
+					+ "FROM responsetable WHERE keyword LIKE concat('%', ?, '%')");
+			stmt.setString(1, text);
+			ResultSet rs =stmt.executeQuery();
+			
+			
+			
+			while(rs.next()) 
+				result=rs.getString(1);
+			
+			if(result!=null)
+				return result;
+				
+			
+			
+			rs.close();
+			stmt.close();
+			connection.close();
+						
+
+			
 			isr = new InputStreamReader(
                     this.getClass().getResourceAsStream(FILENAME));
 			br = new BufferedReader(isr);
@@ -28,46 +50,34 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 			while (result == null && (sCurrentLine = br.readLine()) != null) {
 				String[] parts = sCurrentLine.split(":");
 				
-				if (text.toLowerCase().contains(parts[0].toLowerCase()))
+				if (text.toLowerCase().contains(parts[0].toLowerCase())) {
 					result = parts[1];
+					return result;
+				}
+				
 			}
 			
+						
 			
-			//String username="programmer";
-			//String password ="961210";
-			/*String dbUrl= "postgres://"
-					+ "inkuswftzxmrsq:"
-					+ "103f05a579ba5d5a4796a9743f8c4b03452f280e3194789ccf89f48bcbeee0ce@ec2"
-					+ "-50-19-105-113."
-					+ "compute-1.amazonaws.com:5432/d81l6qfelu4n3l";*/
-			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("SELECT response "
-					+ "FROM responsetable where keyword like concat('%', ?, '%')");
-			stmt.setString(1, text);
-			ResultSet rs =stmt.executeQuery();
-			
-			
-			
-			while(rs.next()) 
-				result=rs.getString(1);
-				
-			
-			
-			rs.close();
-			stmt.close();
-			connection.close();
 			
 			
 			
 			
 		}catch (Exception e) {
 			log.info("Exception while reading file: {}", e.toString());
-		} 		
+		}finally {
+			try {
+				if (br != null)
+					br.close();
+				if (isr != null)
+					isr.close();
+			} catch (IOException ex) {
+				log.info("IOException while closing file: {}", ex.toString());
+			}
+		}
 		
-		if (result != null)
-			return result;
-		throw new Exception("NOT FOUND");
-		//return null;
+		
+		return null;
 	}
 	
 	

@@ -119,7 +119,7 @@ public void testFound4() throws Exception {
 		thrown = true;
 	}
 	assertThat(!thrown);
-	assertThat(result.equals("course"));
+	assertThat(result.equals("A programming course."));
     }
 
 }
