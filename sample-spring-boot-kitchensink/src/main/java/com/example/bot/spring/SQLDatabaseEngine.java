@@ -19,21 +19,30 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		String result=null;
 		BufferedReader br = null;
 		InputStreamReader isr = null;
+		int hits=0;
 		try {
 			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("SELECT response "
+			PreparedStatement stmt = connection.prepareStatement("SELECT response, hits "
 					+ "FROM responsetable WHERE keyword LIKE concat('%', ?, '%')");
 			stmt.setString(1, text);
 			ResultSet rs =stmt.executeQuery();
 			
 			
 			
-			while(rs.next()) 
+			while(rs.next()) {
 				result=rs.getString(1);
+				hits=rs.getInt(2);
+			}
 			
-			if(result!=null)
+			if(result!=null) {
+				PreparedStatement stmt2 = connection.prepareStatement("UPDATE responsetable "
+						+ "SET hits=? WHERE keyword LIKE concat('%',?,'%')");
+			    stmt2.setInt(1, hits+1);
+			    stmt2.setString(2, text);
+			    stmt2.executeUpdate();
+			    
 				return result;
-				
+			}
 			
 			
 			rs.close();
