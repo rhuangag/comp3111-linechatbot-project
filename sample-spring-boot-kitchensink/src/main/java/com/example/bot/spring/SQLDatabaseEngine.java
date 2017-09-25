@@ -37,11 +37,11 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 			if(result!=null) {
 				PreparedStatement stmt2 = connection.prepareStatement("UPDATE responsetable "
 						+ "SET hits=? WHERE keyword LIKE concat('%',?,'%')");
-			    stmt2.setInt(1, hits+1);
+			    stmt2.setInt(1, ++hits);
 			    stmt2.setString(2, text);
 			    stmt2.executeUpdate();
 			    
-				return result;
+				return (result+" Number of hits is "+hits);
 			}
 			
 			
