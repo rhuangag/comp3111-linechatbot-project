@@ -3,4 +3,4 @@
 UML Class Diagram:
 
 
-![alt text](docs/image/Class Diagram.jpeg)
+![Class diagram](docs/image/Class Diagram.jpeg)
