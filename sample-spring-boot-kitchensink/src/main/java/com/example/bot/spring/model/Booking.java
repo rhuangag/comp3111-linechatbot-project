@@ -9,11 +9,31 @@ public class Booking {
 	//Methods
 	
 	//TODO
+	//Store the information collected and return an output to ask for next information
+	public String askForInformation(Keyword keyword) {
+		
+		return null;
+	}
+	
+	/*
+	//TODO
 	//The 1st step of booking. Return an output to ask the date of the tour
 	public String askForDate() {
 		
 		return null;
 	}
+	
+	//TODO
+	//The 2nd step of booking. Record the date in the temporary database and return an output to ask name of the customer
+    public String askForName() {
+    	
+    	    return null;
+    }
+    
+    //TODO
+    //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
+    public String askForID()
+
 	
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask no. of adults
@@ -35,6 +55,8 @@ public class Booking {
 		
 		return null;
 	}
+	
+	*/
 	
 	//TODO
 	//The 5th step of booking. Record the no. of teenagers in the temporary database, use calculate() to calculate the fee,
