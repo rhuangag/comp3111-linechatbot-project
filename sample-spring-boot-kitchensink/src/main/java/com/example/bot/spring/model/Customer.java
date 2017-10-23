@@ -27,7 +27,7 @@ public class Customer{
 			try {
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
-						("SELECT TourID, TourName, Date, Duration, Price, Status where UserID "
+						("SELECT TourID, TourName, Date, Duration, Price, Status from CustomerRecord where UserID "
 								+ "like cancat('%', ?, '%')");
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
@@ -78,14 +78,65 @@ public class Customer{
 	//Analyse the customer history and return the recommendation
 	public String getRecommendation() {
 		
+		
 		return null;
 	}
 	
 	//TODO
 	//Cancel the booking in the database, mark the cancellation in the customer record
 	//and return an output to inform that the booking is cancelled
-	public String cancelBooking(Keyword keyword) {
-		return null;
+	
+	
+	//delete date in customer table and update status in customer record
+	//currently assume customer only provide tourID to cancel the booking
+	
+	public String cancelBooking(String keyword) {
+		String result =null;
+	try {
+		Connection connection = KitchenSinkController.getConnection();
+		String searching=null;
+		
+		//delete booking from Customer Table
+		PreparedStatement stmtForCustomerTable = connection.prepareStatement
+				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%'); \n"
+						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE cancat('%', ?, '%')");
+		//not sure whether can run with this + and + type, need test
+		
+		stmtForCustomerTable.setString(1, keyword);
+		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
+		
+		
+		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
+		if (!rsForCustomerTable.next()) {
+			result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel.";
+			rsForCustomerTable.close();
+			stmtForCustomerTable.close();
+			connection.close();
+			return result;
+		}
+		
+		else{
+			
+		rsForCustomerTable.close();
+		stmtForCustomerTable.close();
+		
+		//update status to cancelled in customer record
+		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
+				("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE cancat('%', ?, '%')");
+		stmtForCustomerRecord.setString(1, keyword);
+		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
+		rsForCustomerRecord.close();
+		stmtForCustomerRecord.close();
+		
+		result="Your booking has been cancelled. Hope to serve for you next time!";
+		
+		connection.close();
+		}
+	} catch (Exception e){
+		log.info("Exception while reading database: {}", e.toString());
+	}
+	
+		return result;
 	}
 	
 }

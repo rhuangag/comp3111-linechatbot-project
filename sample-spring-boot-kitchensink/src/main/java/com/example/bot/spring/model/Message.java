@@ -6,19 +6,25 @@ import lombok.extern.slf4j.Slf4j;
 public class Message {
     //Declaration of data members
 	String text;
-	Keyword keyword;
+	String keyword;
+	int type;
     
 
     //Constructor
     public Message(String t) {
     	    text=t;
+    	    keyword=null;
     }
     
     //Methods
     
-    public Keyword getKeyword() {
+    public String getKeyword() {
     	    return keyword;
     }
+    
+    public int getType() {
+	    return type;
+}
     
     //TODO
     //Analyse the text input and initialize the data member "keyword" with the type and keywords
