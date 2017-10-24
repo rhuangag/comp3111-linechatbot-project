@@ -10,7 +10,7 @@ public class Booking {
 	
 	//TODO
 	//Store the information collected and return an output to ask for next information
-	public String askForInformation(Keyword keyword) {
+	public String askForInformation(String keyword) {
 		
 		return null;
 	}
