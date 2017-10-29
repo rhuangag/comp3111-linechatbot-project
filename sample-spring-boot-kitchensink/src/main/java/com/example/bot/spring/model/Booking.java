@@ -1,33 +1,71 @@
-package com.example.bot.spring;
+package com.example.bot.spring*;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.*;
 
 @Slf4j
 public class Booking {
 	//no data member for this class
-	
+	private int phase;
+	private String bookingID;
+	private Customer customerBelonging;   // customer class not enrolled so far
 	//Methods
-	
+	public Booking(Customer customerBelong)
+	{
+		this.phase = 0;
+		long I = d.getTime();
+		this.customerBelonging = customerBelong;
+		String ID = I.parseLong("String") + customerBelong.getID(); // can not find getID function so far
+		.bookingID = ID;
+	}
 	//TODO
 	//Store the information collected and return an output to ask for next information
+	
 	public String askForInformation(String keyword) {
-		
-		return null;
+		switch keyword:
+		{
+			case "date":
+			return this.askForDate();
+			case "name":
+			return this.askForName();
+			case "ID":
+			return this.askForID();
+			case "#adults":
+			return this.askForAdults();
+			case "#children":
+			return this.askForChildrent();
+			case "#teenager":
+			return this.askForTeenager();
+			
+			default:
+				return null
+		}
 	}
 	
-	/*
+	
 	//TODO
 	//The 1st step of booking. Return an output to ask the date of the tour
 	public String askForDate() {
-		
-		return null;
+		String asking = "When are you planning to go for the trip?"
+		return asking;
 	}
 	
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask name of the customer
-    public String askForName() {
-    	
-    	    return null;
+    public String askForName(String date) {
+    	Connection connection = getConnection();
+		String queryAnsDate = " insert into questionRecord (" + this.customerBelonging.getID()
+			+ ", date) values " + date;
+		
+		PreparedStatement stmt = connection.prepareStatement(queryAnsDate);
+		//use a static data member to record the no.
+		String asking = "May I know your name?"
+		stmt.executeQuery();
+    	    return asking;
     }
     
     //TODO
@@ -56,7 +94,7 @@ public class Booking {
 		return null;
 	}
 	
-	*/
+	
 	
 	//TODO
 	//The 5th step of booking. Record the no. of teenagers in the temporary database, use calculate() to calculate the fee,
