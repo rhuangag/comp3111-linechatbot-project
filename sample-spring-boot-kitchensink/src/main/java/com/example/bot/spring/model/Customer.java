@@ -80,8 +80,8 @@ public class Customer{
 	//Analyse the customer history and return the recommendation
 	public String getRecommendation() {
 		
-		Vector<String> historyID;
-		Vector<String> recommendationID;//store all tourID first and remove historyID then
+		Vector<String> historyID = new Vector<String>();
+		Vector<String> recommendationID = new Vector<String>();//store all tourID first and remove historyID then
 		String output;
 		
 		//Extract history-TourID and from the database
@@ -140,7 +140,7 @@ public class Customer{
 	
 	//helper funtion -- input->ID, output->string of all details
 	public String Statement(String tourID) {
-		String result;
+		String result = null;
 		
 		try {
 			Connection connection = KitchenSinkController.getConnection();
