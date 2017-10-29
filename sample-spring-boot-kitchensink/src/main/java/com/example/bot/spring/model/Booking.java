@@ -26,8 +26,8 @@ public class Booking {
 	//TODO
 	//Store the information collected and return an output to ask for next information
 	
-	public String askForInformation(String keyword, String Information) {
-		switch keyword:
+	public String askForInformation(String type, String Information) {
+		switch type:
 		{
 			case "Yes":
 				return this.askForDate();
@@ -40,8 +40,8 @@ public class Booking {
 			case "#adults":
 				return this.askForChildrent(information);
 			case "#children":
-				return this.askForTeenager(information);
-			case "#teenager":
+				return this.askForToodler(information);
+			case "#Toodler":
 				return this.doubleCheck(information);
 			case "doubleCheck":
 				return this.confirm(information);
@@ -80,10 +80,10 @@ public class Booking {
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
     public String askForID(String name){
     	Connection connection = getConnection();
-		String queryAnsDate = " insert into questionRecord (" + this.customerBelonging.getID()
+		String queryAnsName = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", name) values " + name;
 		
-		PreparedStatement stmt = connection.prepareStatement(queryAnsDate);
+		PreparedStatement stmt = connection.prepareStatement(queryAnsName);
 		//use a static data member to record the no.
 		String asking = "Could you please tell us your ID?"
 		stmt.executeQuery();
@@ -95,40 +95,72 @@ public class Booking {
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask no. of adults
     public String askForAdults(String ID) {
-    	    
-    	    return null;
+    	Connection connection = getConnection();
+		String queryAnsID = " insert into questionRecord (" + this.customerBelonging.getID()
+			+ ", ID) values " + ID;
+		
+		PreparedStatement stmt = connection.prepareStatement(queryAnsID);
+		//use a static data member to record the no.
+		String asking = "Could you tell us how many adults will be in the trip?"
+		stmt.executeQuery();
+		connection.close();
+    	    return asking;
     }
     
     //TODO
     //The 3rd step of booking. Record the no. of adults in the temporary database and return an output to ask no. of children(0-3)
-	public String askForChildrent(){
+	public String askForChildrent(String numberOfAdults){
+		Connection connection = getConnection();
+		int number = Integer.parseInt(numberOfAdults);
+		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
+			+ ", numberOfAdults) values " + number; 
 		
-		return null;
+		PreparedStatement stmt = connection.prepareStatement(queryAns);
+		String asking = "Could you tell us how many children will be in the trip?"
+		stmt.executeQuery();
+		connection.close();
+    	return asking;		
 	}
 	
 	//TODO
-	//The 4th step of booking. Record the no. of children in the temporary database and return an output to ask no. of teenagers(4-11)
-	public String askForTeenager() {
+	//The 4th step of booking. Record the no. of children in the temporary database and return an output to ask no. of Toodlers(4-11)
+	public String askForToodler(String numberOfChildren) {
+		Connection connection = getConnection();
+		int number = Integer.parseInt(numberOfChildren);
+		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
+			+ ", numberOfChildren) values " + number; 
 		
-		return null;
+		PreparedStatement stmt = connection.prepareStatement(queryAns);
+		String asking = "Could you tell us how many children will be in the trip?"
+		stmt.executeQuery();
+		connection.close();
+    	return asking;		
 	}
 	
 	
 	
 	//TODO
-	//The 5th step of booking. Record the no. of teenagers in the temporary database, use calculate() to calculate the fee,
+	//The 5th step of booking. Record the no. of Toodlers in the temporary database, use calculate() to calculate the fee,
 	//and return an output including all the information collected and the fee to double check with the customer
-	public String doubleCheck() {
+	public String doubleCheck(String numberOfToodlers ) {
+		Connection connection = getConnection();
+		int number = Integer.parseInt(numberOfToodlers);
+		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
+			+ ", numberOfToodlers) values " + number; 
+		String queryPrice = "select price"
+		PreparedStatement stmt = connection.prepareStatement(queryAns);
 		
-		return null;
+		stmt.executeQuery();
+		connection.close();
+    	return asking;				
 	}
 	
 	//TODO
 	//The 6th(last) step of booking. Transfer all the data recorded in the temporary database to the booking table,
 	//return an output to notify the customer that this booking is confirmed, and ask for the feedback
-	public String confirm() {
+	public String confirm(String checkAnswer) {
 		
-		return null;
+		
 	}
 	//TODO
 	//Record the feedback, transter all the data in the log database to the feedback table, delete the log table,
