@@ -30,7 +30,7 @@ public class Customer{
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
 						("SELECT TourID, TourName, Date, Duration, Price, Status from CustomerRecord where UserID "
-								+ "like cancat('%', ?, '%')");
+								+ "like concat('%', ?, '%')");
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
@@ -89,7 +89,7 @@ public class Customer{
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt_history = connection.prepareStatement
 					("SELECT TourID from CustomerRecord where UserID "
-							+ "like cancat('%', ?, '%')");
+							+ "like concat('%', ?, '%')");
 			stmt_history.setString(1, userID);
 			ResultSet rs_history = stmt_history.executeQuery();
 			while(rs_history.next()) {
@@ -181,8 +181,8 @@ public class Customer{
 		
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%'); \n"
-						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE cancat('%', ?, '%')");
+				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE concat('%', ?, '%'); \n"
+						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE concat('%', ?, '%')");
 		//not sure whether can run with this + and + type, need test
 		
 		stmtForCustomerTable.setString(1, keyword);
@@ -205,7 +205,7 @@ public class Customer{
 		
 		//update status to cancelled in customer record
 		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-				("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE cancat('%', ?, '%')");
+				("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE concat('%', ?, '%')");
 		stmtForCustomerRecord.setString(1, keyword);
 		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
 		rsForCustomerRecord.close();
