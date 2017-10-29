@@ -17,6 +17,7 @@ public class Booking {
 	public Booking(Customer customerBelong)
 	{
 		this.phase = 0;
+		Date d = new Date(); 
 		long I = d.getTime();
 		this.customerBelonging = customerBelong;
 		String ID = I.parseLong("String") + customerBelong.getID(); // can not find getID function so far
@@ -25,21 +26,27 @@ public class Booking {
 	//TODO
 	//Store the information collected and return an output to ask for next information
 	
-	public String askForInformation(String keyword) {
+	public String askForInformation(String keyword, String Information) {
 		switch keyword:
 		{
+			case "Yes":
+				return this.askForDate();
 			case "date":
-			return this.askForDate();
+				return this.askForName(information);
 			case "name":
-			return this.askForName();
+				return this.askForID(information);
 			case "ID":
-			return this.askForID();
+				return this.askForAdults(information);
 			case "#adults":
-			return this.askForAdults();
+				return this.askForChildrent(information);
 			case "#children":
-			return this.askForChildrent();
+				return this.askForTeenager(information);
 			case "#teenager":
-			return this.askForTeenager();
+				return this.doubleCheck(information);
+			case "doubleCheck":
+				return this.confirm(information);
+			case "confirm":
+				return this.getFeedback();
 			
 			default:
 				return null
@@ -65,17 +72,29 @@ public class Booking {
 		//use a static data member to record the no.
 		String asking = "May I know your name?"
 		stmt.executeQuery();
+		connection.close();
     	    return asking;
     }
     
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
-    public String askForID()
+    public String askForID(String name){
+    	Connection connection = getConnection();
+		String queryAnsDate = " insert into questionRecord (" + this.customerBelonging.getID()
+			+ ", name) values " + name;
+		
+		PreparedStatement stmt = connection.prepareStatement(queryAnsDate);
+		//use a static data member to record the no.
+		String asking = "Could you please tell us your ID?"
+		stmt.executeQuery();
+		connection.close();
+    	    return asking;
+    }
 
 	
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask no. of adults
-    public String askForAdults() {
+    public String askForAdults(String ID) {
     	    
     	    return null;
     }
