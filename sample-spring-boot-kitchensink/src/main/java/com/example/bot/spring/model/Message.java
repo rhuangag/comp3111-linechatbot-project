@@ -39,10 +39,10 @@ public class Message {
     //TODO
     //Analyse the text input and initialize the data member "keyword" with the type and keywords
     public void messageHandler() {
-    	Connection connection = KitchenSinkController.getConnection();
+    	Connection connection = getConnection();
     	//TODO
     	//check whether the customer is booking
-    	String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM questionRecord as T2)";
+    	String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM¡@questionRecord as T2¡@)";
     	PreparedStatement stmt = connection.prepareStatement(query);
     	ResultSet rs =stmt.executeQuery();
     	if (rs.next()) {
@@ -64,13 +64,13 @@ public class Message {
     	//if text is not in current db, firstly get words from text
     	String[] parts = text.toLowerCase().split(" ");
     	//case FAQ
-    	if (checkFAQ(parts))
+    	if (checkFAQ(String[] parts))
     		type=FAQ;
     	else if (checkBook(text))
     		type =BOOK;
     	else if (checkCancel(text))
     		type=CANCEL;
-    	else if (checkFilter(parts))
+    	else if (checkFilter(String[] parts))
     		type=FILTER;
     	else
     		type =UNKNOWN;
@@ -167,7 +167,7 @@ public class Message {
     	
     }
     
-    public boolean checkBook(String text) {
+    public boolean checkBook(text) {
     	//simpliy consider the base case now
     	if (text.toLowerCase().contains("book"))
     		return true;
@@ -175,7 +175,7 @@ public class Message {
     		return false;
     }
     
-    public boolean checkCancel(String text) {  
+    public boolean checkCancel(text) {  
     	//simpliy consider the base case now
     	if (text.toLowerCase().contains("cancel"))
     		return true;

@@ -1,4 +1,4 @@
-package com.example.bot.spring;
+package com.example.bot.spring*;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,13 +20,13 @@ public class Booking {
 		long I = d.getTime();
 		this.customerBelonging = customerBelong;
 		String ID = I.parseLong("String") + customerBelong.getID(); // can not find getID function so far
-		this.bookingID = ID;
+		.bookingID = ID;
 	}
 	//TODO
 	//Store the information collected and return an output to ask for next information
 	
 	public String askForInformation(String keyword) {
-		switch (keyword)
+		switch keyword:
 		{
 			case "date":
 			return this.askForDate();
@@ -42,7 +42,7 @@ public class Booking {
 			return this.askForTeenager();
 			
 			default:
-				return null;
+				return null
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class Booking {
 	//TODO
 	//The 1st step of booking. Return an output to ask the date of the tour
 	public String askForDate() {
-		String asking = "When are you planning to go for the trip?";
+		String asking = "When are you planning to go for the trip?"
 		return asking;
 	}
 	
@@ -63,16 +63,14 @@ public class Booking {
 		
 		PreparedStatement stmt = connection.prepareStatement(queryAnsDate);
 		//use a static data member to record the no.
-		String asking = "May I know your name?";
+		String asking = "May I know your name?"
 		stmt.executeQuery();
     	    return asking;
     }
     
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
-    public String askForID() {
-    	    return null;
-    }
+    public String askForID()
 
 	
 	//TODO
