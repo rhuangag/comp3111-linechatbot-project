@@ -1,11 +1,13 @@
 package com.example.bot.spring;
 
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+
 
 @Slf4j
 public class Customer{
@@ -30,7 +32,7 @@ public class Customer{
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
 						("SELECT TourID, TourName, Date, Duration, Price, Status from CustomerRecord where UserID "
-								+ "like cancat('%', ?, '%')");
+								+ "like concat('%', ?, '%')");
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
@@ -81,10 +83,91 @@ public class Customer{
 	//Analyse the customer history and return the recommendation
 	public String getRecommendation() {
 		
+		Vector<String> historyID = new Vector<String>();
+		Vector<String> recommendationID = new Vector<String>();//store all tourID first and remove historyID then
+		String output;
 		
-		return null;
+		//Extract history-TourID and from the database
+		try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement stmt_history = connection.prepareStatement
+					("SELECT TourID from CustomerRecord where UserID "
+							+ "like concat('%', ?, '%')");
+			stmt_history.setString(1, userID);
+			ResultSet rs_history = stmt_history.executeQuery();
+			while(rs_history.next()) {
+				historyID.add(rs_history.getString("TourID"));
+			}
+			
+			//emmm...not sure
+			
+			//Suppose the Tour List table in excel is named as TourList in db
+			PreparedStatement stmt = connection.prepareStatement
+					("SELECT TourID from TourList");
+			stmt.setString(1, userID);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				recommendationID.add(rs.getString("TourID"));
+			}
+			
+			rs_history.close();
+			stmt_history.close();
+			
+			rs.close();
+			stmt.close();
+			connection.close();
+		} catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());
+		}	
+		
+		//remove the historyID from all tourID
+		for(String i: historyID) {
+			recommendationID.remove(i);
+		}
+		
+		if(recommendationID.size() == 0) {
+			output = "Sorry, I have no more recommendation to you. Thanks for your support very much!";
+		}
+		else {
+			Random rand = new Random(System.currentTimeMillis());
+			int position = rand.nextInt(recommendationID.size());
+			String outputID = recommendationID.get(position);
+			//select from db
+			output= Statement(outputID);
+		}
+		
+		
+		return output;
 	}
 	
+	
+	//helper funtion -- input->ID, output->string of all details
+	public String Statement(String tourID) {
+		String result = null;
+		
+		try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement stmt = connection.prepareStatement
+					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where UserID = "+ this.userID +"AND TourID = "+ tourID +";");
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			
+			while(rs.next()) {
+				result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tTour Description: "+rs.getString("TourDescription")+ 
+						"\tDays: "+rs.getString("Days")+"\tDate: "+rs.getString("Date")+"\tWeekend Price: "+rs.getString("WeekendPrice")+"\tWeekday Price: "+rs.getString("WeekdayPrice")+"\n";
+				
+			}
+			
+			
+			rs.close();
+			stmt.close();
+			connection.close();
+		} catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());
+		}
+		return result;
+	}
 	//TODO
 	//Cancel the booking in the database, mark the cancellation in the customer record
 	//and return an output to inform that the booking is cancelled
@@ -101,8 +184,8 @@ public class Customer{
 		
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%'); \n"
-						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE cancat('%', ?, '%')");
+				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE concat('%', ?, '%'); \n"
+						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE concat('%', ?, '%')");
 		//not sure whether can run with this + and + type, need test
 		
 		stmtForCustomerTable.setString(1, keyword);
@@ -125,7 +208,7 @@ public class Customer{
 		
 		//update status to cancelled in customer record
 		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-				("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE cancat('%', ?, '%')");
+				("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE concat('%', ?, '%')");
 		stmtForCustomerRecord.setString(1, keyword);
 		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
 		rsForCustomerRecord.close();
