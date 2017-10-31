@@ -57,11 +57,11 @@ public class Booking {
 		Connection connection = getConnection();
 		PrepareStatement
 		String createdb = "CREATE table " +this.customerBelonging.getID() + " (customerID varchar(20), "
-				+ " tourID varchar(10), dateDeparture "+ ""
+				+ " tourID varchar(10), dateDeparture ";
 		
 		
-		String asking = "When are you planning to go for the trip?"
-		String queryDate = " select DATE from bookingtable where 
+		String asking = "When are you planning to go for the trip?";
+		String queryDate = " select DATE from bookingtable where ";
 		
 		PreparedStatement stmt = connection.prepareStatement(queryDate);
 		//use a static data member to record the no.
@@ -80,7 +80,7 @@ public class Booking {
 		
 		PreparedStatement stmt = connection.prepareStatement(queryAnsDate);
 		//use a static data member to record the no.
-		String asking = "May I know your name?"
+		String asking = "May I know your name?";
 		stmt.executeQuery();
 		connection.close();
     	    return asking;
@@ -157,7 +157,7 @@ public class Booking {
 		int number = Integer.parseInt(numberOfToodlers);
 		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", numberOfToodlers) values " + number; 
-		String queryPrice = "select price from tourlist where "
+		String queryPrice = "select price from tourlist where ";
 		PreparedStatement stmt = connection.prepareStatement(queryAns);
 		
 		stmt.executeQuery();
@@ -170,7 +170,7 @@ public class Booking {
 	//return an output to notify the customer that this booking is confirmed, and ask for the feedback
 	public String confirm(String checkAnswer) {
 		
-		
+		return null;
 	}
 	//TODO
 	//Record the feedback, transter all the data in the log database to the feedback table, delete the log table,
