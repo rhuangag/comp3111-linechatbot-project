@@ -9,19 +9,16 @@ import java.util.*;
 
 @Slf4j
 public class Booking {
-	//no data member for this class
-	private int phase;
-	private String bookingID;
-	private Customer customerBelonging;   // customer class not enrolled so far
+	//data member for this class
+	private Customer customerBelonging;
+	private String tourID; // customer class not enrolled so far
 	//Methods
-	public Booking(Customer customerBelong)
+	public Booking(Customer customerBelong, String tourID)
 	{
-		this.phase = 0;
-		Date d = new Date(); 
-		long I = d.getTime();
+		this.tourID = tourID;
 		this.customerBelonging = customerBelong;
 		String ID = I.parseLong("String") + customerBelong.getID(); // can not find getID function so far
-		.bookingID = ID;
+		this.bookingID = ID;
 	}
 	//TODO
 	//Store the information collected and return an output to ask for next information
@@ -57,7 +54,20 @@ public class Booking {
 	//TODO
 	//The 1st step of booking. Return an output to ask the date of the tour
 	public String askForDate() {
+		Connection connection = getConnection();
+		PrepareStatement
+		String createdb = "CREATE table " +this.customerBelonging.getID() + " (customerID varchar(20), "
+				+ " tourID varchar(10), dateDeparture "+ ""
+		
+		
 		String asking = "When are you planning to go for the trip?"
+		String queryDate = " select DATE from bookingtable where 
+		
+		PreparedStatement stmt = connection.prepareStatement(queryDate);
+		//use a static data member to record the no.
+		String asking = "May I know your name?"
+		stmt.executeQuery();
+		connection.close();
 		return asking;
 	}
 	
@@ -147,7 +157,7 @@ public class Booking {
 		int number = Integer.parseInt(numberOfToodlers);
 		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", numberOfToodlers) values " + number; 
-		String queryPrice = "select price"
+		String queryPrice = "select price from tourlist where "
 		PreparedStatement stmt = connection.prepareStatement(queryAns);
 		
 		stmt.executeQuery();
