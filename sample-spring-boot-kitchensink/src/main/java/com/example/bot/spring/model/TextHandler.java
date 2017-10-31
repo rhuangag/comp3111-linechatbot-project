@@ -87,7 +87,7 @@ public class TextHandler {
     				stmt.close();
     				connection.close();
     				//customer?
-    				Booking booking=new Booking(customer);
+    				Booking booking=new Booking(customer," ");
     				//keyword is depending on the current type
     				return "123";//Booking.askForInformation(type-1 ,text);
     				}
@@ -131,7 +131,7 @@ public class TextHandler {
 				rs.close();
 				stmt.close();
 				connection.close();
-				Booking booking=new Booking(customer);
+				Booking booking=new Booking(customer," ");
 				//keyword is depending on the current type
 				return "123";//Booking.askForInformation(type ,text);
 				}

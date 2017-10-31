@@ -72,6 +72,9 @@ public class Customer{
 	}
 	
 	//Methods
+	public String getID() {
+		return userID;
+	}
 	
 	//Return the customer history from instance history
 	public String getHistory() {
@@ -148,7 +151,7 @@ public class Customer{
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where UserID = "+ this.UserID +" AND TourID = "+ tourID +";");
+					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where UserID = "+ this.userID +" AND TourID = "+ tourID +";");
 			
 			ResultSet rs = stmt.executeQuery();
 			
