@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Text {
+public class TextHandler {
     //Declaration of data members
 	String text;
 	String keyword;
@@ -33,7 +33,7 @@ public class Text {
     
     
     //Constructor
-    public Text(String t) {
+    public TextHandler(String t) {
     	    text=t;
     	    keyword=null;
     	    type = UNKNOWN;
@@ -51,10 +51,10 @@ public class Text {
     
     //TODO
     //Analyse the text input and initialize the data member "keyword" with the type and keywords
-    public String messageHandler() {
+    public String messageHandler(Customer customer) {
     	String reply=null;
         
-    	checkBooking();
+    	checkBooking(customer);
     /*	checkFiltering();
     	newFAQ();
     	newCancel();
@@ -70,7 +70,7 @@ public class Text {
     	
 		    
 }
-   private String checkBooking() {
+   private String checkBooking(Customer customer) {
     	//check whether the customer is booking
     	try {
     		Connection connection = KitchenSinkController.getConnection();	
@@ -89,25 +89,27 @@ public class Text {
     				//customer?
     				Booking booking=new Booking(customer);
     				//keyword is depending on the current type
-    				return Booking.askForInformation(type-1 ,text);}
+    				return "123";//Booking.askForInformation(type-1 ,text);
+    				}
     			else
-    				checkFiltering();
+    				checkFiltering(customer);
     				}
     		else
-    			checkFiltering();
+    			checkFiltering(customer);
     		//TODO stop booking
     	}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}    	
+			log.info("Exception while reading database: {}", e.toString());}
+    	return null;
     }
    
-   private String checkFiltering() {
+   private String checkFiltering(Customer customer) {
    	try {
 		Connection connection = KitchenSinkController.getConnection();	
-		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM�@questionRecord as T2�@)";
+		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM questionRecord as T2)";
 		PreparedStatement stmt = connection.prepareStatement(query);
 		ResultSet rs =stmt.executeQuery();
 		if (!rs.next()) 
-			newFAQ();
+			return newFAQ(customer);
 		if (rs.getInt(1)==FILTER_I ) {
 			
 			this.type=rs.getInt(1)+1;
@@ -120,7 +122,7 @@ public class Text {
 				
 			//keyword is depending on the current type
 			Filter filter =new Filter();
-			return Filter.viewDetails(text);}
+			return filter.viewDetails(text);}
 		else if (rs.getInt(1)==FILTER_II) {
 			if (text=="Yes") {
 				this.type=BOOK_I;
@@ -131,21 +133,25 @@ public class Text {
 				connection.close();
 				Booking booking=new Booking(customer);
 				//keyword is depending on the current type
-				return Booking.askForInformation(type ,text);}
+				return "123";//Booking.askForInformation(type ,text);
+				}
 			else 
 				return null;
 		}
 				
 				
 		else
-			newFAQ();
+			newFAQ(customer);
 		//TODO stop booking
 	}catch (Exception e){
-		log.info("Exception while reading database: {}", e.toString());}    	
+		log.info("Exception while reading database: {}", e.toString());}   
+   	 return null;
    }
    
-   private String newFAQ(){
-    	Connection connection = KitchenSinkController.getConnection();	 		
+   private String newFAQ(Customer customer){
+        try {	
+        	Connection connection = KitchenSinkController.getConnection();	 		
+        
     	//directly seach the text in db to get the type  	
 		PreparedStatement stmt1 = connection.prepareStatement("SELECT type, reply FROM FAQRecord WHERE question=?");
 		stmt1.setString(1, text);
@@ -156,7 +162,7 @@ public class Text {
 			String reply= rs.getString(2);
 			
 			rs.close();
-			stmt.close();
+			stmt1.close();
 			connection.close();
 			
 			return reply;}
@@ -173,12 +179,13 @@ public class Text {
     			break;
     	}
     	//the first keyword not found
-    	if (!rs.next())
+    	if (!rs.next()) {
     		rs.close();
-			stmt.close();
+			stmt2.close();
 			connection.close();
 			
-    		newCancel();
+    		return newCancel(customer);
+    	}
     	//now we find out the first keyword, check whether we need the second keyword
     		
     	 //we do not need the second record, return 
@@ -186,7 +193,7 @@ public class Text {
     		type=FAQ;
     		record();
     		rs.close();
-			stmt.close();
+			stmt2.close();
 			connection.close();
     		return rs.getString(4);}
     	else {
@@ -201,29 +208,34 @@ public class Text {
     		//second keyword not found
     		if (!rs.next()) {
     			rs.close();
-				stmt.close();
+				stmt3.close();
 				connection.close();
 			
-				newCancel();}
+				return newCancel(customer);}
 				//second keyword found 
     		else {
     			type=FAQ;
         		record();
         		rs.close();
-				stmt.close();
+				stmt3.close();
 				connection.close();
         		return rs.getString(4);}
-    	}
+    	}}catch (Exception e){
+    		log.info("Exception while reading database: {}", e.toString());}
+        return null;
     }
     
-   private String newCancel(){
-    	if (text.toLowerCase().contains("cancel")) {
+   private String newCancel(Customer customer){
+	   try {
+     
+	   if (text.toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
     		Connection connection = KitchenSinkController.getConnection();
-    		ResultSet rs;
+    		
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined=?");
     		String[] parts = text.toLowerCase().split(" ");
+    		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
     		stmt.setString(1, parts[i]);
     		rs =stmt.executeQuery();
@@ -234,54 +246,57 @@ public class Text {
 
 
     		
-    		return costomer.cancelBooking(key);}
+    		return customer.cancelBooking(key);}
     	else 
-    		newHitory();
+    		return newHitory(customer);
+	   }catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());}
+	   return null;
     }
    
-    private String newHitory() {
+    private String newHitory(Customer customer) {
     	if (text.toLowerCase().contains("history")) {
-    		if (costomer.getHistory()==null) {
-    			unknown();
+    		if (customer.getHistory()==null) {
+    			return unknown();
     		}
     			
     		else {
     			type=HISTORY;
     			record();
     		
-    			return costomer.getHistory();}
+    			return customer.getHistory();}
     		
     		}
     	else 
-    		newRecommendation();
+    		return newRecommendation(customer);
     }
     
-    private String newRecommendation() {
+    private String newRecommendation(Customer customer) {
     	if (text.toLowerCase().contains("recommendation")) {
-    		if (costomer.getRecommendation()==null) {
-    			unknowm();
+    		if (customer.getRecommendation()==null) {
+    			return unknown();
     		}
     		else {
     			type=RECOMMENDATION;
     			record();
-    			return costomer.getRecommendation();}}
+    			return customer.getRecommendation();}}
     	else 
-    		newFiltering();
+    		return newFiltering(customer);
     }
     
-    private String newFiltering() {
+    private String newFiltering(Customer customer) {
     	    return "";
     }
     
-    private String newBooking() {
+    private String newBooking(Customer customer) {
        	if (text.toLowerCase().contains("book")) {
        		type=FILTER_I;
        		record();
        		Filter filter=new Filter();
-       		return Filter.filterSearch("book");
+       		return filter.filterSearch("book");
        		}
        	else {
-       		unknown();}
+       		return unknown();}
        	
        	}
     
@@ -295,7 +310,7 @@ public class Text {
     //After analysing the text, record the type of input in a temporary database(log) and record the question to the question-recording database
     public void record() {
     	try {
-			Connection connection = getConnection();
+			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
 			String query1 = " insert into questionRecord (Question_ID, question,type)"
 			        + " values (?, ?,?)";
