@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Message {
+public class Text {
     //Declaration of data members
 	String text;
 	String keyword;
@@ -33,7 +33,7 @@ public class Message {
     
     
     //Constructor
-    public Message(String t) {
+    public Text(String t) {
     	    text=t;
     	    keyword=null;
     	    type = UNKNOWN;
@@ -55,7 +55,7 @@ public class Message {
     	String reply=null;
         
     	checkBooking();
-    	checkFiltering();
+    /*	checkFiltering();
     	newFAQ();
     	newCancel();
     	newHistory();
@@ -64,17 +64,17 @@ public class Message {
     	
     	newFiltering();
     	newBooking();
-    	otherReply();
+    	otherReply();*/
     	
     	return reply;
     	
 		    
 }
-   private void checkBooking() {
+   private String checkBooking() {
     	//check whether the customer is booking
     	try {
     		Connection connection = KitchenSinkController.getConnection();	
-    		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM¡@questionRecord as T2¡@)";
+    		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROMï¿½@questionRecord as T2ï¿½@)";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		ResultSet rs =stmt.executeQuery();
     		if (rs.next()) {
@@ -87,7 +87,7 @@ public class Message {
     				stmt.close();
     				connection.close();
     				//customer?
-    				new Booking=Booking(customer);
+    				Booking booking=new Booking(customer);
     				//keyword is depending on the current type
     				return Booking.askForInformation(type-1 ,text);}
     			else
@@ -100,10 +100,10 @@ public class Message {
 			log.info("Exception while reading database: {}", e.toString());}    	
     }
    
-   private void checkFiltering() {
+   private String checkFiltering() {
    	try {
 		Connection connection = KitchenSinkController.getConnection();	
-		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM¡@questionRecord as T2¡@)";
+		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROMï¿½@questionRecord as T2ï¿½@)";
 		PreparedStatement stmt = connection.prepareStatement(query);
 		ResultSet rs =stmt.executeQuery();
 		if (!rs.next()) 
@@ -119,7 +119,7 @@ public class Message {
 			//customer?
 				
 			//keyword is depending on the current type
-			new Filter =Filter();
+			Filter filter =new Filter();
 			return Filter.viewDetails(text);}
 		else if (rs.getInt(1)==FILTER_II) {
 			if (text=="Yes") {
@@ -129,7 +129,7 @@ public class Message {
 				rs.close();
 				stmt.close();
 				connection.close();
-				new Booking=Booking(customer);
+				Booking booking=new Booking(customer);
 				//keyword is depending on the current type
 				return Booking.askForInformation(type ,text);}
 			else 
@@ -144,7 +144,7 @@ public class Message {
 		log.info("Exception while reading database: {}", e.toString());}    	
    }
    
-   private void newFAQ(){
+   private String newFAQ(){
     	Connection connection = KitchenSinkController.getConnection();	 		
     	//directly seach the text in db to get the type  	
 		PreparedStatement stmt1 = connection.prepareStatement("SELECT type, reply FROM FAQRecord WHERE question=?");
@@ -215,7 +215,8 @@ public class Message {
         		return rs.getString(4);}
     	}
     }
-    private void newCancel(){
+    
+   private String newCancel(){
     	if (text.toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
@@ -237,7 +238,8 @@ public class Message {
     	else 
     		newHitory();
     }
-    private void newHitory() {
+   
+    private String newHitory() {
     	if (text.toLowerCase().contains("history")) {
     		if (costomer.getHistory()==null) {
     			unknown();
@@ -253,7 +255,8 @@ public class Message {
     	else 
     		newRecommendation();
     }
-    private void newRecommendation() {
+    
+    private String newRecommendation() {
     	if (text.toLowerCase().contains("recommendation")) {
     		if (costomer.getRecommendation()==null) {
     			unknowm();
@@ -265,25 +268,29 @@ public class Message {
     	else 
     		newFiltering();
     }
-    private void newFiltering() {
-    	return "";
+    
+    private String newFiltering() {
+    	    return "";
     }
-    private void newBooking() {
+    
+    private String newBooking() {
        	if (text.toLowerCase().contains("book")) {
        		type=FILTER_I;
        		record();
-       		new Filter=Filter();
+       		Filter filter=new Filter();
        		return Filter.filterSearch("book");
        		}
        	else {
        		unknown();}
        	
        	}
-    private void unknown() {
+    
+    private String unknown() {
     	type = UNKNOWN;
     	record();
     	return "Sorry, we can not find matched result.";
     }
+    
     //TODO
     //After analysing the text, record the type of input in a temporary database(log) and record the question to the question-recording database
     public void record() {
@@ -309,4 +316,5 @@ public class Message {
 		}
     
     }
+
 }
