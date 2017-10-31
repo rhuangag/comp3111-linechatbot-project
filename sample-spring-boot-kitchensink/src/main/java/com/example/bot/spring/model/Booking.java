@@ -1,4 +1,4 @@
-package com.example.bot.spring*;
+package com.example.bot.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +24,7 @@ public class Booking {
 	//Store the information collected and return an output to ask for next information
 	
 	public String askForInformation(String type, String Information) {
-		switch type:
+		switch (type)
 		{
 			case "Yes":
 				return this.askForDate();
@@ -46,7 +46,7 @@ public class Booking {
 				return this.getFeedback();
 			
 			default:
-				return null
+				return null;
 		}
 	}
 	
@@ -55,7 +55,7 @@ public class Booking {
 	//The 1st step of booking. Return an output to ask the date of the tour
 	public String askForDate() {
 		Connection connection = getConnection();
-		PrepareStatement
+		
 		String createdb = "CREATE table " +this.customerBelonging.getID() + " (customerID varchar(20), "
 				+ " tourID varchar(10), dateDeparture ";
 		
@@ -65,7 +65,7 @@ public class Booking {
 		
 		PreparedStatement stmt = connection.prepareStatement(queryDate);
 		//use a static data member to record the no.
-		String asking = "May I know your name?"
+		String asking = "May I know your name?"£»
 		stmt.executeQuery();
 		connection.close();
 		return asking;
@@ -95,7 +95,7 @@ public class Booking {
 		
 		PreparedStatement stmt = connection.prepareStatement(queryAnsName);
 		//use a static data member to record the no.
-		String asking = "Could you please tell us your ID?"
+		String asking = "Could you please tell us your ID?";
 		stmt.executeQuery();
 		connection.close();
     	    return asking;
@@ -111,7 +111,7 @@ public class Booking {
 		
 		PreparedStatement stmt = connection.prepareStatement(queryAnsID);
 		//use a static data member to record the no.
-		String asking = "Could you tell us how many adults will be in the trip?"
+		String asking = "Could you tell us how many adults will be in the trip?";
 		stmt.executeQuery();
 		connection.close();
     	    return asking;
@@ -126,7 +126,7 @@ public class Booking {
 			+ ", numberOfAdults) values " + number; 
 		
 		PreparedStatement stmt = connection.prepareStatement(queryAns);
-		String asking = "Could you tell us how many children will be in the trip?"
+		String asking = "Could you tell us how many children will be in the trip?";
 		stmt.executeQuery();
 		connection.close();
     	return asking;		
@@ -141,7 +141,7 @@ public class Booking {
 			+ ", numberOfChildren) values " + number; 
 		
 		PreparedStatement stmt = connection.prepareStatement(queryAns);
-		String asking = "Could you tell us how many children will be in the trip?"
+		String asking = "Could you tell us how many children will be in the trip?";
 		stmt.executeQuery();
 		connection.close();
     	return asking;		
