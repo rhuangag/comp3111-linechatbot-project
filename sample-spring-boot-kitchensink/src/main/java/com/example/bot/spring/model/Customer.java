@@ -26,6 +26,8 @@ public class Customer{
 		//TODO
 		//Find the customer history in the database and put each row as a string in the vector "history"
 		public void findHistory(String userID) {
+			if (!history.isEmpty())
+				history.clear();
 			try {
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
@@ -51,7 +53,7 @@ public class Customer{
 		//Read the vector and return all the content in the text output format
 		public String getHistory() {
 			if(history.isEmpty())
-			    return null;
+			    return "There is no record.";
 			else {
 				String result=null;
 				Iterator<String> iterator=history.iterator();
@@ -73,6 +75,7 @@ public class Customer{
 	
 	//Return the customer history from instance history
 	public String getHistory() {
+		history.findHistory(userID);
 		return history.getHistory();
 	}
 	
