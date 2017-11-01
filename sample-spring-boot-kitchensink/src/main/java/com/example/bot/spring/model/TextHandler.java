@@ -204,7 +204,7 @@ public class TextHandler {
 			connection.close();
     		return reply;}
     	else {
-    		return rs.getString(2);
+    		return rs.getString(4);
     		//check whether the sentence contains the second keyword
     	/*	PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
     		countloop=0;
