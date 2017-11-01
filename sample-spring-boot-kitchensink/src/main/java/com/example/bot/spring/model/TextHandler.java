@@ -53,10 +53,10 @@ public class TextHandler {
     //Analyse the text input and initialize the data member "keyword" with the type and keywords
     public String messageHandler(Customer customer) {
     	String reply=null;
-        
-    	checkBooking(customer);
+    	reply=newFAQ();
+    	//checkBooking(customer);
     /*	checkFiltering();
-    	newFAQ();
+    	
     	newCancel();
     	newHistory();
     	newRecommendation();
