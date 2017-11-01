@@ -151,7 +151,7 @@ public class TextHandler {
    private String newFAQ(Customer customer){
         try {	
         Connection connection = KitchenSinkController.getConnection();	 		
-        
+        String reply=null;
     	//directly seach the text in db to get the type  	
 		PreparedStatement stmt1 = connection.prepareStatement("SELECT type, reply FROM FAQRecord WHERE question=?");
 		stmt1.setString(1, text);
@@ -159,7 +159,7 @@ public class TextHandler {
 		if(rs.next()) {
 			type =rs.getInt(1);
 			record();
-			String reply= rs.getString(2);
+			reply= rs.getString(2);
 			
 			rs.close();
 			stmt1.close();
@@ -198,13 +198,13 @@ public class TextHandler {
         if (rs.getString(2)=="null") {
     		type=FAQ;
     		record();
-    		String reply=rs.getString(4);
+    		reply=rs.getString(4);
     		rs.close();
 			stmt2.close();
 			connection.close();
     		return reply;}
     	else {
-    		return "why it doesn't work!!!!!!!";
+    		return rs.getString(2);
     		//check whether the sentence contains the second keyword
     	/*	PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
     		countloop=0;
