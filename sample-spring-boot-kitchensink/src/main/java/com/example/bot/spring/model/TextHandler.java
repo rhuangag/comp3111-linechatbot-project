@@ -195,7 +195,7 @@ public class TextHandler {
     	//now we find out the first keyword, check whether we need the second keyword
     	 //we do not need the second record, return 
     	String temp=rs.getString(2);
-        if (temp=="null") {
+        if (temp==null) {
     		type=FAQ;
     		record();
     		reply=rs.getString(4);
@@ -206,7 +206,7 @@ public class TextHandler {
     	else {
     		
     		//check whether the sentence contains the second keyword
-    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',concat(',',?,','),'%') and keyword1 LIKE concat('%',concat(',',?,','),'%')");
     		countloop=0;
     		for (int i=0; i<parts.length;i++) {
     			stmt3.setString(1, parts[i]);
