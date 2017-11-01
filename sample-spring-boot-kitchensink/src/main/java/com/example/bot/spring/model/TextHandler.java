@@ -178,23 +178,23 @@ public class TextHandler {
     		rs =stmt2.executeQuery();
     		if (rs.next())
     			break;
-    		return "not";
+    		
     	}
     	//the first keyword not found
-    	if (!rs.first()) {
+    	/*if (!rs.first()) {
     		rs.close();
 			stmt2.close();
 			connection.close();
 			
     		return newCancel(customer);
-    	}
+    	}*/
     	//now we find out the first keyword, check whether we need the second keyword
-    	else
-    	{String reply=rs.getString(4);
+    	
+    	String reply=rs.getString(4);
     	rs.close();
 		stmt2.close();
 		connection.close();
-    	 return reply;}
+    	 return reply;
     	 //we do not need the second record, return 
 /*    	if (rs.getString(2)=="null") {
     		type=FAQ;
