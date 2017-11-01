@@ -19,7 +19,7 @@ public class Customer{
 		Vector<String> history;
 		
 		public CustomerHistory() {
-			
+			history=new Vector<String>();
 		}
 		
 		
@@ -31,12 +31,12 @@ public class Customer{
 			try {
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
-						("SELECT TourID, TourName, Date, Duration, Price, Status from CustomerRecord where UserID "
+						("SELECT TourID, TourName, DepartureDate, Duration, Price, Status from CustomerRecord where UserID "
 								+ "like concat('%', ?, '%')");
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
-					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDate: "+rs.getString("Date")+ 
+					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDepartureDate: "+rs.getString("DepartureDate")+ 
 							"\tDuration: "+rs.getString("Duration")+"\tPrice: "+rs.getString("Price")+"\tStatus: "+rs.getString("Status")+"\n";
 					history.add(result);
 				}
@@ -186,9 +186,7 @@ public class Customer{
 		String searching=null;
 		
 		//delete booking from Customer Table
-		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE concat('%', ?, '%'); \n"
-						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE concat('%', ?, '%')");
+		
 		//not sure whether can run with this + and + type, need test
 		
 		stmtForCustomerTable.setString(1, keyword);
