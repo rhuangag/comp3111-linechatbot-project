@@ -208,18 +208,20 @@ public class TextHandler {
     		return reply;
     		}
     	else {              */
-    		
+    		String keyword1=rs.getString(1);
     	    rs.close();
 		    stmt2.close();
     		//check whether the sentence contains the second keyword
-    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword2 LIKE concat('%',concat(',',?,','),'%')");
     		countloop=0;
     		for (int i=0; i<parts.length;i++) {
-    			stmt3.setString(1, parts[i]);
+    			
+    			stmt3.setString(1, keyword1);
+    			//stmt3.setString(2, parts[i]);
         		rs =stmt3.executeQuery();
         		if (rs.next())
         			break;
-        		if (rs.getString(2)==null)
+        		if (rs.getString(1)==keyword1 && rs.getString(2)==null)
         			break;
         		countloop++;
     		}
