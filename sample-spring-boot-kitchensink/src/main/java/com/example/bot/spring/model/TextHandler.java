@@ -246,7 +246,8 @@ public class TextHandler {
 
 
     		return "you want to canel";
-    		//return customer.cancelBooking(key);}
+    		//return customer.cancelBooking(key);
+    		}
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
@@ -264,7 +265,8 @@ public class TextHandler {
     			type=HISTORY;
     			record();
     			return "you want to check history";
-    			//return customer.getHistory();}
+    			//return customer.getHistory();
+    			}
     		
     		}
     	else 
@@ -280,7 +282,8 @@ public class TextHandler {
     			type=RECOMMENDATION;
     			record();
     			return "you want to get recommendation";
-    			//return customer.getRecommendation();}}
+    			//return customer.getRecommendation();
+    			}}
     	else 
     		return "you want to do filter-searching";
     		//return newFiltering(customer);
