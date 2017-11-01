@@ -219,6 +219,8 @@ public class TextHandler {
         		rs =stmt3.executeQuery();
         		if (rs.next())
         			break;
+        		if (rs.getString(2)==null)
+        			break;
         		countloop++;
     		}
     		//second keyword not found
