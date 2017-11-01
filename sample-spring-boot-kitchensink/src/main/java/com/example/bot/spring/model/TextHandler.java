@@ -217,7 +217,7 @@ public class TextHandler {
     		for (int i=0; i<parts.length;i++) {
     			
     			//stmt3.setString(1, keyword1);
-    			stmt3.setString(2, parts[i]);
+    			stmt3.setString(1, parts[i]);
         		rs =stmt3.executeQuery();
         		if (rs.next())
         			break;
