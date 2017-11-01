@@ -267,16 +267,16 @@ public class TextHandler {
    
     private String newHitory(Customer customer) {
     	if (text.toLowerCase().contains("history")) {
-    		/*if (customer.getHistory()==null) {
+    		if (customer.getHistory()==null) {
     			return unknown();
     		}
     			
-    		else {*/
+    		else {
     			type=HISTORY;
     			record();
-    			return "you want to check history";
-    			//return customer.getHistory();
-    			//}
+    			
+    			return customer.getHistory();
+    			}
     		
     		}
     	else 
