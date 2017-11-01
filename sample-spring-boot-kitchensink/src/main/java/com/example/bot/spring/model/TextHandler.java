@@ -179,7 +179,7 @@ public class TextHandler {
     			break;
     	}
     	//the first keyword not found
-    	if (!rs.first()) {
+    	if (!rs.next()) {
     		rs.close();
 			stmt2.close();
 			connection.close();
@@ -202,7 +202,7 @@ public class TextHandler {
     		for (int i=0; i<parts.length;i++) {
     			stmt3.setString(1, parts[0]);
         		rs =stmt3.executeQuery();
-        		if (rs.next())
+        		if (rs.first())
         			break;
     		}
     		//second keyword not found
@@ -245,8 +245,8 @@ public class TextHandler {
     		
 
 
-    		
-    		return customer.cancelBooking(key);}
+    		return "you want to canel";
+    		//return customer.cancelBooking(key);}
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
@@ -263,8 +263,8 @@ public class TextHandler {
     		else {
     			type=HISTORY;
     			record();
-    		
-    			return customer.getHistory();}
+    			return "you want to check history";
+    			//return customer.getHistory();}
     		
     		}
     	else 
@@ -279,9 +279,11 @@ public class TextHandler {
     		else {
     			type=RECOMMENDATION;
     			record();
-    			return customer.getRecommendation();}}
+    			return "you want to get recommendation";
+    			//return customer.getRecommendation();}}
     	else 
-    		return newFiltering(customer);
+    		return "you want to do filter-searching";
+    		//return newFiltering(customer);
     }
     
     private String newFiltering(Customer customer) {
