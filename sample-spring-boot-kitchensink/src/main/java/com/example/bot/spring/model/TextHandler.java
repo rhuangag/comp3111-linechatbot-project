@@ -172,17 +172,19 @@ public class TextHandler {
     	
     	//TODO
     	//search every word in db
+    	int countloop=0;
     	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
     	for (int i=0; i<parts.length;i++) {
     		stmt2.setString(1, parts[i]);
     		rs =stmt2.executeQuery();
     		if (rs.next())
     			break;
+    		countloop++;
     		
     	}
     	//the first keyword not found
     	
-    	if (!rs.first()) {
+    	if (countloop==parts.length) {
     		rs.close();
 			stmt2.close();
 			connection.close();
