@@ -100,8 +100,8 @@ public class Customer{
 		String searching=null;
 		
 		//delete booking from Customer Table
-		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%')");
+		
+		
 		//not sure whether can run with this + and + type, need test
 		stmtForCustomerTable.setString(1, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
