@@ -194,7 +194,8 @@ public class TextHandler {
     	}
     	//now we find out the first keyword, check whether we need the second keyword
     	 //we do not need the second record, return 
-    	if (rs.getString(2)=="null") {
+    	return rs.getString(2);
+       /* if (rs.getString(2)=="null") {
     		type=FAQ;
     		record();
     		String reply=rs.getString(4);
@@ -228,7 +229,7 @@ public class TextHandler {
 				stmt3.close();
 				connection.close();
         		return rs.getString(4);} 
-    	}
+    	}*/
     	}catch (Exception e){
     		log.info("Exception while reading database: {}", e.toString());}
         return null;
@@ -241,7 +242,7 @@ public class TextHandler {
 	   if (text.toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
-    		Connection connection = KitchenSinkController.getConnection();
+    		/*Connection connection = KitchenSinkController.getConnection();
     		
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined=?");
     		String[] parts = text.toLowerCase().split(" ");
@@ -251,8 +252,7 @@ public class TextHandler {
     		rs =stmt.executeQuery();
     		if (rs.next())
     			break;}
-    		String key=rs.getString(1);
-    		
+    		String key=rs.getString(1);*/
 
 
     		return "you want to canel";
