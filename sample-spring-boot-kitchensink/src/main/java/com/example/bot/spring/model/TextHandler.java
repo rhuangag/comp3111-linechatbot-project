@@ -189,18 +189,12 @@ public class TextHandler {
 			stmt2.close();
 			connection.close();
 			
-    		//return newCancel(customer);
-			return "not";
+    		return newCancel(customer);
+			
     	}
     	//now we find out the first keyword, check whether we need the second keyword
-    	
-    	String reply=rs.getString(4);
-    	rs.close();
-		stmt2.close();
-		connection.close();
-    	 return reply;
     	 //we do not need the second record, return 
-/*    	if (rs.getString(2)=="null") {
+    	if (rs.getString(2)=="null") {
     		type=FAQ;
     		record();
     		String reply=rs.getString(4);
@@ -211,14 +205,16 @@ public class TextHandler {
     	else {
     		//check whether the sentence contains the second keyword
     		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',' ',?,' ','%')");
+    		countloop=0;
     		for (int i=0; i<parts.length;i++) {
     			stmt3.setString(1, parts[i]);
         		rs =stmt3.executeQuery();
         		if (rs.next())
         			break;
+        		countloop++;
     		}
     		//second keyword not found
-    		if (!rs.first()) {
+    		if (countloop==parts.length) {
     			rs.close();
 				stmt3.close();
 				connection.close();
@@ -232,7 +228,7 @@ public class TextHandler {
 				stmt3.close();
 				connection.close();
         		return rs.getString(4);} 
-    	}*/
+    	}
     	}catch (Exception e){
     		log.info("Exception while reading database: {}", e.toString());}
         return null;
