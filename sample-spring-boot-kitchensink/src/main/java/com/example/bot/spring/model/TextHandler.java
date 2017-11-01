@@ -151,7 +151,7 @@ public class TextHandler {
    private String newFAQ(Customer customer){
         try {	
         Connection connection = KitchenSinkController.getConnection();	 		
-        
+        String reply=null;
     	//directly seach the text in db to get the type  	
 		PreparedStatement stmt1 = connection.prepareStatement("SELECT type, reply FROM FAQRecord WHERE question=?");
 		stmt1.setString(1, text);
@@ -159,7 +159,7 @@ public class TextHandler {
 		if(rs.next()) {
 			type =rs.getInt(1);
 			record();
-			String reply= rs.getString(2);
+			reply= rs.getString(2);
 			
 			rs.close();
 			stmt1.close();
@@ -168,17 +168,19 @@ public class TextHandler {
 			return reply;}
 		
     	// if not found, firstly get words from text
-    	String[] parts = text.toLowerCase().split(" ");
+    	String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
     	
     	//TODO
     	//search every word in db
     	int countloop=0;
+    	
     	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
     	for (int i=0; i<parts.length;i++) {
     		stmt2.setString(1, parts[i]);
     		rs =stmt2.executeQuery();
-    		if (rs.next())
-    			break;
+    		if (rs.next()) {
+    			
+    			break;}
     		countloop++;
     		
     	}
@@ -192,26 +194,25 @@ public class TextHandler {
     		return newCancel(customer);
 			
     	}
+
     	//now we find out the first keyword, check whether we need the second keyword
     	 //we do not need the second record, return 
-    	
-        if (rs.getString(2)=="null") {
-    		type=FAQ;
-    		record();
-    		String reply=rs.getString(4);
-    		rs.close();
-			stmt2.close();
-			connection.close();
-    		return reply;}
-    	else {
+
+    		
+    	    rs.close();
+		    stmt2.close();
     		//check whether the sentence contains the second keyword
-    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword2 LIKE concat('%',concat(',',?,','),'%')");
     		countloop=0;
     		for (int i=0; i<parts.length;i++) {
+    			
+    			//stmt3.setString(1, keyword1);
     			stmt3.setString(1, parts[i]);
         		rs =stmt3.executeQuery();
         		if (rs.next())
         			break;
+        		//if (rs.getString(1)==keyword1 && rs.getString(2)==null)
+        			//break;
         		countloop++;
     		}
     		//second keyword not found
@@ -222,24 +223,47 @@ public class TextHandler {
 			
 				return newCancel(customer);}
 				//second keyword found 
+    		PreparedStatement stmt4 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword3 LIKE concat('%',concat(',',?,','),'%')");
+    		countloop=0;
+    		for (int i=0; i<parts.length;i++) {
+    			
+    			//stmt3.setString(1, keyword1);
+    			stmt4.setString(1, parts[i]);
+        		rs =stmt4.executeQuery();
+        		if (rs.next())
+        			break;
+        		//if (rs.getString(1)==keyword1 && rs.getString(2)==null)
+        			//break;
+        		countloop++;
+    		}
+    		//second keyword not found
+    		if (countloop==parts.length) {
+    			rs.close();
+				stmt4.close();
+				connection.close();
+			
+				return newCancel(customer);}
+    		
     		else {
     			type=FAQ;
         		record();
+        		reply=rs.getString(4);
         		rs.close();
-				stmt3.close();
+				stmt4.close();
 				connection.close();
-        		return rs.getString(4);} 
-    	}
+        		return reply;}  
+    //	}
     	}catch (Exception e){
-    		log.info("Exception while reading database: {}", e.toString());}
-        return null;
+    		log.info("Exception while reading database: {}", e.toString());
+    		return e.toString();}
+        
         
     }
     
    private String newCancel(Customer customer){
 	   try {
      
-	   if (text.toLowerCase().contains("cancel")) {
+	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
     		/*Connection connection = KitchenSinkController.getConnection();
@@ -266,7 +290,7 @@ public class TextHandler {
     }
    
     private String newHitory(Customer customer) {
-    	if (text.toLowerCase().contains("history")) {
+    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
     		if (customer.getHistory()==null) {
     			return unknown();
     		}
@@ -284,7 +308,7 @@ public class TextHandler {
     }
     
     private String newRecommendation(Customer customer) {
-    	if (text.toLowerCase().contains("recommendation")) {
+    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("recommendation")) {
     		if (customer.getRecommendation()==null) {
     			return unknown();
     		}
@@ -300,11 +324,12 @@ public class TextHandler {
     }
     
     private String newFiltering(Customer customer) {
+    	//from back keyword
     	    return "";
     }
     
     private String newBooking(Customer customer) {
-       	if (text.toLowerCase().contains("book")) {
+       	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("book")) {
        		type=FILTER_I;
        		record();
        		Filter filter=new Filter();
