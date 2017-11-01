@@ -195,14 +195,17 @@ public class TextHandler {
     	//now we find out the first keyword, check whether we need the second keyword
     	 //we do not need the second record, return 
     	String temp=rs.getString(2);
-        if (temp==null) {
-    		type=FAQ;
-    		record();
+        if (temp=="null") {
+        	
+    		/*type=FAQ;
+    		record();*/
     		reply=rs.getString(4);
     		rs.close();
 			stmt2.close();
 			connection.close();
-    		return reply;}
+			
+    		return reply;
+    		}
     	else {
     		
     		//check whether the sentence contains the second keyword
@@ -301,6 +304,7 @@ public class TextHandler {
     }
     
     private String newFiltering(Customer customer) {
+    	//from back keyword
     	    return "";
     }
     
