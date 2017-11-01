@@ -181,13 +181,15 @@ public class TextHandler {
     		
     	}
     	//the first keyword not found
-    	/*if (!rs.first()) {
+    	
+    	if (!rs.first()) {
     		rs.close();
 			stmt2.close();
 			connection.close();
 			
-    		return newCancel(customer);
-    	}*/
+    		//return newCancel(customer);
+			return "not";
+    	}
     	//now we find out the first keyword, check whether we need the second keyword
     	
     	String reply=rs.getString(4);
