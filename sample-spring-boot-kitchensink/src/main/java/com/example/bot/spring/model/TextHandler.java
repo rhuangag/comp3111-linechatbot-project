@@ -168,7 +168,7 @@ public class TextHandler {
 			return reply;}
 		
     	// if not found, firstly get words from text
-    	String[] parts = text.toLowerCase().split(" ");
+    	String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
     	
     	//TODO
     	//search every word in db
@@ -263,7 +263,7 @@ public class TextHandler {
    private String newCancel(Customer customer){
 	   try {
      
-	   if (text.toLowerCase().contains("cancel")) {
+	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
     		/*Connection connection = KitchenSinkController.getConnection();
@@ -290,7 +290,7 @@ public class TextHandler {
     }
    
     private String newHitory(Customer customer) {
-    	if (text.toLowerCase().contains("history")) {
+    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
     		if (customer.getHistory()==null) {
     			return unknown();
     		}
@@ -308,7 +308,7 @@ public class TextHandler {
     }
     
     private String newRecommendation(Customer customer) {
-    	if (text.toLowerCase().contains("recommendation")) {
+    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("recommendation")) {
     		if (customer.getRecommendation()==null) {
     			return unknown();
     		}
@@ -329,7 +329,7 @@ public class TextHandler {
     }
     
     private String newBooking(Customer customer) {
-       	if (text.toLowerCase().contains("book")) {
+       	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("book")) {
        		type=FILTER_I;
        		record();
        		Filter filter=new Filter();
