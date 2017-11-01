@@ -216,8 +216,8 @@ public class TextHandler {
     		countloop=0;
     		for (int i=0; i<parts.length;i++) {
     			
-    			stmt3.setString(1, keyword1);
-    			//stmt3.setString(2, parts[i]);
+    			//stmt3.setString(1, keyword1);
+    			stmt3.setString(2, parts[i]);
         		rs =stmt3.executeQuery();
         		if (rs.next())
         			break;
@@ -243,8 +243,9 @@ public class TextHandler {
         		return reply;} 
     //	}
     	}catch (Exception e){
-    		log.info("Exception while reading database: {}", e.toString());}
-        return "exception";
+    		log.info("Exception while reading database: {}", e.toString());
+    		return e.toString();}
+        
         
     }
     
