@@ -174,10 +174,11 @@ public class TextHandler {
     	//search every word in db
     	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
     	for (int i=0; i<parts.length;i++) {
-    		stmt2.setString(1, parts[0]);
+    		stmt2.setString(1, parts[i]);
     		rs =stmt2.executeQuery();
     		if (rs.next())
     			break;
+    		return "not";
     	}
     	//the first keyword not found
     	if (!rs.first()) {
@@ -207,7 +208,7 @@ public class TextHandler {
     		//check whether the sentence contains the second keyword
     		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword2 LIKE concat('%',' ',?,' ','%')");
     		for (int i=0; i<parts.length;i++) {
-    			stmt3.setString(1, parts[0]);
+    			stmt3.setString(1, parts[i]);
         		rs =stmt3.executeQuery();
         		if (rs.next())
         			break;
