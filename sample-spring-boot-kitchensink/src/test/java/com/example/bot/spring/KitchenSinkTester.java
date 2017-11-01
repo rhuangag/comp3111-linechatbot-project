@@ -1,3 +1,4 @@
+/*
 package com.example.bot.spring;
 
 
@@ -51,16 +52,8 @@ public class KitchenSinkTester {
 	@Autowired
 	private DatabaseEngine databaseEngine;
 	
-	@Test
-	public void testNotFound() throws Exception {
-		boolean thrown = false;
-		try {
-			this.databaseEngine.search("no");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown);
-	}
+	
 	
 
 }
+*/
