@@ -26,6 +26,8 @@ public class Customer{
 		//TODO
 		//Find the customer history in the database and put each row as a string in the vector "history"
 		public void findHistory(String userID) {
+			if (!history.isEmpty())
+				history.clear();
 			try {
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
@@ -51,7 +53,7 @@ public class Customer{
 		//Read the vector and return all the content in the text output format
 		public String getHistory() {
 			if(history.isEmpty())
-			    return null;
+			    return "There is no record.";
 			else {
 				String result=null;
 				Iterator<String> iterator=history.iterator();
@@ -70,9 +72,13 @@ public class Customer{
 	}
 	
 	//Methods
+	public String getID() {
+		return userID;
+	}
 	
 	//Return the customer history from instance history
 	public String getHistory() {
+		history.findHistory(userID);
 		return history.getHistory();
 	}
 	
@@ -100,7 +106,7 @@ public class Customer{
 			
 			//Suppose the Tour List table in excel is named as TourList in db
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID from TourList");
+					("SELECT TourID from TourList where UserID like concat('%',?,'%')");
 			stmt.setString(1, userID);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
@@ -145,7 +151,7 @@ public class Customer{
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where UserID = "+ this.userID +"AND TourID = "+ tourID +";");
+					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where UserID = "+ this.userID +" AND TourID = "+ tourID +";");
 			
 			ResultSet rs = stmt.executeQuery();
 			

@@ -17,13 +17,11 @@ public class Booking {
 	{
 		this.tourID = tourID;
 		this.customerBelonging = customerBelong;
-		String ID = I.parseLong("String") + customerBelong.getID(); // can not find getID function so far
-		this.bookingID = ID;
 	}
 	//TODO
 	//Store the information collected and return an output to ask for next information
 	
-	public String askForInformation(String type, String Information) {
+	public String askForInformation(String type, String information) {
 		switch (type)
 		{
 			case "Yes":
@@ -54,27 +52,32 @@ public class Booking {
 	//TODO
 	//The 1st step of booking. Return an output to ask the date of the tour
 	public String askForDate() {
-		Connection connection = getConnection();
+		try {
+		Connection connection = KitchenSinkController.getConnection();
 		
 		String createdb = "CREATE table " +this.customerBelonging.getID() + " (customerID varchar(20), "
 				+ " tourID varchar(10), dateDeparture ";
 		
 		
-		String asking = "When are you planning to go for the trip?";
+		String asking1 = "When are you planning to go for the trip?";
 		String queryDate = " select DATE from bookingtable where ";
 		
 		PreparedStatement stmt = connection.prepareStatement(queryDate);
 		//use a static data member to record the no.
-		String asking = "May I know your name?"£»
+		String asking2 = "May I know your name?";
 		stmt.executeQuery();
 		connection.close();
-		return asking;
+		return asking1;
+		}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());}
+    	return null;
 	}
 	
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask name of the customer
     public String askForName(String date) {
-    	Connection connection = getConnection();
+    	try {
+    	Connection connection = KitchenSinkController.getConnection();
 		String queryAnsDate = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", date) values " + date;
 		
@@ -84,12 +87,16 @@ public class Booking {
 		stmt.executeQuery();
 		connection.close();
     	    return asking;
+    	}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());}
+    	return null;
     }
     
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
     public String askForID(String name){
-    	Connection connection = getConnection();
+    	    try {
+    	    Connection connection = KitchenSinkController.getConnection();
 		String queryAnsName = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", name) values " + name;
 		
@@ -99,13 +106,17 @@ public class Booking {
 		stmt.executeQuery();
 		connection.close();
     	    return asking;
+    	    }catch (Exception e){
+    			log.info("Exception while reading database: {}", e.toString());}
+        	return null;
     }
 
 	
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask no. of adults
     public String askForAdults(String ID) {
-    	Connection connection = getConnection();
+    	    try {
+    	    Connection connection = KitchenSinkController.getConnection();
 		String queryAnsID = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", ID) values " + ID;
 		
@@ -115,12 +126,16 @@ public class Booking {
 		stmt.executeQuery();
 		connection.close();
     	    return asking;
+    	    }catch (Exception e){
+    			log.info("Exception while reading database: {}", e.toString());}
+        	return null;
     }
     
     //TODO
     //The 3rd step of booking. Record the no. of adults in the temporary database and return an output to ask no. of children(0-3)
 	public String askForChildrent(String numberOfAdults){
-		Connection connection = getConnection();
+		try {
+		Connection connection = KitchenSinkController.getConnection();
 		int number = Integer.parseInt(numberOfAdults);
 		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", numberOfAdults) values " + number; 
@@ -130,12 +145,16 @@ public class Booking {
 		stmt.executeQuery();
 		connection.close();
     	return asking;		
+		}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());}
+    	return null;
 	}
 	
 	//TODO
 	//The 4th step of booking. Record the no. of children in the temporary database and return an output to ask no. of Toodlers(4-11)
 	public String askForToodler(String numberOfChildren) {
-		Connection connection = getConnection();
+		try {
+		Connection connection = KitchenSinkController.getConnection();
 		int number = Integer.parseInt(numberOfChildren);
 		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", numberOfChildren) values " + number; 
@@ -145,6 +164,9 @@ public class Booking {
 		stmt.executeQuery();
 		connection.close();
     	return asking;		
+		}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());}
+    	return null;
 	}
 	
 	
@@ -153,7 +175,8 @@ public class Booking {
 	//The 5th step of booking. Record the no. of Toodlers in the temporary database, use calculate() to calculate the fee,
 	//and return an output including all the information collected and the fee to double check with the customer
 	public String doubleCheck(String numberOfToodlers ) {
-		Connection connection = getConnection();
+		try {
+		Connection connection = KitchenSinkController.getConnection();
 		int number = Integer.parseInt(numberOfToodlers);
 		String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
 			+ ", numberOfToodlers) values " + number; 
@@ -162,7 +185,10 @@ public class Booking {
 		
 		stmt.executeQuery();
 		connection.close();
-    	return asking;				
+      	return null;				
+		}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());}
+    	return null;
 	}
 	
 	//TODO
