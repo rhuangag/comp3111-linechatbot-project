@@ -169,6 +169,7 @@ public class TextHandler {
 		
     	// if not found, firstly get words from text
     	String[] parts = text.toLowerCase().split(" ");
+    	return parts[0];
     	//TODO
     	//search every word in db
     	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',',',?,',','%')");
