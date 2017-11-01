@@ -169,18 +169,18 @@ public class TextHandler {
 		
     	// if not found, firstly get words from text
     	String[] parts = text.toLowerCase().split(" ");
-    	return parts[0];
+    	
     	//TODO
     	//search every word in db
-   /* 	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',',',?,',','%')");
+    	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
     	for (int i=0; i<parts.length;i++) {
     		stmt2.setString(1, parts[0]);
     		rs =stmt2.executeQuery();
-    		if (rs.first())
+    		if (rs.next())
     			break;
     	}
     	//the first keyword not found
-    	if (!rs.next()) {
+    	if (!rs.first()) {
     		rs.close();
 			stmt2.close();
 			connection.close();
@@ -203,11 +203,11 @@ public class TextHandler {
     		for (int i=0; i<parts.length;i++) {
     			stmt3.setString(1, parts[0]);
         		rs =stmt3.executeQuery();
-        		if (rs.first())
+        		if (rs.next())
         			break;
     		}
     		//second keyword not found
-    		if (!rs.next()) {
+    		if (!rs.first()) {
     			rs.close();
 				stmt3.close();
 				connection.close();
@@ -221,7 +221,7 @@ public class TextHandler {
 				stmt3.close();
 				connection.close();
         		return rs.getString(4);}
-    	}*/
+    	}
     	}catch (Exception e){
     		log.info("Exception while reading database: {}", e.toString());}
         return null;
