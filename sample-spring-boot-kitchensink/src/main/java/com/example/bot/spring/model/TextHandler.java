@@ -197,7 +197,7 @@ public class TextHandler {
     	
         if (rs.getString(2)=="null") {
     		type=FAQ;
-    		record();
+    		//record();
     		reply=rs.getString(4);
     		rs.close();
 			stmt2.close();
