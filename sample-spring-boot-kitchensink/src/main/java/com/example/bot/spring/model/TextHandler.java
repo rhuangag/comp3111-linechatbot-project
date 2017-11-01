@@ -171,7 +171,7 @@ public class TextHandler {
     	String[] parts = text.toLowerCase().split(" ");
     	//TODO
     	//search every word in db
-    	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',' ',?,' ','%')");
+    	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',',',?,',','%')");
     	for (int i=0; i<parts.length;i++) {
     		stmt2.setString(1, parts[0]);
     		rs =stmt2.executeQuery();
