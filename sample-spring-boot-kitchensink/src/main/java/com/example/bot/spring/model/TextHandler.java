@@ -197,20 +197,7 @@ public class TextHandler {
 
     	//now we find out the first keyword, check whether we need the second keyword
     	 //we do not need the second record, return 
-    /*	String temp=rs.getString(2);
-        if (temp=="null") {
-        	
-    		type=FAQ;
-    		record();
-    		reply=rs.getString(4);
-    		rs.close();
-			stmt2.close();
-			
-			connection.close();
-    		return reply;
-    		}
-    	else {              */
-    		
+
     		
     	    rs.close();
 		    stmt2.close();
@@ -236,14 +223,35 @@ public class TextHandler {
 			
 				return newCancel(customer);}
 				//second keyword found 
+    		PreparedStatement stmt4 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword3 LIKE concat('%',concat(',',?,','),'%')");
+    		countloop=0;
+    		for (int i=0; i<parts.length;i++) {
+    			
+    			//stmt3.setString(1, keyword1);
+    			stmt4.setString(1, parts[i]);
+        		rs =stmt4.executeQuery();
+        		if (rs.next())
+        			break;
+        		//if (rs.getString(1)==keyword1 && rs.getString(2)==null)
+        			//break;
+        		countloop++;
+    		}
+    		//second keyword not found
+    		if (countloop==parts.length) {
+    			rs.close();
+				stmt4.close();
+				connection.close();
+			
+				return newCancel(customer);}
+    		
     		else {
     			type=FAQ;
         		record();
         		reply=rs.getString(4);
         		rs.close();
-				stmt3.close();
+				stmt4.close();
 				connection.close();
-        		return reply;} 
+        		return reply;}  
     //	}
     	}catch (Exception e){
     		log.info("Exception while reading database: {}", e.toString());
