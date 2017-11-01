@@ -175,11 +175,11 @@ public class TextHandler {
     	for (int i=0; i<parts.length;i++) {
     		stmt2.setString(1, parts[0]);
     		rs =stmt2.executeQuery();
-    		if (rs.next())
+    		if (rs.first())
     			break;
     	}
     	//the first keyword not found
-    	if (!rs.next()) {
+    	if (!rs.first()) {
     		rs.close();
 			stmt2.close();
 			connection.close();
