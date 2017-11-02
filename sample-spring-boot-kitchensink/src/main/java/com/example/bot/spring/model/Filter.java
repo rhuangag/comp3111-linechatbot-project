@@ -86,20 +86,22 @@ public class Filter {
 						("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int) and" + upperLimitation+">=cast(weekdayprice as int)");
 			ResultSet rsForPriceRange=filterStmtForPriceRange.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForPriceRange,connection);
+			connection.close();
 			filterStmtForPriceRange.close();
 			rsForPriceRange.close();
 		}
 		
 		//case 4: filter for a price, +-100 for "around" type, >100 to distinguish from duration, current version only filt for weekday price
-		else if(isNumeric(keyword)&&(Double.parseDouble(keyword)>100)) {
-			 double upperLimitation=Double.parseDouble(keyword)+100;
-			 double lowerLimitation=Double.parseDouble(keyword)-100;
+		else if(isNumeric(keyword)&&(Int.parseInt(keyword)>100)) {
+			 double upperLimitation=Int.parseInt(keyword)+100;
+			 double lowerLimitation=Int.parseInt(keyword)-100;
 		 PreparedStatement filterStmtForPrice = connection.prepareStatement
 						("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int) and ? >=cast(weekdayprice as int)");
-		 filterStmtForPrice.setDouble(1,lowerLimitation);
-		 filterStmtForPrice.setDouble(2,upperLimitation);
+		 filterStmtForPrice.setInt(1,lowerLimitation);
+		 filterStmtForPrice.setInt(2,upperLimitation);
 		 ResultSet rsForPrice=filterStmtForPrice.executeQuery();
 		 result=prepareResultAndUpdateTempTable(rsForPrice,connection);
+		 connection.close();
 		 filterStmtForPrice.close();
 		 rsForPrice.close();
 		}
@@ -107,12 +109,13 @@ public class Filter {
 		//case 5:filter for higher price
 		else if (keyword.contains("<")) {
 			String[] parts = keyword.split("<");
-			double lowerLimitation=Double.parseDouble(parts[0]);
+			double lowerLimitation=Int.parseInt(parts[0]);
 			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
 					("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int)");
-			filterStmtForHigherPrice.setDouble(1,lowerLimitation);
+			filterStmtForHigherPrice.parseInt(1,lowerLimitation);
 			 ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
 			 result=prepareResultAndUpdateTempTable(rsForHigherPrice,connection);
+			 connection.close();
 			 filterStmtForHigherPrice.close();
 			 rsForHigherPrice.close();
 		}
