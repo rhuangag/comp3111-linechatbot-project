@@ -229,7 +229,15 @@ public class KitchenSinkController {
         log.info("Got text message from {}: {}", replyToken, text);
         
        	String reply = null;
-        	try {
+       	
+       	Customer customer=new Customer(content.getId());
+       	TextHandler handler=new TextHandler(text);
+       	reply=handler.messageHandler(customer);
+       	this.replyText(replyToken, reply);
+       	
+       	
+       	
+        /*	try {
             	reply = database.search(text);
         	} catch (Exception e) {
             	reply = text;
@@ -239,6 +247,7 @@ public class KitchenSinkController {
               replyToken,
               itscLOGIN + " says " + reply
         );
+        */
     }
     
 
