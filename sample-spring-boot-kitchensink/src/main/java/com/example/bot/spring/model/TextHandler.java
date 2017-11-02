@@ -111,7 +111,7 @@ public class TextHandler {
    private String checkFiltering(Customer customer) {
 	   	try {
 			Connection connection = KitchenSinkController.getConnection();	
-			String query = "SELECT type FROM questionRecord)";
+			String query = "SELECT type FROM questionRecord";
 			PreparedStatement stmt = connection.prepareStatement(query);
 			ResultSet rs =stmt.executeQuery();
 			//if the table is empty, the question must be the first question
