@@ -114,6 +114,7 @@ public class Filter {
 		//case 6:filter for longer duration
 		//case 7:filter for shorter duration
 		//case 8:filter for duration
+		//should we really consider such lots of cases?
 		
 		//Normal cases: filter for keywords in description or tour name(lcoation).
 		else {

@@ -76,7 +76,7 @@ public class TextHandler {
     	//check whether the customer is booking
     	try {
     		Connection connection = KitchenSinkController.getConnection();	
-    		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM�@questionRecord as T2�@)";
+    		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM锟紷questionRecord as T2锟紷)";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		ResultSet rs =stmt.executeQuery();
     		if (rs.next()) {
