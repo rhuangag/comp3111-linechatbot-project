@@ -60,7 +60,7 @@ public class Booking {
 		String createdb = "CREATE table " +this.customerBelonging.getID() + " (customerID varchar(10), "
 				+ " tourID varchar(10), dateDeparture varchar(20), CustomerName varchar(20), ID varchar(20), "
 				+ " phone varchar(12), Adults Int, Children Int, Toodlers Int, SpecialRequest varchar(100)"
-				+ ", age varchar(3), fee float";
+				+ ", age varchar(3), fee float)";
 		String insertdb = "Insert Into " + this.customerBelonging.getID() + " VALUES (" 
 				+ this.customerBelonging.getID() + ", " + tourID + ", ' ', ' ', ' ', ' ', 0, 0, 0, "
 						+ "' ', ' ', 0)";
