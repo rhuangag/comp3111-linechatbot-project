@@ -83,10 +83,16 @@ public class TextHandler {
     		String query = "SELECT type FROM questionRecord";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		ResultSet rs =stmt.executeQuery();
+
     		if (rs.next()) {
-    			if (rs.getInt(1)>=BOOK_I && rs.getInt(1)<BOOK_IX) {
+    			int temp=rs.getInt(1);
+    			while (rs.next()) {
+    				temp=rs.getInt(1);
+    			}
     			
-    				type=rs.getInt(1)+1;
+    			if (temp>=BOOK_I && temp<BOOK_IX) {
+    			
+    				type=temp+1;
     				record();
     				
     				rs.close();
@@ -120,8 +126,12 @@ public class TextHandler {
 				stmt.close();
 				connection.close();
 				return newFAQ(customer);}
-			rs.last();
-			if (rs.getInt(1)==FILTER_I ) {
+			int temp=rs.getInt(1);
+			while (rs.next()) {
+				temp=rs.getInt(1);
+			}
+				
+			if (temp==FILTER_I ) {
 				
 				type=FILTER_II;
 				record();
@@ -145,7 +155,7 @@ public class TextHandler {
 				stmt2.close();
 				connection.close();
 				return answer;}
-			else if (rs.getInt(1)==FILTER_II) {
+			else if (temp==FILTER_II) {
 				if (text=="Yes") {
 					type=BOOK_I;
 					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
