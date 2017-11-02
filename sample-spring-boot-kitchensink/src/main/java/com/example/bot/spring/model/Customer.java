@@ -188,18 +188,15 @@ public class Customer{
 		}	
 		
 		//remove the historyID from all tourID
-		//for(String i: historyID) {
-		//	recommendationID.remove(i);
-		//}
-		//for(String i: historyID) {
-		//	prefer_recommendationID.remove(i);
-		//}
-		
-		
-		if(!historyID.isEmpty()) {
-			output = "history is not empty.";
+		for(String i: historyID) {
+			recommendationID.remove(i);
 		}
-		else if(recommendationID.isEmpty()) {
+		for(String i: historyID) {
+			prefer_recommendationID.remove(i);
+		}
+		
+		
+		if(recommendationID.isEmpty()) {
 			output = "Sorry, I have no more recommendation to you. Thanks for your support very much.";
 		}
 		else if(!prefer_recommendationID.isEmpty()) {
