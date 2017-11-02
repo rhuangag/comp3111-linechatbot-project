@@ -266,7 +266,7 @@ public class TextHandler {
    private String newCancel(Customer customer){
 	   try {
      
-	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
+	   /*if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
     		Connection connection = KitchenSinkController.getConnection();
@@ -280,7 +280,8 @@ public class TextHandler {
     		if (rs.next())
     			break;}
     		String key=rs.getString(1);
-
+		*/
+		String key="2D001";
     		return customer.cancelBooking(key);
     		}
     	else 

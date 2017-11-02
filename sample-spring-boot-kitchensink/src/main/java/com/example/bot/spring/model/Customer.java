@@ -184,7 +184,7 @@ public class Customer{
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		String searching=null;
-
+		String userID="wwual";
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
 		("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%')");
