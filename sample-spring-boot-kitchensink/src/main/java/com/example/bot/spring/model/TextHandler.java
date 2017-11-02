@@ -287,8 +287,9 @@ public class TextHandler {
     		return customer.cancelBooking(key);
     		}
     	else 
-    		return newHitory(customer);
-	   }catch (Exception e){
+    		{return newHitory(customer);}
+	  }
+	   catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());}
     }
    
