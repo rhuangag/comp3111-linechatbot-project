@@ -385,7 +385,8 @@ public class TextHandler {
     }
     
     private String newFiltering(Customer customer) {
-    		return filterSearch("hotSpring");
+    		Filter filter=new Filter();
+    		return filter.filterSearch("hotSpring");
 
     }
     
