@@ -19,22 +19,24 @@ public class Customer{
 		Vector<String> history;
 		
 		public CustomerHistory() {
-			
+			history=new Vector<String>();
 		}
 		
 		
 		//TODO
 		//Find the customer history in the database and put each row as a string in the vector "history"
 		public void findHistory(String userID) {
+			if (!history.isEmpty())
+				history.clear();
 			try {
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
-						("SELECT TourID, TourName, Date, Duration, Price, Status from CustomerRecord where UserID "
+						("SELECT TourID, TourName, DepartureDate, Duration, Price, Status from CustomerRecord where UserID "
 								+ "like concat('%', ?, '%')");
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
-					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDate: "+rs.getString("Date")+ 
+					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDepartureDate: "+rs.getString("DepartureDate")+ 
 							"\tDuration: "+rs.getString("Duration")+"\tPrice: "+rs.getString("Price")+"\tStatus: "+rs.getString("Status")+"\n";
 					history.add(result);
 				}
@@ -51,7 +53,7 @@ public class Customer{
 		//Read the vector and return all the content in the text output format
 		public String getHistory() {
 			if(history.isEmpty())
-			    return null;
+			    return "There is no record.";
 			else {
 				String result=null;
 				Iterator<String> iterator=history.iterator();
@@ -70,9 +72,13 @@ public class Customer{
 	}
 	
 	//Methods
+	public String getID() {
+		return userID;
+	}
 	
 	//Return the customer history from instance history
 	public String getHistory() {
+		history.findHistory(userID);
 		return history.getHistory();
 	}
 	
@@ -286,51 +292,47 @@ public class Customer{
 	
 	public String cancelBooking(String keyword) {
 		String result =null;
-	try {
+		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String searching=null;
-		
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE concat('%', ?, '%'); \n"
-						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE concat('%', ?, '%')");
+		("SELECT * FROM CustomerTable where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
 		//not sure whether can run with this + and + type, need test
-		
-		stmtForCustomerTable.setString(1, keyword);
+		stmtForCustomerTable.setString(1, userID);
+		stmtForCustomerTable.setString(2, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
+		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
+		("Update CustomerTable SET Status='cancelled by customer' where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
+		stmtForUpdateCustomerTable.setString(1, userID);
+		stmtForUpdateCustomerTable.setString(2, keyword);
+		stmtForUpdateCustomerTable.executeUpdate();
 		
-		
-		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
-		if (!rsForCustomerTable.next()) {
-			result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel.";
-			rsForCustomerTable.close();
-			stmtForCustomerTable.close();
-			connection.close();
-			return result;
+		if (rsForCustomerTable.next()) {
+			//update status to cancelled in customer record
+			PreparedStatement stmtForCustomerRecord = connection.prepareStatement
+			("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE concat('%', ?, '%') and TourID LIKE concat('%', ?, '%')");
+			stmtForCustomerRecord.setString(1, userID);
+			stmtForCustomerRecord.setString(2, keyword);
+			stmtForCustomerRecord.executeUpdate();
+			stmtForCustomerRecord.close();
+			result="Your booking has been cancelled. Hope to serve for you next time!";
 		}
-		
 		else{
-			
+		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
+		result="Sorry but you provided invalid or incorrect tourID. \n"
+				+"Please tell me that you want to cancel and provide tour ID in the same sentence again.\n\n"
+				+ "If you are not sure for your tourID, you may ask me to search for your booking histroy";
+		}
+		stmtForUpdateCustomerTable.close();
 		rsForCustomerTable.close();
 		stmtForCustomerTable.close();
-		
-		//update status to cancelled in customer record
-		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-				("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE concat('%', ?, '%')");
-		stmtForCustomerRecord.setString(1, keyword);
-		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
-		rsForCustomerRecord.close();
-		stmtForCustomerRecord.close();
-		
-		result="Your booking has been cancelled. Hope to serve for you next time!";
-		
 		connection.close();
-		}
-	} catch (Exception e){
-		log.info("Exception while reading database: {}", e.toString());
-	}
-	
+		} catch (Exception e){
+		log.info("Exception while reading database: {}", e.toString());}
+
 		return result;
-	}
+		}
+
+		
 	
 }
