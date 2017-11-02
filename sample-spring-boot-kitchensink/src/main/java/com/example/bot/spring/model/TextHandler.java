@@ -281,8 +281,7 @@ public class TextHandler {
 
 	    	return "you want to canel";
 	    	//return customer.cancelBooking();
-	    	//now try to resolve first
-	    		}
+	    	}
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
