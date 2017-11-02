@@ -57,26 +57,29 @@ public class Booking {
 	public String askForDate(String tourID) {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String createdb = "CREATE table " +this.customerBelonging.getID() + " (customerID varchar(10), "
+		String createdb = "CREATE table ? (customerID varchar(50), "
 				+ " tourID varchar(10), dateDeparture varchar(20), CustomerName varchar(20), ID varchar(20), "
 				+ " phone varchar(12), Adults Int, Children Int, Toodlers Int, SpecialRequest varchar(100)"
 				+ ", age varchar(3), fee float)";
-		String insertdb = "Insert Into " + this.customerBelonging.getID() + " VALUES (" 
-				+ this.customerBelonging.getID() + ", " + tourID + ", ' ', ' ', ' ', ' ', 0, 0, 0, "
-						+ "' ', ' ', 0)";
+		String insertdb = "Insert Into ? VALUES ( ?,?, null, null, null, null, 0, 0, 0,"
+						+ " null, null, 0)";
 		
 		String asking = "When are you planning to go for the trip? (The dates available are: \n" + "(";
 		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%',?,'%')";
 		PreparedStatement stmt1 = connection.prepareStatement(createdb);
 		PreparedStatement stmt2 = connection.prepareStatement(insertdb);
 		PreparedStatement stmt3 = connection.prepareStatement(queryDate);
+		stmt1.setString(1, this.customerBelonging.getID());
+		stmt2.setString(1, this.customerBelonging.getID());
+		stmt2.setString(2, this.customerBelonging.getID());
+		stmt2.setString(3, tourID);
 		stmt3.setString(1, tourID);
 
 		stmt1.executeUpdate();
 		stmt2.executeUpdate();
 		ResultSet rs = stmt3.executeQuery();
 		while (rs.next()){
-			asking = asking + rs.getString(0) + "\n";
+			asking = asking + rs.getString(1) + "\n";
 		}
 		asking = asking + ".)";
 		stmt1.close();
