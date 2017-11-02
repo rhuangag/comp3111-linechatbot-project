@@ -27,10 +27,19 @@ public class Filter {
 		int orderNumber=1;
 		String result=null;
 		try {
-		if(rs!=null) {
+		if(rs.next()) {
 				result="Yes.We have those tours that may match your requirements:\n";
-			while(rs.next()) {
 				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?)");
+				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
+				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
+				updateTemporaryFilterTable.executeUpdate();
+				
+				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
+				orderNumber++;
+				updateTemporaryFilterTable.close();
+				
+			while(rs.next()) {
+				updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?)");
 				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
 				updateTemporaryFilterTable.executeUpdate();
@@ -111,7 +120,7 @@ public class Filter {
 		//case 5:filter for higher price
 		else if (keyword.contains("<")) {
 			String[] parts = keyword.split("<");
-			int lowerLimitation=Integer.parseInt(parts[0]);
+			int lowerLimitation=Integer.parseInt(parts[1]);
 			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
 					("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int)");
 			filterStmtForHigherPrice.setInt(1,lowerLimitation);
