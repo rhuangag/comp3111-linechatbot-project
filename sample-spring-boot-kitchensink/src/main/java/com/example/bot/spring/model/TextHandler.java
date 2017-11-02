@@ -282,7 +282,7 @@ public class TextHandler {
 
 
     		return "you want to canel";
-    		//return customer.cancelBooking(key);
+    		//return customer.cancelBooking();
     		}
     	else 
     		return newHitory(customer);
