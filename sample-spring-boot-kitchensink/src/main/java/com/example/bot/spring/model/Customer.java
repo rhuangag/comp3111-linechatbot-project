@@ -196,20 +196,20 @@ public class Customer{
 		stmtForUpdateCustomerTable.setString(1, userID);
 		stmtForUpdateCustomerTable.setString(2, keyword);
 		stmtForUpdateCustomerTable.executeUpdate();
-		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
-		if (!rsForCustomerTable.next()) {
-		result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel. If you are not sure for your tourID, you may ask me to search for your histroy";
+		
+		if (rsForCustomerTable.next()) {
+			//update status to cancelled in customer record
+			PreparedStatement stmtForCustomerRecord = connection.prepareStatement
+			("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE concat('%', ?, '%') and TourID LIKE concat('%', ?, '%')");
+			stmtForCustomerRecord.setString(1, userID);
+			stmtForCustomerRecord.setString(2, keyword);
+			stmtForCustomerRecord.executeUpdate();
+			stmtForCustomerRecord.close();
+			result="Your booking has been cancelled. Hope to serve for you next time!";
 		}
 		else{
-		rsForCustomerTable.beforeFirst();
-		//update status to cancelled in customer record
-		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-		("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE concat('%', ?, '%') and TourID LIKE concat('%', ?, '%')");
-		stmtForCustomerRecord.setString(1, userID);
-		stmtForCustomerRecord.setString(2, keyword);
-		stmtForCustomerRecord.executeUpdate();
-		stmtForCustomerRecord.close();
-		result="Your booking has been cancelled. Hope to serve for you next time!";
+		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
+		result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel. If you are not sure for your tourID, you may ask me to search for your histroy";
 		}
 		stmtForUpdateCustomerTable.close();
 		rsForCustomerTable.close();
