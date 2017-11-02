@@ -183,7 +183,6 @@ public class Customer{
 		String result =null;
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String userID="yezy";
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
 		("SELECT * FROM CustomerTable where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
@@ -210,7 +209,7 @@ public class Customer{
 		else{
 		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
 		result="Sorry but you provided invalid or incorrect tourID. \n"
-				+"Please tell us that you want to cancel and provide tour ID in the same sentence again.\n"
+				+"Please tell me that you want to cancel and provide tour ID in the same sentence again.\n\n"
 				+ "If you are not sure for your tourID, you may ask me to search for your booking histroy";
 		}
 		stmtForUpdateCustomerTable.close();

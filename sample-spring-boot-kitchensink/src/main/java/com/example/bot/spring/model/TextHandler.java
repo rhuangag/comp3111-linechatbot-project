@@ -55,8 +55,7 @@ public class TextHandler {
     //Analyse the text input and initialize the data member "keyword" with the type and keywords
     public String messageHandler(Customer customer) {
     	String reply=null;
-    	reply=newCancel(customer);
-    //newFAQ(customer);
+    	reply=newFAQ(customer);
     	//checkBooking(customer);
     /*	checkFiltering();
     	
@@ -269,7 +268,7 @@ public class TextHandler {
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
-    		/*Connection connection = KitchenSinkController.getConnection();
+    		Connection connection = KitchenSinkController.getConnection();
     		
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
     		String[] parts = text.toLowerCase().split(" ");
@@ -280,8 +279,8 @@ public class TextHandler {
     		if (rs.next())
     			break;}
     		String key=rs.getString(1);
-		*/
-		String key="2D001";
+		
+    		
     		return customer.cancelBooking(key);
     		}
     	else 
