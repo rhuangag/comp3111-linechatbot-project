@@ -408,7 +408,7 @@ public class TextHandler {
     
     private String newFiltering(Customer customer) {
     		Filter filter=new Filter();
-    		return filter.filterSearch("hotSpring");
+    		return filter.filterSearch("book");
 
     }
     
