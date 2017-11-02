@@ -97,6 +97,16 @@ public class Filter {
 		}
 		
 		//case 5:filter for higher price
+		else if (keyword.contains('<')) {
+			String[] parts = keyword.split("<");
+			double lowerLimitation=Double.parseDouble(parts[0]);
+			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
+					("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int)");
+			 ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
+			 result=prepareResultAndUpdateTempTable(rsForPrice);
+			 filterStmtForHigherPrice.close();
+			 rsForHigherPrice.close();
+		}
 		//case 6:filter for cheaper price
 		//case 6:filter for longer duration
 		//case 7:filter for shorter duration
