@@ -437,8 +437,8 @@ public class TextHandler {
     	if (count!=parts.length) {
     		if (customer.getRecommendation()==null) {
     			connection.close();
-    			//return unknown();
-    			return "empty string";
+    			return unknown();
+    			
     		}
     		else {
     			type=RECOMMENDATION;
@@ -485,8 +485,8 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord ( type,question)"
-			        + " values ( ?,?)";
+			String query1 = " insert into questionRecord values ( ?,?)"
+			        
 			
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
@@ -495,8 +495,7 @@ public class TextHandler {
 			stmt.setString(2, text);
 			stmt.executeQuery();
 			if (type<8)
-			{String query2 = " insert into usefulquestionRecord ( usefulquestion,type)"
-			        + " values ( ?,?)";
+			{String query2 = " insert into usefulquestionRecord  values ( ?,?)";
 			
 			PreparedStatement stmt2 = connection.prepareStatement(query2);
 			stmt2.setString(1, text);
