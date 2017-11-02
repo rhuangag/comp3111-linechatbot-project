@@ -217,9 +217,7 @@ public class Customer{
 		stmtForCustomerTable.close();
 		connection.close();
 		} catch (Exception e){
-		log.info("Exception while reading database: {}", e.toString());
-		return e.toString();
-		}
+		log.info("Exception while reading database: {}", e.toString());}
 
 		return result;
 		}

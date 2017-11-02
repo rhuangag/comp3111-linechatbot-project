@@ -279,14 +279,14 @@ public class TextHandler {
     		if (rs.next())
     			break;}
     		String key=rs.getString(1);
-		
     		
     		return customer.cancelBooking(key);
     		}
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	   return null;
     }
    
