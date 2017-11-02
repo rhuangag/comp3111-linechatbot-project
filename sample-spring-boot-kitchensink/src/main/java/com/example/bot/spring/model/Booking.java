@@ -86,7 +86,7 @@ public class Booking {
 		return asking;
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+ "asking1";}
+			return (e.toString()+ "asking1");}
 	}
 	
 	//TODO
@@ -104,7 +104,7 @@ public class Booking {
     	    return asking;
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+"asking2";}
+			return (e.toString()+"asking2");}
     }
     public String askage(String name) {
     	try {
