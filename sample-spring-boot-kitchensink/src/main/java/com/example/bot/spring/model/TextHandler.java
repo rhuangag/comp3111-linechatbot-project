@@ -269,7 +269,7 @@ public class TextHandler {
     		type=CANCEL;
     		record();
     		Connection connection = KitchenSinkController.getConnection();
-    		String key="noRecord"
+    		String key="noRecord";
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
     		String[] parts = text.toLowerCase().split(" ");
     		ResultSet rs=null;
@@ -289,8 +289,7 @@ public class TextHandler {
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());
-			return e.toString();}
+			log.info("Exception while reading database: {}", e.toString());}
     }
    
     private String newHitory(Customer customer) {
