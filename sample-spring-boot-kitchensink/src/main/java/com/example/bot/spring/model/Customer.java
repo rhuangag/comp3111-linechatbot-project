@@ -207,8 +207,7 @@ public class Customer{
 		("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE concat('%', ?, '%') and TourID LIKE concat('%', ?, '%')");
 		stmtForCustomerRecord.setString(1, userID);
 		stmtForCustomerRecord.setString(2, keyword);
-		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
-		rsForCustomerRecord.close();
+		stmtForCustomerRecord.executeUpdate()();
 		stmtForCustomerRecord.close();
 		result="Your booking has been cancelled. Hope to serve for you next time!";
 		}
