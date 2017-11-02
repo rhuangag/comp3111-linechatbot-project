@@ -8,9 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Filter {
-	public Filter(){}
+	private String userID;
 	
-    //no data member for this class
+	public Filter(String ID){
+		userID=ID;
+	}
+	
 	
 	//Methods
 	//helper function to detect if the input keyword is totally numeric
@@ -29,9 +32,10 @@ public class Filter {
 		try {
 		if(rs.next()) {
 				result="Yes.We have those tours that may match your requirements:\n";
-				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?)");
+				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
 				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
+				updateTemporaryFilterTable.setString(3,userID);
 				updateTemporaryFilterTable.executeUpdate();
 				
 				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
@@ -39,9 +43,10 @@ public class Filter {
 				updateTemporaryFilterTable.close();
 				
 			while(rs.next()) {
-				updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?)");
+				updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
 				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
+				updateTemporaryFilterTable.setString(3,userID);
 				updateTemporaryFilterTable.executeUpdate();
 				
 				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
@@ -220,11 +225,16 @@ public class Filter {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement filterFromTemTable = connection.prepareStatement
-				("SELECT TourID from TemporarayFilterTalbe where OrderNumber like concat('%', ?, '%')");
+				("SELECT TourID from TemporarayFilterTalbe where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
 		filterFromTemTable.setString(1, keyword);
+		filterFromTemTable.setString(2, userID);
+		
 		ResultSet rsForOrder = filterFromTemTable.executeQuery();
-		while(rsForOrder.next()) {
+		if(rsForOrder.next()) {
 			TourID=rsForOrder.getString("TourID");
+		}
+		else {
+			return "Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)";
 		}
 		//SELECT detials of the trip
 		//HERE NEED to update since need to show confirmed trip and those still accept application
@@ -239,7 +249,8 @@ public class Filter {
 		}
 		
 		//clear Temporary Filter Table after used
-		PreparedStatement clearTempTable =connection.prepareStatement("Delete from TemporaryFilterTable;");
+		PreparedStatement clearTempTable =connection.prepareStatement("Delete from TemporaryFilterTable where userId like concat ('%', ?, '%')");
+		clearTempTable.setString(1, userID);
 		clearTempTable.executeUpdate();
 		clearTempTable.close();
 		rsForOrder.close();

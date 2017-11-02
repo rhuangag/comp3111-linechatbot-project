@@ -146,7 +146,7 @@ public class TextHandler {
 				//customer?
 					
 				//keyword is depending on the current type
-				Filter filter =new Filter();
+				Filter filter =new Filter(customer.getID());
 
 				//the text here is expected to be a number, we can add some code to check it later
 				String answer=filter.viewDetails(text);
@@ -456,7 +456,9 @@ public class TextHandler {
     }
     
     private String newFiltering(Customer customer) {
-    		Filter filter=new Filter();
+    		String ID=customer.getID();
+    		
+    		Filter filter=new Filter(ID);
     	
     		return filter.filterSearch(text);
     }
