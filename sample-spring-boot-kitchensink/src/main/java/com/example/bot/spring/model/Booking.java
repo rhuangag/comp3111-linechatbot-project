@@ -65,15 +65,15 @@ public class Booking {
 				+ this.customerBelonging.getID() + ", " + tourID + ", ' ', ' ', ' ', ' ', 0, 0, 0, "
 						+ "' ', ' ', 0)";
 		
-		String asking = "When are you planning to go for the trip? (The dates available are: \n";
-		String queryDate = "Select Distinct departuredate from bookingtable where (tourid == " + tourID +
-				" )";
+		String asking = "When are you planning to go for the trip? (The dates available are: \n" + "(";
+		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%',?,'%')";
 		PreparedStatement stmt1 = connection.prepareStatement(createdb);
 		PreparedStatement stmt2 = connection.prepareStatement(insertdb);
 		PreparedStatement stmt3 = connection.prepareStatement(queryDate);
+		stmt3.setString(1, tourID);
 
-		stmt1.executeQuery();
-		stmt2.executeQuery();
+		stmt1.executeUpdate();
+		stmt2.executeUpdate();
 		ResultSet rs = stmt3.executeQuery();
 		while (rs.next()){
 			asking = asking + rs.getString(0) + "\n";
