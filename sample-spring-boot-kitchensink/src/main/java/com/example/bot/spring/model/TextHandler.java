@@ -12,24 +12,26 @@ public class TextHandler {
 	String text;
 	String keyword;
 	int type;
-	public static int Question_ID=0;
+	
 	//define different types for question
     public static final int FAQ=1;
     public static final int UNKNOWN=2;
     public static final int CANCEL=3;
     public static final int FILTER_I=4;
-    public static final int FILTER_II=5;
-    public static final int BOOK_I=6;
-    public static final int BOOK_II=7;
-    public static final int BOOK_III=8;
-    public static final int BOOK_IV=9;
-    public static final int BOOK_V=10;
-    public static final int BOOK_VI=11;
-    public static final int BOOK_VII=12;
-    public static final int BOOK_VIII=13;
-    public static final int BOOK_IX=14;
-    public static final int HISTORY=15;
-    public static final int RECOMMENDATION=16;
+    public static final int RECOMMENDATION=5;
+    public static final int HISTORY=6;
+    public static final int FILTER_II=7;
+    public static final int BOOK_I=8;
+    public static final int BOOK_II=9;
+    public static final int BOOK_III=10;
+    public static final int BOOK_IV=11;
+    public static final int BOOK_V=12;
+    public static final int BOOK_VI=13;
+    public static final int BOOK_VII=14;
+    public static final int BOOK_VIII=15;
+    public static final int BOOK_IX=16;
+    
+    
     
     
     //Constructor
@@ -74,7 +76,7 @@ public class TextHandler {
     	//check whether the customer is booking
     	try {
     		Connection connection = KitchenSinkController.getConnection();	
-    		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM�@questionRecord as T2�@)";
+    		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM锟紷questionRecord as T2锟紷)";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		ResultSet rs =stmt.executeQuery();
     		if (rs.next()) {
@@ -153,7 +155,7 @@ public class TextHandler {
         Connection connection = KitchenSinkController.getConnection();	 		
         String reply=null;
     	//directly seach the text in db to get the type  	
-		PreparedStatement stmt1 = connection.prepareStatement("SELECT type, reply FROM FAQRecord WHERE question=?");
+		PreparedStatement stmt1 = connection.prepareStatement("SELECT type,reply FROM FAQRecord WHERE question=?");
 		stmt1.setString(1, text);
 		ResultSet rs =stmt1.executeQuery();
 		if(rs.next()) {
@@ -264,24 +266,24 @@ public class TextHandler {
 	   try {
      
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
-	    		type=CANCEL;
-	    		record();
-	    		/*Connection connection = KitchenSinkController.getConnection();
-	    		
-	    		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined=?");
-	    		String[] parts = text.toLowerCase().split(" ");
-	    		ResultSet rs=null;
-	    		for (int i=0;i<parts.length;i++) {
-	    		stmt.setString(1, parts[i]);
-	    		rs =stmt.executeQuery();
-	    		if (rs.next())
-	    			break;}
-	    		String key=rs.getString(1);*/
+    		type=CANCEL;
+    		record();
+    		/*Connection connection = KitchenSinkController.getConnection();
+    		
+    		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined=?");
+    		String[] parts = text.toLowerCase().split(" ");
+    		ResultSet rs=null;
+    		for (int i=0;i<parts.length;i++) {
+    		stmt.setString(1, parts[i]);
+    		rs =stmt.executeQuery();
+    		if (rs.next())
+    			break;}
+    		String key=rs.getString(1);*/
 
 
-	    		return "you want to canel";
-	    		//return customer.cancelBooking();
-	    		}
+    		return "you want to canel";
+    		//return customer.cancelBooking();
+    		}
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
@@ -352,15 +354,15 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord (Question_ID, question,type)"
-			        + " values (?, ?,?)";
+			String query1 = " insert into questionRecord ( question,type)"
+			        + " values ( ?,?)";
 			
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
-			stmt.setInt(1, Question_ID++);
-			stmt.setString(2, text);
-			stmt.setInt(3, type);
 			
+			stmt.setString(1, text);
+			stmt.setInt(2, type);
+			if (type<7)
 			stmt.executeQuery();
 			
 			stmt.close();
