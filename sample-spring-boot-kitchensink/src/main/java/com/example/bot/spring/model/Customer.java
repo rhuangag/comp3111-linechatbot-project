@@ -128,12 +128,14 @@ public class Customer{
 			//criteria confirmation
 			String prefer_departure;
 			String prefer_duration;
-			if(departureTime_number[0]>=departureTime_number[1])
-				prefer_departure = "weekday";
-			else
+			if(departureTime_number[0]<departureTime_number[1])
 				prefer_departure = "weekend";
+			else
+				prefer_departure = "weekday";
 			
-			if(duration_number[0]>=duration_number[1])
+			if(duration_number[0]==0 && duration_number[1]==0 || duration_number[0] == duration_number[1])
+				prefer_duration = null;
+			else if(duration_number[0]>duration_number[1])
 				prefer_duration = "2";
 			else
 				prefer_duration = "3";
@@ -141,7 +143,7 @@ public class Customer{
 			
 			//Suppose the Tour List table in excel is named as TourList in db
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourDescription, Duration, Date from TourList where UserID like concat('%',?,'%')");
+					("SELECT TourID, TourDescription, Duration, Date from TourList");
 			stmt.setString(1, userID);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
@@ -189,6 +191,9 @@ public class Customer{
 		for(String i: historyID) {
 			recommendationID.remove(i);
 		}
+		for(String i: historyID) {
+			prefer_recommendationID.remove(i);
+		}
 		
 		if(recommendationID.size() == 0) {
 			output = "Sorry, I have no more recommendation to you. Thanks for your support very much.";
@@ -220,7 +225,7 @@ public class Customer{
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where UserID = "+ this.userID +" AND TourID = "+ tourID +";");
+					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where TourID = "+ tourID +";");
 			
 			ResultSet rs = stmt.executeQuery();
 			
