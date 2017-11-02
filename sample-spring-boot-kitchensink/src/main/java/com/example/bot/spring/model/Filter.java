@@ -35,7 +35,7 @@ public class Filter {
 				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
 				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
-				updateTemporaryFilterTable.setString(2,userID);
+				updateTemporaryFilterTable.setString(3,userID);
 				updateTemporaryFilterTable.executeUpdate();
 				
 				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
@@ -46,7 +46,7 @@ public class Filter {
 				updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
 				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
-				updateTemporaryFilterTable.setString(2,userID);
+				updateTemporaryFilterTable.setString(3,userID);
 				updateTemporaryFilterTable.executeUpdate();
 				
 				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
