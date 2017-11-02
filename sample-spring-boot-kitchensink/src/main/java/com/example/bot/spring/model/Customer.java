@@ -208,11 +208,10 @@ public class Customer{
 			output= Statement(outputID);			
 		}
 		else {
-			
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(recommendationID.size());
 			String outputID = recommendationID.get(position);
-			output = outputID;
+			output = Statement(recommendationID.get(0));
 			//select from db
 			//output= Statement(outputID);
 		}
