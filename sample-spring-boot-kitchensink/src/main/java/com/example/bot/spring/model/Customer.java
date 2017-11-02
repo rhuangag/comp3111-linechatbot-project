@@ -204,7 +204,7 @@ public class Customer{
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(prefer_recommendationID.size());
 			String outputID = prefer_recommendationID.get(position);
-			select from db
+			//select from db
 			output= Statement(outputID);			
 		}
 		else {
@@ -212,7 +212,7 @@ public class Customer{
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(recommendationID.size());
 			String outputID = recommendationID.get(position);
-			select from db
+			//select from db
 			output= Statement(outputID);
 		}
 		
