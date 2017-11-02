@@ -264,7 +264,6 @@ public class TextHandler {
     
    private String newCancel(Customer customer){
 	   try {
-     
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
@@ -291,6 +290,7 @@ public class TextHandler {
 	  }
 	   catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());}
+	   return null;
     }
    
     private String newHitory(Customer customer) {
