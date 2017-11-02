@@ -201,7 +201,6 @@ public class Filter {
 					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%')");
 			filterStmt.setString(1, keyword);
 			filterStmt.setString(2, keyword);
-			filterStmt.setString(3, keyword);
 			ResultSet rsForFilter = filterStmt.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForFilter,connection);
 			rsForFilter.close();
