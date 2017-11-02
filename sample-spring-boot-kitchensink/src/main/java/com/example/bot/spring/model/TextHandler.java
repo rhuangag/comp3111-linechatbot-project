@@ -286,7 +286,8 @@ public class TextHandler {
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	   return null;
     }
    
