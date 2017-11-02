@@ -230,7 +230,7 @@ public class KitchenSinkController {
         
        	String reply = null;
        	
-       	Customer customer=new Customer(content.getId());
+       	Customer customer=new Customer(event.getSource().getUserId());
        	TextHandler handler=new TextHandler(text);
        	reply=handler.messageHandler(customer);
        	this.replyText(replyToken, reply);
