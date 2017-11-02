@@ -80,7 +80,7 @@ public class TextHandler {
     	//check whether the customer is booking
     	try {
     		Connection connection = KitchenSinkController.getConnection();	
-    		String query = "SELECT type FROM questionRecord)";
+    		String query = "SELECT type FROM questionRecord";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		ResultSet rs =stmt.executeQuery();
     		if (rs.next()) {
