@@ -183,7 +183,6 @@ public class Customer{
 		String result =null;
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String searching=null;
 		String userID="wwual";
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
@@ -198,7 +197,6 @@ public class Customer{
 		if (!rsForCustomerTable.next()) {
 		result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel. If you are not sure for your tourID, you may ask me to search for your histroy";
 		}
-
 		else{
 		rsForCustomerTable.beforeFirst();
 		//update status to cancelled in customer record
@@ -215,7 +213,8 @@ public class Customer{
 		stmtForCustomerTable.close();
 		connection.close();
 		} catch (Exception e){
-		log.info("Exception while reading database: {}", e.toString());
+		log.info("Exception while reading database: {}", e.toString();
+		return e.toString(););
 		}
 
 		return result;
