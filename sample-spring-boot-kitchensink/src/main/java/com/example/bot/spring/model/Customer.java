@@ -85,6 +85,7 @@ public class Customer{
 	//TODO
 	//Analyse the customer history and return the recommendation
 	public String getRecommendation() {
+		userID = "ymuaa";
 		
 		Vector<String> historyID = new Vector<String>();
 		Vector<String> recommendationID = new Vector<String>();//store all tourID first and remove historyID then
@@ -201,18 +202,18 @@ public class Customer{
 		}
 		else if(!prefer_recommendationID.isEmpty()) {
 			
-			Random rand = new Random(System.currentTimeMillis());
-			int position = rand.nextInt(prefer_recommendationID.size());
-			String outputID = prefer_recommendationID.get(position);
+			//Random rand = new Random(System.currentTimeMillis());
+			//int position = rand.nextInt(prefer_recommendationID.size());
+			//String outputID = prefer_recommendationID.get(position);
+			output = Statement(prefer_recommendationID.get(0))+"_prefer";
 			//select from db
-			output= Statement(outputID);			
+			//output= Statement(outputID);			
 		}
 		else {
-			
-			Random rand = new Random(System.currentTimeMillis());
-			int position = rand.nextInt(recommendationID.size());
-			String outputID = recommendationID.get(position);
-			output = outputID;
+			//Random rand = new Random(System.currentTimeMillis());
+			//int position = rand.nextInt(recommendationID.size());
+			//String outputID = recommendationID.get(position);
+			output = Statement(recommendationID.get(0))+"_original";
 			//select from db
 			//output= Statement(outputID);
 		}
@@ -226,7 +227,7 @@ public class Customer{
 	
 	
 	//helper funtion -- input->ID, output->string of all details
-	public String Statement(String tourID) {
+	private String Statement(String tourID) {
 		String result = null;
 		
 		try {
@@ -259,7 +260,7 @@ public class Customer{
 	}
 	
 	//helper function: convert the date to weekday/weekend
-	public String calcDate(String date) {
+	private String calcDate(String date) {
 		int index = 0;
 		int month = 0;
 		int day = 0;
