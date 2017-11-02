@@ -216,6 +216,9 @@ public class Customer{
 			//output= Statement(outputID);
 		}
 		
+		if(output==null)
+			output="it is null";
+		
 		
 		return output;
 	}
