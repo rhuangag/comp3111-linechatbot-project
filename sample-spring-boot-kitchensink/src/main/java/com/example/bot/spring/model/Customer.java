@@ -197,12 +197,12 @@ public class Customer{
 		
 		
 		if(!historyID.isEmpty()) {
-			output = "history is not empty." + historyID[0];
+			output = "history is not empty.";
 		}
 		else if(recommendationID.isEmpty()) {
 			output = "Sorry, I have no more recommendation to you. Thanks for your support very much.";
 		}
-		else if(!prefer_recommendationID.isEnpty()) {
+		else if(!prefer_recommendationID.isEmpty()) {
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(prefer_recommendationID.size());
 			String outputID = prefer_recommendationID.get(position);
