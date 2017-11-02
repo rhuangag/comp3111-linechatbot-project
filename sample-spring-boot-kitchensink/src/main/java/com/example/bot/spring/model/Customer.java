@@ -183,40 +183,41 @@ public class Customer{
 		String result =null;
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String searching=null;
-
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-		("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%')");
+		("SELECT * FROM CustomerTable where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
 		//not sure whether can run with this + and + type, need test
-		stmtForCustomerTable.setString(1, keyword);
+		stmtForCustomerTable.setString(1, userID);
+		stmtForCustomerTable.setString(2, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
 		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
-		("Update CustomerTable SET Status='cancelled where UserID LIKE " +userID + " and TourJoined LIKE cancat('%', ?, '%')");
+		("Update CustomerTable SET Status='cancelled by customer' where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
+		stmtForUpdateCustomerTable.setString(1, userID);
+		stmtForUpdateCustomerTable.setString(2, keyword);
 		stmtForUpdateCustomerTable.executeUpdate();
-		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
-		if (!rsForCustomerTable.next()) {
-		result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel. If you are not sure for your tourID, you may ask me to search for your histroy";
+		
+		if (rsForCustomerTable.next()) {
+			//update status to cancelled in customer record
+			PreparedStatement stmtForCustomerRecord = connection.prepareStatement
+			("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE concat('%', ?, '%') and TourID LIKE concat('%', ?, '%')");
+			stmtForCustomerRecord.setString(1, userID);
+			stmtForCustomerRecord.setString(2, keyword);
+			stmtForCustomerRecord.executeUpdate();
+			stmtForCustomerRecord.close();
+			result="Your booking has been cancelled. Hope to serve for you next time!";
 		}
-
 		else{
-		rsForCustomerTable.beforeFirst();
-		//update status to cancelled in customer record
-		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-		("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE cancat('%', ?, '%')");
-		stmtForCustomerRecord.setString(1, keyword);
-		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
-		rsForCustomerRecord.close();
-		stmtForCustomerRecord.close();
-		result="Your booking has been cancelled. Hope to serve for you next time!";
+		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
+		result="Sorry but you provided invalid or incorrect tourID. \n"
+				+"Please tell me that you want to cancel and provide tour ID in the same sentence again.\n\n"
+				+ "If you are not sure for your tourID, you may ask me to search for your booking histroy";
 		}
 		stmtForUpdateCustomerTable.close();
 		rsForCustomerTable.close();
 		stmtForCustomerTable.close();
 		connection.close();
 		} catch (Exception e){
-		log.info("Exception while reading database: {}", e.toString());
-		}
+		log.info("Exception while reading database: {}", e.toString());}
 
 		return result;
 		}

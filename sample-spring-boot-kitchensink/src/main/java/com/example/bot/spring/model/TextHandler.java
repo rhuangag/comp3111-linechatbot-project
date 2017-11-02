@@ -14,22 +14,26 @@ public class TextHandler {
 	int type;
 	
 	//define different types for question
-    public static final int FAQ=1;
-    public static final int UNKNOWN=2;
-    public static final int CANCEL=3;
-    public static final int FILTER_I=4;
-    public static final int RECOMMENDATION=5;
-    public static final int HISTORY=6;
-    public static final int FILTER_II=7;
-    public static final int BOOK_I=8;
-    public static final int BOOK_II=9;
-    public static final int BOOK_III=10;
-    public static final int BOOK_IV=11;
-    public static final int BOOK_V=12;
-    public static final int BOOK_VI=13;
-    public static final int BOOK_VII=14;
-    public static final int BOOK_VIII=15;
-    public static final int BOOK_IX=16;
+	public  final int FAQ=1;
+    public  final int MEANINGLESS=2;
+    public  final int UNKNOWN=3;
+    public  final int CANCEL=4;
+    public  final int FILTER_I=5;
+    public  final int RECOMMENDATION=6;
+    public  final int HISTORY=7;
+    public  final int FILTER_II=8;
+    public  final int BOOK_I=9;
+    public  final int BOOK_II=10;
+    public  final int BOOK_III=11;
+    public  final int BOOK_IV=12;
+    public  final int BOOK_V=13;
+    public  final int BOOK_VI=14;
+    public  final int BOOK_VII=15;
+    public  final int BOOK_VIII=16;
+    public  final int BOOK_IX=17;
+    public  final int BOOK_X=18;
+    public  final int BOOK_XI=19;
+    public  final int BOOK_XII=20;
     
     
     
@@ -55,14 +59,14 @@ public class TextHandler {
     //Analyse the text input and initialize the data member "keyword" with the type and keywords
     public String messageHandler(Customer customer) {
     	String reply=null;
-    	reply=newFAQ(customer);
-    	//checkBooking(customer);
+    	
+    	reply=checkBooking(customer);
     /*	checkFiltering();
     	
     	newCancel();
     	newHistory();
     	newRecommendation();
-    	
+    	newFAQ(customer);
     	
     	newFiltering();
     	newBooking();
@@ -76,13 +80,13 @@ public class TextHandler {
     	//check whether the customer is booking
     	try {
     		Connection connection = KitchenSinkController.getConnection();	
-    		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM锟紷questionRecord as T2锟紷)";
+    		String query = "SELECT type FROM questionRecord";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		ResultSet rs =stmt.executeQuery();
     		if (rs.next()) {
     			if (rs.getInt(1)>=BOOK_I && rs.getInt(1)<BOOK_IX) {
     			
-    				this.type=rs.getInt(1)+1;
+    				type=rs.getInt(1)+1;
     				record();
     				
     				rs.close();
@@ -91,64 +95,100 @@ public class TextHandler {
     				//customer?
     				Booking booking=new Booking(customer);
     				//keyword is depending on the current type
-    				return "123";//Booking.askForInformation(type-1 ,text);
+    				return booking.askForInformation(type ,text);
     				}
     			else
-    				checkFiltering(customer);
+    				return checkFiltering(customer);
     				}
     		else
-    			checkFiltering(customer);
+    			return checkFiltering(customer);
     		//TODO stop booking
     	}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-    	return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
     }
    
    private String checkFiltering(Customer customer) {
-   	try {
-		Connection connection = KitchenSinkController.getConnection();	
-		String query = "SELECT T1.type FROM questionRecord as T1  WHERE T1.No>= ALL (SELECT T2.type FROM questionRecord as T2)";
-		PreparedStatement stmt = connection.prepareStatement(query);
-		ResultSet rs =stmt.executeQuery();
-		if (!rs.next()) 
-			return newFAQ(customer);
-		if (rs.getInt(1)==FILTER_I ) {
-			
-			this.type=rs.getInt(1)+1;
-			record();
-				
-			rs.close();
-			stmt.close();
-			connection.close();
-			//customer?
-				
-			//keyword is depending on the current type
-			Filter filter =new Filter();
-			return filter.viewDetails(text);}
-		else if (rs.getInt(1)==FILTER_II) {
-			if (text=="Yes") {
-				this.type=BOOK_I;
-				record();
-				
+	   	try {
+			Connection connection = KitchenSinkController.getConnection();	
+			String query = "SELECT type FROM questionRecord)";
+			PreparedStatement stmt = connection.prepareStatement(query);
+			ResultSet rs =stmt.executeQuery();
+			//if the table is empty, the question must be the first question
+			if (!rs.next()) {
 				rs.close();
 				stmt.close();
 				connection.close();
-				Booking booking=new Booking(customer);
+				return newFAQ(customer);}
+			rs.last();
+			if (rs.getInt(1)==FILTER_I ) {
+				
+				type=FILTER_II;
+				record();
+					
+				
+				//customer?
+					
 				//keyword is depending on the current type
-				return "123";//Booking.askForInformation(type ,text);
-				}
-			else 
-				return null;
-		}
-				
-				
-		else
-			newFAQ(customer);
-		//TODO stop booking
-	}catch (Exception e){
-		log.info("Exception while reading database: {}", e.toString());}   
-   	 return null;
-   }
+				Filter filter =new Filter();
+
+				//the text here is expected to be a number, we can add some code to check it later
+				String answer=filter.viewDetails(text);
+				String[] parts = answer.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+				String tourID=parts[0];
+				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
+				stmt2.setString(1,customer.getID());
+				stmt2.setString(2,tourID);
+				stmt2.executeQuery();
+				rs.close();
+				stmt.close();
+				stmt2.close();
+				connection.close();
+				return answer;}
+			else if (rs.getInt(1)==FILTER_II) {
+				if (text=="Yes") {
+					type=BOOK_I;
+					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
+					stmt3.setString(1,customer.getID());
+					rs =stmt3.executeQuery();
+					String tourID=rs.getString(1);
+					PreparedStatement stmt4 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					stmt4.setString(1,customer.getID());
+					stmt4.executeQuery();
+					record();
+					
+					rs.close();
+					stmt.close();
+					stmt3.close();
+					stmt3.close();
+					connection.close();
+					Booking booking=new Booking(customer);
+					//keyword is depending on the current type
+					return booking.askForInformation(type ,tourID);
+					}
+				else    {
+					PreparedStatement stmt5 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					stmt5.setString(1,customer.getID());
+					stmt5.executeQuery();
+					rs.close();
+					stmt.close();
+					stmt5.close();
+					
+					connection.close();
+					type=MEANINGLESS;
+					record();
+					return "Do you have any other questions?";}
+
+			}
+					
+					
+			else
+				return newFAQ(customer);
+			//TODO stop booking
+		}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());   
+	   	 	return e.toString();}
+	   }
    
    private String newFAQ(Customer customer){
         try {	
@@ -264,47 +304,56 @@ public class TextHandler {
     
    private String newCancel(Customer customer){
 	   try {
-     
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
     		Connection connection = KitchenSinkController.getConnection();
-    		
+    		String key="noRecord";
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
     		String[] parts = text.toLowerCase().split(" ");
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
     		stmt.setString(1, parts[i]);
     		rs =stmt.executeQuery();
-    		if (rs.next())
-    			break;}
-    		String key=rs.getString(1);
-
+    		if (rs.next()) {
+    			key=rs.getString(1);
+    			break;
+    			}
+    		}
+    		
+    		stmt.close();
+    		rs.close();
     		return customer.cancelBooking(key);
     		}
     	else 
-    		return newHitory(customer);
-	   }catch (Exception e){
+    		{return newHitory(customer);}
+	  }
+	   catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());}
 	   return null;
     }
    
     private String newHitory(Customer customer) {
-    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
-    		if (customer.getHistory()==null) {
-    			return unknown();
-    		}
+    	try {
+    		if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
+    			if (customer.getHistory()==null) {
+    				return unknown();
+    			}
     			
-    		else {
-    			type=HISTORY;
-    			record();
+    			else {
+    				type=HISTORY;
+    				record();
     			
-    			return customer.getHistory();
+    				return customer.getHistory();
     			}
     		
-    		}
-    	else 
-    		return newRecommendation(customer);
+    			}
+    		else 
+    			return newRecommendation(customer);
+    	}catch(Exception e) {
+    		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
+    	}
     }
     
     private String newRecommendation(Customer customer) {
@@ -315,25 +364,30 @@ public class TextHandler {
     		else {
     			type=RECOMMENDATION;
     			record();
-    			return "you want to get recommendation";
-    			//return customer.getRecommendation();
+    			
+    			return customer.getRecommendation();
     			}}
     	else 
-    		return "you want to do filter-searching";
-    		//return newFiltering(customer);
+    		
+    		return newFiltering(customer);
     }
     
     private String newFiltering(Customer customer) {
     	//from back keyword
-    	    return "";
+    		
+    	return newBooking( customer);
+    	    //return filter.filterSearch("hot spring");
+    		
     }
     
     private String newBooking(Customer customer) {
        	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("book")) {
-       		type=FILTER_I;
+       		/*type=FILTER_I;
        		record();
        		Filter filter=new Filter();
-       		return filter.filterSearch("book");
+       		return filter.filterSearch("book");*/
+       		Booking booking=new Booking(customer);
+       		return booking.askForInformation(9,"2D001");
        		}
        	else {
        		return unknown();}
@@ -360,8 +414,16 @@ public class TextHandler {
 			
 			stmt.setString(1, text);
 			stmt.setInt(2, type);
-			if (type<7)
 			stmt.executeQuery();
+			if (type<8)
+			{String query2 = " insert into usefulquestionRecord ( usefulquestion,type)"
+			        + " values ( ?,?)";
+			
+			PreparedStatement stmt2 = connection.prepareStatement(query2);
+			stmt2.setString(1, text);
+			stmt2.setInt(2, type);
+			stmt2.executeQuery();
+			stmt2.close();}
 			
 			stmt.close();
 			connection.close();
