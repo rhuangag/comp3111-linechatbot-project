@@ -331,7 +331,7 @@ public class TextHandler {
 	   String result=null;
 	   try {
 		   Connection connection = KitchenSinkController.getConnection();
-		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE keyword like concat('%',concat(',',?,','),'%')");
+		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 4 and keyword like concat('%',concat(',',?,','),'%')");
 		   ResultSet key=null;
 		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
 		   int count=0;
@@ -384,7 +384,7 @@ public class TextHandler {
     private String newHitory(Customer customer) {
     	try {
     	   Connection connection = KitchenSinkController.getConnection();
- 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE keyword like concat('%',concat(',',?,','),'%')");
+ 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 7 and keyword like concat('%',concat(',',?,','),'%')");
  		   ResultSet key=null;
  		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
  		   int count=0;
@@ -421,7 +421,7 @@ public class TextHandler {
     private String newRecommendation(Customer customer) {
     	try {
     	   Connection connection = KitchenSinkController.getConnection();
-  		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE keyword like concat('%',concat(',',?,','),'%')");
+  		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=6 and keyword like concat('%',concat(',',?,','),'%')");
   		   ResultSet key=null;
   		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
   		   int count=0;
@@ -454,9 +454,7 @@ public class TextHandler {
     }
     
     private String newFiltering(Customer customer) {
-    		Filter filter=new Filter();
-    		return filter.filterSearch("book");
-
+    		return newBooking(customer);
     }
     
     private String newBooking(Customer customer) {
