@@ -483,14 +483,14 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord ( question,type)"
+			String query1 = " insert into questionRecord ( type,question)"
 			        + " values ( ?,?)";
 			
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
 			
-			stmt.setString(1, text);
-			stmt.setInt(2, type);
+			stmt.setString(1, type);
+			stmt.setInt(2, text);
 			stmt.executeQuery();
 			if (type<8)
 			{String query2 = " insert into usefulquestionRecord ( usefulquestion,type)"
@@ -506,7 +506,8 @@ public class TextHandler {
 			connection.close();
 			
     	}catch (Exception e) {
-			log.info("Exception while reading file: {}", e.toString());
+			log.info("Exception while reading file: {}", e.toString()
+			return e.toString());
 		}
     
     }
