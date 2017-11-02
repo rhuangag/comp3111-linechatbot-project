@@ -330,19 +330,33 @@ public class TextHandler {
    private String newCancel(Customer customer){
 	   String result=null;
 	   try {
-	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
+		   Connection connection = KitchenSinkController.getConnection();
+		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE keyword like concat('%',concat(',',?,','),'%')");
+		   ResultSet key=null;
+		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+		   int count=0;
+		   for (int i=0;i<parts.length;i++) {
+		   trigger.setString(1, parts[i]);
+		   key=trigger.executeQuery();
+		   if (key.next())
+			   break;
+		   count++;
+		   }
+		   key.close();
+		   trigger.close();
+		   if (count!=parts.length) {
     		type=CANCEL;
     		record();
-    		Connection connection = KitchenSinkController.getConnection();
-    		String key="noRecord";
+    		
+    		String reply="noRecord";
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
-    		String[] parts = text.toLowerCase().split(" ");
+    		
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
     		stmt.setString(1, parts[i]);
     		rs =stmt.executeQuery();
     		if (rs.next()) {
-    			key=rs.getString(1);
+    			reply=rs.getString(1);
     			break;
     			}
     		}
@@ -353,10 +367,10 @@ public class TextHandler {
     		connection.close();
     		
 
-    		result=customer.cancelBooking(key);
+    		result=customer.cancelBooking(reply);
 
     		}
-    	else 
+    	 else 
     		{
 
     		return newHitory(customer);}
@@ -369,7 +383,21 @@ public class TextHandler {
    
     private String newHitory(Customer customer) {
     	try {
-    		if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
+    	   Connection connection = KitchenSinkController.getConnection();
+ 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE keyword like concat('%',concat(',',?,','),'%')");
+ 		   ResultSet key=null;
+ 		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+ 		   int count=0;
+ 		   for (int i=0;i<parts.length;i++) {
+ 		   trigger.setString(1, parts[i]);
+ 		   key=trigger.executeQuery();
+ 		   if (key.next())
+ 			   break;
+ 		   count++;
+ 		   }
+ 		   key.close();
+ 		   trigger.close();
+    		if (count!=parts.length) {
     			if (customer.getHistory()==null) {
     				return unknown();
     			}
@@ -391,7 +419,22 @@ public class TextHandler {
     }
     
     private String newRecommendation(Customer customer) {
-    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("recommendation")) {
+    	try {
+    	   Connection connection = KitchenSinkController.getConnection();
+  		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE keyword like concat('%',concat(',',?,','),'%')");
+  		   ResultSet key=null;
+  		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+  		   int count=0;
+  		   for (int i=0;i<parts.length;i++) {
+  		   trigger.setString(1, parts[i]);
+  		   key=trigger.executeQuery();
+  		   if (key.next())
+  			   break;
+  		   count++;
+  		   }
+  		   key.close();
+  		   trigger.close();
+    	if (count!=parts.length) {
     		if (customer.getRecommendation()==null) {
     			return unknown();
     		}
@@ -404,6 +447,10 @@ public class TextHandler {
     	else 
     		
     		return newFiltering(customer);
+    	}catch(Exception e) {
+    		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
+    	}
     }
     
     private String newFiltering(Customer customer) {
