@@ -128,12 +128,14 @@ public class Customer{
 			//criteria confirmation
 			String prefer_departure;
 			String prefer_duration;
-			if(departureTime_number[0]>=departureTime_number[1])
-				prefer_departure = "weekday";
-			else
+			if(departureTime_number[0]<departureTime_number[1])
 				prefer_departure = "weekend";
+			else
+				prefer_departure = "weekday";
 			
-			if(duration_number[0]>=duration_number[1])
+			if(duration_number[0]==0 && duration_number[1]==0 || duration_number[0] == duration_number[1])
+				prefer_duration = null;
+			else if(duration_number[0]>duration_number[1])
 				prefer_duration = "2";
 			else
 				prefer_duration = "3";
@@ -188,6 +190,9 @@ public class Customer{
 		//remove the historyID from all tourID
 		for(String i: historyID) {
 			recommendationID.remove(i);
+		}
+		for(String i: historyID) {
+			prefer_recommendationID.remove(i);
 		}
 		
 		if(recommendationID.size() == 0) {
