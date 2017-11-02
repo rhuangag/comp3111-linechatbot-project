@@ -107,7 +107,7 @@ public class Filter {
 			 int upperLimitation=Integer.parseInt(keyword)+100;
 			 int lowerLimitation=Integer.parseInt(keyword)-100;
 		 PreparedStatement filterStmtForPrice = connection.prepareStatement
-						("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int) and ? >=cast(weekdayprice as int)");
+						("SELECT TourID, TourName from TourList where ?<=cast(weekdayprice as int) and ? >=cast(weekdayprice as int)");
 		 filterStmtForPrice.setInt(1,lowerLimitation);
 		 filterStmtForPrice.setInt(2,upperLimitation);
 		 ResultSet rsForPrice=filterStmtForPrice.executeQuery();
@@ -122,7 +122,7 @@ public class Filter {
 			String[] parts = keyword.split("<");
 			int lowerLimitation=Integer.parseInt(parts[1]);
 			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int)");
+					("SELECT TourID, TourName from TourList where ?<=cast(weekdayprice as int)");
 			filterStmtForHigherPrice.setInt(1,lowerLimitation);
 			 ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
 			 result=prepareResultAndUpdateTempTable(rsForHigherPrice,connection);
