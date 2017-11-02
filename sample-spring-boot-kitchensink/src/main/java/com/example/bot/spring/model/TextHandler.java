@@ -266,10 +266,10 @@ public class TextHandler {
    private String newCancel(Customer customer){
 	   try {
      
-	   /*if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
+	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
-    		Connection connection = KitchenSinkController.getConnection();
+    		/*Connection connection = KitchenSinkController.getConnection();
     		
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
     		String[] parts = text.toLowerCase().split(" ");
@@ -287,8 +287,7 @@ public class TextHandler {
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());
-			return e.toString();}
+			log.info("Exception while reading database: {}", e.toString());}
 	   return null;
     }
    
