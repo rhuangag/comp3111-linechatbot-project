@@ -264,21 +264,24 @@ public class TextHandler {
 	   try {
      
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
-    		type=CANCEL;
-    		record();
-    		Connection connection = KitchenSinkController.getConnection();
-    		
-    		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%', ?, '%')");
-    		String[] parts = text.toLowerCase().split(" ");
-    		ResultSet rs=null;
-    		for (int i=0;i<parts.length;i++) {
-    		stmt.setString(1, parts[i]);
-    		rs =stmt.executeQuery();
-    		if (rs.next())
-    			break;}
-    		String key=rs.getString(1);
-    		return customer.cancelBooking(key);
-    		}
+	    		type=CANCEL;
+	    		record();
+	    		/*Connection connection = KitchenSinkController.getConnection();
+	    		
+	    		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined=?");
+	    		String[] parts = text.toLowerCase().split(" ");
+	    		ResultSet rs=null;
+	    		for (int i=0;i<parts.length;i++) {
+	    		stmt.setString(1, parts[i]);
+	    		rs =stmt.executeQuery();
+	    		if (rs.next())
+	    			break;}
+	    		String key=rs.getString(1);*/
+
+
+	    		return "you want to canel";
+	    		//return customer.cancelBooking();
+	    		}
     	else 
     		return newHitory(customer);
 	   }catch (Exception e){
