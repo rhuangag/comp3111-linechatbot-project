@@ -80,8 +80,9 @@ public class TextHandler {
     	//check whether the customer is booking
     	try {
     		Connection connection = KitchenSinkController.getConnection();	
-    		String query = "SELECT type FROM questionRecord";
+    		String query = "SELECT type FROM questionRecord where customerid=?";
     		PreparedStatement stmt = connection.prepareStatement(query);
+    		stmt.setString(1,customer.getID());
     		ResultSet rs =stmt.executeQuery();
 
     		if (rs.next()) {
@@ -123,8 +124,9 @@ public class TextHandler {
    private String checkFiltering(Customer customer) {
 	   	try {
 			Connection connection = KitchenSinkController.getConnection();	
-			String query = "SELECT type FROM questionRecord";
+			String query = "SELECT type FROM questionRecord where customerid=?";
 			PreparedStatement stmt = connection.prepareStatement(query);
+			stmt.setString(1, customer.getID());
 			ResultSet rs =stmt.executeQuery();
 			//if the table is empty, the question must be the first question
 			if (!rs.next()) {
@@ -455,27 +457,188 @@ public class TextHandler {
     	}
     }
     
+    
+    
     private String newFiltering(Customer customer) {
-    		String ID=customer.getID();
-    		
+    		try {
+    			String[] parts = text.replaceAll("[^a-zA-Z0-9-\\s]" , "").toLowerCase().split(" ");
+    	    	String reply=null;
+    	    	int countloop=0;
+    	    	Connection connection = KitchenSinkController.getConnection();
+    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE keyword1 =?");
+    	    	ResultSet onekey=null;
+    	    	for (int i=0; i<parts.length;i++) {
+    	    		findonekey.setString(1, parts[i]);
+    	    		onekey =findonekey.executeQuery();
+    	    		if (onekey.next()) {
+    	    			reply=onekey.getString(1);
+    	    			break;}
+    	    		countloop++;
+    	    		
+    	    	}
+    			onekey.close();
+    			findonekey.close();
+    			
+    	    	//the only one keyword not found
+    	    	
+    	    	if (countloop!=parts.length) {
+    	    		type=FILTER_I;
+    	    		record();
+    	    		connection.close();
+    	    		return filter.filterSearch(reply);	
+    	    		
+    				
+    	    	}
+    		//now check two keywords
+    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    	    	ResultSet twokey1=null;
+    	    	countloop=0;
+    	    	for (int i=0; i<parts.length;i++) {
+    	    		findtwokey1.setString(1, parts[i]);
+    	    		twokey1 =findtwokey1.executeQuery();
+    	    		if (twokey1.next()) {
+    	    			reply=twokey1.getString(1);
+    	    			break;}
+    	    		countloop++;
+    	    		
+    	    	}
+    			twokey1.close();
+    			findtwokey1.close();
+    			if (countloop!=parts.length) {
+	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+	    			ResultSet twokey2=null;
+	    			countloop=0;
+    	    		for (int i=0; i<parts.length;i++) {
+    	    			findtwokey2.setString(1, parts[i]);
+    	    			twokey2 =findtwokey2.executeQuery();
+    	    			if (twokey2.next()) {
+    	    				reply=twokey2.getString(1);
+    	    				break;}
+    	    			countloop++;
+    	    			
+    	    	}
+    	    		twokey2.close();
+	    			findtwokey2.close();
+    			if (countloop!=parts.length){
+    				type=FILTER_I;
+    				record();
+    				connection.close();
+    				return filter.filterSearch(reply);
+    			}
+    		}
+    		//now find three keyword
+    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    	    	ResultSet threekey1=null;
+    	    	countloop=0;
+    	    	for (int i=0; i<parts.length;i++) {
+    	    		findthreekey1.setString(1, parts[i]);
+    	    		threekey1 =findthreekey1.executeQuery();
+    	    		if (threekey1.next()) {
+    	    			reply=threekey1.getString(1);
+    	    			break;}
+    	    		countloop++;
+    	    		
+    	    	}
+    			threekey1.close();
+    			findthreekey1.close();
+    			if (countloop!=parts.length) {
+    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+        	    	ResultSet threekey2=null;
+        	    	countloop=0;
+        	    	for (int i=0; i<parts.length;i++) {
+        	    		findthreekey2.setString(1, parts[i]);
+        	    		threekey2 =findthreekey2.executeQuery();
+        	    		if (threekey2.next()) {
+        	    			reply=threekey2.getString(1);
+        	    			break;}
+        	    		countloop++;
+        	    		
+        	    	}
+        			threekey2.close();
+        			findthreekey2.close();
+        			if (countloop!=parts.length) {
+        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword3 LIKE concat('%',concat(',',?,','),'%')");
+            	    	ResultSet threekey3=null;
+            	    	countloop=0;
+            	    	for (int i=0; i<parts.length;i++) {
+            	    		findthreekey3.setString(1, parts[i]);
+            	    		threekey3 =findthreekey3.executeQuery();
+            	    		if (threekey3.next()) {
+            	    			reply=threekey3.getString(1);
+            	    			break;}
+            	    		countloop++;
+            	    		
+            	    	}
+            			threekey3.close();
+            			findthreekey3.close();
+            			if (countloop!=parts.length) {
+            				type=FILTER_I;
+            				record();
+            				connection.close();
+            				return filter.filterSearch(reply); 
+            			}
+        			}
+    			}
+    		String[] number=text.replaceAll("[^0-9]", ",").split(",");
+    		String temp="";
+    		temp+=number[0];
+    		for (int i=1;i<number.length;i++) {
+    			if (!number[i].isEmpty()) {
+    				temp+=",";
+    				temp+=number[i];
+    				
+    			}
+    		}
+    		if (temp.isEmpty()) {
+    			connection.close();
+    			return newBooking(customer);}
+    		type=FILTER_I;
+			record();
+			connection.close();
+			return filter.filterSearch(temp);
+    	   /* String ID=customer.getID();
     		Filter filter=new Filter(ID);
-    	
-    		return filter.filterSearch(text);
+    		return filter.filterSearch(text);*/
+    		}catch(Exception e) {
+    			log.info("Exception while reading database: {}", e.toString());
+    	   		return e.toString();
+    		}
     }
     
+    
+    
     private String newBooking(Customer customer) {
-       	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("book")) {
-       		/*type=FILTER_I;
+       	try {
+       	   Connection connection = KitchenSinkController.getConnection();
+   		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=6 and keyword like concat('%',concat(',',?,','),'%')");
+   		   ResultSet key=null;
+   		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+   		   int count=0;
+   		   for (int i=0;i<parts.length;i++) {
+   		   trigger.setString(1, parts[i]);
+   		   key=trigger.executeQuery();
+   		   if (key.next())
+   			   break;
+   		   count++;
+   		   }
+   		   key.close();
+   		   trigger.close();
+    	if (count!=parts.length) {
+       		type=FILTER_I;
        		record();
-       		Filter filter=new Filter();
-       		return filter.filterSearch("book");*/
-       		Booking booking=new Booking(customer);
-       		return booking.askForInformation(9,"2D001");
+       		connection.close();
+       		Filter filter=new Filter(customer.getID());
+       		return filter.filterSearch("book");
        		}
        	else {
+       		connection.close();
        		return unknown();}
        	
+       	}catch(Exception e) {
+       		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
        	}
+    }
     
     private String unknown() {
     	type = UNKNOWN;
@@ -489,21 +652,23 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord values ( ?,?)";
+			String query1 = " insert into questionRecord values ( ?,?,?)";
 			        
 			
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
 			
-			stmt.setInt(1, type); 
-			stmt.setString(2, text);
+			stmt.setString(1, text); 
+			stmt.setInt(2, type);
+			stmt.setString(3, customer.getID());
 			stmt.executeQuery();
 			if (type<8)
-			{String query2 = " insert into usefulquestionRecord  values ( ?,?)";
+			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
 			PreparedStatement stmt2 = connection.prepareStatement(query2);
 			stmt2.setString(1, text);
 			stmt2.setInt(2, type);
+			stmt2.setString(3, customer.getID());
 			stmt2.executeQuery();
 			stmt2.close();}
 			
