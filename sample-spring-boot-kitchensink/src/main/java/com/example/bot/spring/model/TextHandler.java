@@ -146,7 +146,7 @@ public class TextHandler {
 				//customer?
 					
 				//keyword is depending on the current type
-				Filter filter =new Filter();
+				Filter filter =new Filter(customer.getID());
 
 				//the text here is expected to be a number, we can add some code to check it later
 				String answer=filter.viewDetails(text);
@@ -301,8 +301,8 @@ public class TextHandler {
     		if (countloop==parts.length) {
     			rs.close();
 				stmt3.close();
-				connection.close();
-    			rs.close();
+				
+    			
 				stmt4.close();
 				connection.close();
 			
@@ -314,8 +314,6 @@ public class TextHandler {
         		reply=rs.getString(4);
         		rs.close();
 				stmt3.close();
-				connection.close();
-        		rs.close();
 				stmt4.close();
 				connection.close();
         		return reply;}  
@@ -330,19 +328,33 @@ public class TextHandler {
    private String newCancel(Customer customer){
 	   String result=null;
 	   try {
-	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
+		   Connection connection = KitchenSinkController.getConnection();
+		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 4 and keyword like concat('%',concat(',',?,','),'%')");
+		   ResultSet key=null;
+		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+		   int count=0;
+		   for (int i=0;i<parts.length;i++) {
+		   trigger.setString(1, parts[i]);
+		   key=trigger.executeQuery();
+		   if (key.next())
+			   break;
+		   count++;
+		   }
+		   key.close();
+		   trigger.close();
+		   if (count!=parts.length) {
     		type=CANCEL;
     		record();
-    		Connection connection = KitchenSinkController.getConnection();
-    		String key="noRecord";
+    		
+    		String reply="noRecord";
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
-    		String[] parts = text.toLowerCase().split(" ");
+    		
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
     		stmt.setString(1, parts[i]);
     		rs =stmt.executeQuery();
     		if (rs.next()) {
-    			key=rs.getString(1);
+    			reply=rs.getString(1);
     			break;
     			}
     		}
@@ -353,12 +365,12 @@ public class TextHandler {
     		connection.close();
     		
 
-    		result=customer.cancelBooking(key);
+    		result=customer.cancelBooking(reply);
 
     		}
-    	else 
+    	 else 
     		{
-
+    		 connection.close();
     		return newHitory(customer);}
 	  }
 	   catch (Exception e){
@@ -369,21 +381,37 @@ public class TextHandler {
    
     private String newHitory(Customer customer) {
     	try {
-    		if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
+    	   Connection connection = KitchenSinkController.getConnection();
+ 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 7 and keyword like concat('%',concat(',',?,','),'%')");
+ 		   ResultSet key=null;
+ 		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+ 		   int count=0;
+ 		   for (int i=0;i<parts.length;i++) {
+ 		   trigger.setString(1, parts[i]);
+ 		   key=trigger.executeQuery();
+ 		   if (key.next())
+ 			   break;
+ 		   count++;
+ 		   }
+ 		   key.close();
+ 		   trigger.close();
+    		if (count!=parts.length) {
     			if (customer.getHistory()==null) {
+    				connection.close();
     				return unknown();
     			}
     			
     			else {
     				type=HISTORY;
     				record();
-    			
+    				connection.close();
     				return customer.getHistory();
     			}
     		
     			}
-    		else 
-    			return newRecommendation(customer);
+    		else {
+    			connection.close();
+    			return newRecommendation(customer);}
     	}catch(Exception e) {
     		log.info("Exception while reading database: {}", e.toString());
 	   		return e.toString();
@@ -391,27 +419,48 @@ public class TextHandler {
     }
     
     private String newRecommendation(Customer customer) {
-    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("recommendation")) {
+    	try {
+    	   Connection connection = KitchenSinkController.getConnection();
+  		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=6 and keyword like concat('%',concat(',',?,','),'%')");
+  		   ResultSet key=null;
+  		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+  		   int count=0;
+  		   for (int i=0;i<parts.length;i++) {
+  		   trigger.setString(1, parts[i]);
+  		   key=trigger.executeQuery();
+  		   if (key.next())
+  			   break;
+  		   count++;
+  		   }
+  		   key.close();
+  		   trigger.close();
+    	if (count!=parts.length) {
     		if (customer.getRecommendation()==null) {
+    			connection.close();
     			return unknown();
+    			
     		}
     		else {
     			type=RECOMMENDATION;
     			record();
-    			
+    			connection.close();
     			return customer.getRecommendation();
     			}}
-    	else 
-    		
-    		return newFiltering(customer);
+    	else {
+    		connection.close();
+    		return newFiltering(customer);}
+    	}catch(Exception e) {
+    		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
+    	}
     }
     
     private String newFiltering(Customer customer) {
-    	//from back keyword
+    		String ID=customer.getID();
     		
-    	return newBooking( customer);
-    	    //return filter.filterSearch("hot spring");
-    		
+    		Filter filter=new Filter(ID);
+    	
+    		return filter.filterSearch(text);
     }
     
     private String newBooking(Customer customer) {
@@ -440,18 +489,17 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord ( question,type)"
-			        + " values ( ?,?)";
+			String query1 = " insert into questionRecord values ( ?,?)";
+			        
 			
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
 			
-			stmt.setString(1, text);
-			stmt.setInt(2, type);
+			stmt.setInt(1, type); 
+			stmt.setString(2, text);
 			stmt.executeQuery();
 			if (type<8)
-			{String query2 = " insert into usefulquestionRecord ( usefulquestion,type)"
-			        + " values ( ?,?)";
+			{String query2 = " insert into usefulquestionRecord  values ( ?,?)";
 			
 			PreparedStatement stmt2 = connection.prepareStatement(query2);
 			stmt2.setString(1, text);
@@ -464,6 +512,7 @@ public class TextHandler {
 			
     	}catch (Exception e) {
 			log.info("Exception while reading file: {}", e.toString());
+			
 		}
     
     }
