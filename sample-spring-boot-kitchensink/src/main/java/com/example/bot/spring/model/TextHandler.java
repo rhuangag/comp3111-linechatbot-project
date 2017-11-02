@@ -301,8 +301,8 @@ public class TextHandler {
     		if (countloop==parts.length) {
     			rs.close();
 				stmt3.close();
-				connection.close();
-    			rs.close();
+				
+    			
 				stmt4.close();
 				connection.close();
 			
@@ -314,8 +314,6 @@ public class TextHandler {
         		reply=rs.getString(4);
         		rs.close();
 				stmt3.close();
-				connection.close();
-        		rs.close();
 				stmt4.close();
 				connection.close();
         		return reply;}  
@@ -372,7 +370,7 @@ public class TextHandler {
     		}
     	 else 
     		{
-
+    		 connection.close();
     		return newHitory(customer);}
 	  }
 	   catch (Exception e){
@@ -399,19 +397,21 @@ public class TextHandler {
  		   trigger.close();
     		if (count!=parts.length) {
     			if (customer.getHistory()==null) {
+    				connection.close();
     				return unknown();
     			}
     			
     			else {
     				type=HISTORY;
     				record();
-    			
+    				connection.close();
     				return customer.getHistory();
     			}
     		
     			}
-    		else 
-    			return newRecommendation(customer);
+    		else {
+    			connection.close();
+    			return newRecommendation(customer);}
     	}catch(Exception e) {
     		log.info("Exception while reading database: {}", e.toString());
 	   		return e.toString();
@@ -436,17 +436,18 @@ public class TextHandler {
   		   trigger.close();
     	if (count!=parts.length) {
     		if (customer.getRecommendation()==null) {
+    			connection.close();
     			return unknown();
     		}
     		else {
     			type=RECOMMENDATION;
     			record();
-    			
+    			connection.close();
     			return customer.getRecommendation();
     			}}
-    	else 
-    		
-    		return newFiltering(customer);
+    	else {
+    		connection.close();
+    		return newFiltering(customer);}
     	}catch(Exception e) {
     		log.info("Exception while reading database: {}", e.toString());
 	   		return e.toString();
@@ -489,8 +490,8 @@ public class TextHandler {
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
 			
-			stmt.setString(1, type);
-			stmt.setInt(2, text);
+			stmt.setInt(1, type);
+			stmt.setString(2, text);
 			stmt.executeQuery();
 			if (type<8)
 			{String query2 = " insert into usefulquestionRecord ( usefulquestion,type)"
@@ -506,8 +507,8 @@ public class TextHandler {
 			connection.close();
 			
     	}catch (Exception e) {
-			log.info("Exception while reading file: {}", e.toString()
-			return e.toString());
+			log.info("Exception while reading file: {}", e.toString());
+			
 		}
     
     }
