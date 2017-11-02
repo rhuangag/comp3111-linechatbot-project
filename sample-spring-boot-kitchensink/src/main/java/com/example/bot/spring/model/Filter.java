@@ -43,6 +43,7 @@ public class Filter {
 		}
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();
 		}
 		return result;
 	}
@@ -119,7 +120,7 @@ public class Filter {
 		//Normal cases: filter for keywords in description or tour name(lcoation).
 		else {
 			PreparedStatement filterStmt = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where TourDescription like cancat('%', ?, '%') or TourID like ('%', ?, '%') or Duration like ('%', ?, '%') ");
+					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%') or Duration like concat('%', ?, '%') ");
 			filterStmt.setString(1, keyword);
 			filterStmt.setString(2, keyword);
 			filterStmt.setString(3, keyword);
@@ -131,6 +132,7 @@ public class Filter {
 		connection.close();	
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();
 		}
 		return result;
 	}
@@ -145,7 +147,7 @@ public class Filter {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement filterFromTemTable = connection.prepareStatement
-				("SELECT TourID from TemporarayFilterTalbe where OrderNumber like cancat('%', ?, '%')");
+				("SELECT TourID from TemporarayFilterTalbe where OrderNumber like concat('%', ?, '%')");
 		filterFromTemTable.setString(1, keyword);
 		ResultSet rsForOrder = filterFromTemTable.executeQuery();
 		while(rsForOrder.next()) {
@@ -155,7 +157,7 @@ public class Filter {
 		//HERE NEED to update since need to show confirmed trip and those still accept application
 		PreparedStatement detailStmt = connection.prepareStatement
 				("SELECT TourID, TourName, TourDescrption, Date, WeekendPrice, WeekdayPrice from TourList where TourID "
-						+ "like cancat('%', ?, '%')");
+						+ "like concat('%', ?, '%')");
 		detailStmt.setString(1, TourID);
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
@@ -175,6 +177,7 @@ public class Filter {
 	
 	} catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();
 	}
 		return result;
 	}
