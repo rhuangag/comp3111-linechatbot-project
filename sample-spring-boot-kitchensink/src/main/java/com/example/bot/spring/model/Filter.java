@@ -80,10 +80,12 @@ public class Filter {
 		//case 3: filter for price range
 		else if(keyword.contains(",")){
 			String[] parts = keyword.split(",");
-			double lowerLimitation=Double.parseDouble(parts[0]);
-			double upperLimitation=Double.parseDouble(parts[1]);
+			int lowerLimitation=Integer.parseInt(parts[0]);
+			int upperLimitation=Integer.parseInt(parts[1]);
 			PreparedStatement filterStmtForPriceRange = connection.prepareStatement
-						("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int) and" + upperLimitation+">=cast(weekdayprice as int)");
+						("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int) and ?>=cast(weekdayprice as int)");
+			filterStmtForPriceRange.setInt(1,lowerLimitation);
+			filterStmtForPriceRange.setInt(2, upperLimitation);
 			ResultSet rsForPriceRange=filterStmtForPriceRange.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForPriceRange,connection);
 			connection.close();
@@ -92,9 +94,9 @@ public class Filter {
 		}
 		
 		//case 4: filter for a price, +-100 for "around" type, >100 to distinguish from duration, current version only filt for weekday price
-		else if(isNumeric(keyword)&&(Int.parseInt(keyword)>100)) {
-			 double upperLimitation=Int.parseInt(keyword)+100;
-			 double lowerLimitation=Int.parseInt(keyword)-100;
+		else if(isNumeric(keyword)&&(Integer.parseInt(keyword)>100)) {
+			 int upperLimitation=Integer.parseInt(keyword)+100;
+			 int lowerLimitation=Integer.parseInt(keyword)-100;
 		 PreparedStatement filterStmtForPrice = connection.prepareStatement
 						("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int) and ? >=cast(weekdayprice as int)");
 		 filterStmtForPrice.setInt(1,lowerLimitation);
@@ -109,10 +111,10 @@ public class Filter {
 		//case 5:filter for higher price
 		else if (keyword.contains("<")) {
 			String[] parts = keyword.split("<");
-			double lowerLimitation=Int.parseInt(parts[0]);
+			int lowerLimitation=Integer.parseInt(parts[0]);
 			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
 					("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int)");
-			filterStmtForHigherPrice.parseInt(1,lowerLimitation);
+			filterStmtForHigherPrice.setInt(1,lowerLimitation);
 			 ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
 			 result=prepareResultAndUpdateTempTable(rsForHigherPrice,connection);
 			 connection.close();
