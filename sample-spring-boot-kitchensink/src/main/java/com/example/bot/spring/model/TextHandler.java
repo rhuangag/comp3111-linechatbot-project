@@ -103,11 +103,17 @@ public class TextHandler {
     				//keyword is depending on the current type
     				return booking.askForInformation(type ,text);
     				}
-    			else
-    				return checkFiltering(customer);
+    			else {
+    				rs.close();
+					stmt.close();
+					connection.close();
+    				return checkFiltering(customer);}
     				}
-    		else
-    			return checkFiltering(customer);
+    		else {
+    			rs.close();
+				stmt.close();
+				connection.close();
+    			return checkFiltering(customer);}
     		//TODO stop booking
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
@@ -192,8 +198,11 @@ public class TextHandler {
 			}
 					
 					
-			else
-				return newFAQ(customer);
+			else {
+				rs.close();
+				stmt.close();
+				connection.close();
+				return newFAQ(customer);}
 			//TODO stop booking
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());   
@@ -333,10 +342,15 @@ public class TextHandler {
     		
     		stmt.close();
     		rs.close();
+    		connection.close();
     		return customer.cancelBooking(key);
     		}
     	else 
-    		{return newHitory(customer);}
+    		{
+    		stmt.close();
+    		rs.close();
+    		connection.close();
+    		return newHitory(customer);}
 	  }
 	   catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());}
