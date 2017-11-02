@@ -216,7 +216,7 @@ public class Customer{
 		log.info("Exception while reading database: {}", e.toString());
 		}
 
-		return result="testing";
+		return result;
 		}
 
 		
