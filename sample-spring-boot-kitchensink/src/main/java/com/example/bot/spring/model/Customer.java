@@ -186,12 +186,12 @@ public class Customer{
 		String userID="wwual";
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-		("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%')");
+		("SELECT * FROM CustomerTable where UserID= " +userID +" and TourJoined LIKE cancat('%', ?, '%')");
 		//not sure whether can run with this + and + type, need test
 		stmtForCustomerTable.setString(1, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
 		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
-		("Update CustomerTable SET Status='cancelled where UserID LIKE " +userID + " and TourJoined LIKE cancat('%', ?, '%')");
+		("Update CustomerTable SET Status='cancelled by customer' where UserID= " +userID + " and TourJoined LIKE cancat('%', ?, '%')");
 		stmtForUpdateCustomerTable.executeUpdate();
 		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
 		if (!rsForCustomerTable.next()) {
@@ -201,7 +201,7 @@ public class Customer{
 		rsForCustomerTable.beforeFirst();
 		//update status to cancelled in customer record
 		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-		("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE cancat('%', ?, '%')");
+		("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID=" +userID + " and TourID LIKE cancat('%', ?, '%')");
 		stmtForCustomerRecord.setString(1, keyword);
 		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
 		rsForCustomerRecord.close();
@@ -217,7 +217,7 @@ public class Customer{
 		return e.toString(););
 		}
 
-		return result;
+		return result="testing";
 		}
 
 		
