@@ -313,6 +313,7 @@ public class TextHandler {
     }
     
    private String newCancel(Customer customer){
+	   String result=null;
 	   try {
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
@@ -333,14 +334,15 @@ public class TextHandler {
     		
     		stmt.close();
     		rs.close();
-    		return customer.cancelBooking(key);
+    		result=customer.cancelBooking(key);
     		}
     	else 
     		{return newHitory(customer);}
 	  }
 	   catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-	   return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
+	   return result;
     }
    
     private String newHitory(Customer customer) {
