@@ -183,7 +183,7 @@ public class Customer{
 		String result =null;
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String userID="wwual";
+		String userID="yezy";
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
 		("SELECT * FROM CustomerTable where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
