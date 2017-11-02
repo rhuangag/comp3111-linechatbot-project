@@ -27,15 +27,24 @@ public class Filter {
 		int orderNumber=1;
 		String result=null;
 		try {
-		if(rs!=null) {
-			while(rs.next()) {
+		if(rs.next()) {
 				result="Yes.We have those tours that may match your requirements:\n";
 				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?)");
 				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
 				updateTemporaryFilterTable.executeUpdate();
 				
-				result=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
+				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
+				orderNumber++;
+				updateTemporaryFilterTable.close();
+				
+			while(rs.next()) {
+				updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?)");
+				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
+				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
+				updateTemporaryFilterTable.executeUpdate();
+				
+				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
 				orderNumber++;
 				updateTemporaryFilterTable.close();
 			}
@@ -80,49 +89,111 @@ public class Filter {
 		//case 3: filter for price range
 		else if(keyword.contains(",")){
 			String[] parts = keyword.split(",");
-			double lowerLimitation=Double.parseDouble(parts[0]);
-			double upperLimitation=Double.parseDouble(parts[1]);
+			int lowerLimitation=Integer.parseInt(parts[0]);
+			int upperLimitation=Integer.parseInt(parts[1]);
 			PreparedStatement filterStmtForPriceRange = connection.prepareStatement
-						("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int) and" + upperLimitation+">=cast(weekdayprice as int)");
+						("SELECT TourID, TourName from TourList where ?<cast(weekdayprice as int) and ?>cast(weekdayprice as int)");
+			filterStmtForPriceRange.setInt(1,lowerLimitation);
+			filterStmtForPriceRange.setInt(2, upperLimitation);
 			ResultSet rsForPriceRange=filterStmtForPriceRange.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForPriceRange,connection);
+			connection.close();
 			filterStmtForPriceRange.close();
 			rsForPriceRange.close();
 		}
 		
-		//case 4: filter for a price, +-100 for "around" type, >100 to distinguish from duration, current version only filt for weekday price
-		else if(isNumeric(keyword)&&(Double.parseDouble(keyword)>100)) {
-			 double upperLimitation=Double.parseDouble(keyword)+100;
-			 double lowerLimitation=Double.parseDouble(keyword)-100;
+		//case 4: filter for a price, +-100 for "around" type, >50 to distinguish from duration, current version only filt for weekday price
+		// or filter for a duration, for "around" type, <=50, need perfectly match
+		else if(isNumeric(keyword)) {
+			int number = Integer.parseInt(keyword);
+			// price
+			if(number>50 ) {
+			 int upperLimitation=number+50;
+			 int lowerLimitation=number-50;
 		 PreparedStatement filterStmtForPrice = connection.prepareStatement
-						("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int) and" + upperLimitation+">=cast(weekdayprice as int)");
+						("SELECT TourID, TourName from TourList where ?<=cast(weekdayprice as int) and ? >=cast(weekdayprice as int)");
+		 filterStmtForPrice.setInt(1,lowerLimitation);
+		 filterStmtForPrice.setInt(2,upperLimitation);
 		 ResultSet rsForPrice=filterStmtForPrice.executeQuery();
 		 result=prepareResultAndUpdateTempTable(rsForPrice,connection);
+		 connection.close();
 		 filterStmtForPrice.close();
 		 rsForPrice.close();
 		}
+			//duration
+		else {
+			PreparedStatement filterStmtForDuration = connection.prepareStatement
+				("SELECT TourID, TourName from TourList where ? =cast(Duration as int)");
+			filterStmtForDuration.setInt(1, number);
+			ResultSet rsForDuration=filterStmtForDuration.executeQuery();
+			result=prepareResultAndUpdateTempTable(rsForDuration,connection);
+			connection.close();
+			filterStmtForDuration.close();
+			rsForDuration.close();
+			
+			}
+		}
 		
-		//case 5:filter for higher price
+		//case 5:filter for higher price or longer duration
+		else if (keyword.contains(">")) {
+			String[] parts = keyword.split(">");
+			int lowerLimitation=Integer.parseInt(parts[1]);
+		//higher price
+		if(lowerLimitation>=50) {
+			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
+					("SELECT TourID, TourName from TourList where ?<cast(weekdayprice as int)");
+			filterStmtForHigherPrice.setInt(1,lowerLimitation);
+			ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
+			result=prepareResultAndUpdateTempTable(rsForHigherPrice,connection);
+			connection.close();
+			filterStmtForHigherPrice.close();
+			rsForHigherPrice.close();
+		}
+		//longer duration
+		else {
+			PreparedStatement filterStmtForLongerDuration = connection.prepareStatement
+					("SELECT TourID, TourName from TourList where ?<cast(Duration as int)");
+			filterStmtForLongerDuration.setInt(1,lowerLimitation);
+			ResultSet rsForLongerDuration=filterStmtForLongerDuration.executeQuery();
+			result=prepareResultAndUpdateTempTable(rsForLongerDuration,connection);
+			connection.close();
+			filterStmtForLongerDuration.close();
+			rsForLongerDuration.close();
+		}
+		}
+		//case 6:filter for cheaper price or shorter duration
 		else if (keyword.contains("<")) {
 			String[] parts = keyword.split("<");
-			double lowerLimitation=Double.parseDouble(parts[0]);
-			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int)");
-			 ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
-			 result=prepareResultAndUpdateTempTable(rsForHigherPrice,connection);
-			 filterStmtForHigherPrice.close();
-			 rsForHigherPrice.close();
+			int lowerLimitation=Integer.parseInt(parts[1]);
+			//cheaper price
+			if (lowerLimitation>=50) {
+			PreparedStatement filterStmtForCheaperPrice = connection.prepareStatement
+					("SELECT TourID, TourName from TourList where ?>cast(weekdayprice as int)");
+			filterStmtForCheaperPrice.setInt(1,lowerLimitation);
+			 ResultSet rsForCheaperPrice=filterStmtForCheaperPrice.executeQuery();
+			 result=prepareResultAndUpdateTempTable(rsForCheaperPrice,connection);
+			 connection.close();
+			 filterStmtForCheaperPrice.close();
+			 rsForCheaperPrice.close();
+			}
+			 //shorter duration
+			 else {
+			PreparedStatement filterStmtForShorterDuration = connection.prepareStatement
+					("SELECT TourID, TourName from TourList where ?>cast(Duration as int)");
+			filterStmtForShorterDuration.setInt(1,lowerLimitation);
+			ResultSet rsForShorterDuration=filterStmtForShorterDuration.executeQuery();
+			result=prepareResultAndUpdateTempTable(rsForShorterDuration,connection);
+			connection.close();
+			filterStmtForShorterDuration.close();
+			rsForShorterDuration.close(); 
+			}
 		}
-		//case 6:filter for cheaper price
-		//case 6:filter for longer duration
-		//case 7:filter for shorter duration
-		//case 8:filter for duration
 		//should we really consider such lots of cases?
 		
 		//Normal cases: filter for keywords in description or tour name(lcoation).
 		else {
 			PreparedStatement filterStmt = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%') or Duration like concat('%', ?, '%') ");
+					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%')");
 			filterStmt.setString(1, keyword);
 			filterStmt.setString(2, keyword);
 			filterStmt.setString(3, keyword);

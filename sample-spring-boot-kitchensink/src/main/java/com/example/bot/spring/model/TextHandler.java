@@ -456,7 +456,9 @@ public class TextHandler {
     }
     
     private String newFiltering(Customer customer) {
-    		return newBooking(customer);
+    		Filter filter=new Filter();
+    	
+    		return filter.filterSearch(text);
     }
     
     private String newBooking(Customer customer) {
