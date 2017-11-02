@@ -300,6 +300,9 @@ public class TextHandler {
     		//second keyword not found
     		if (countloop==parts.length) {
     			rs.close();
+				stmt3.close();
+				connection.close();
+    			rs.close();
 				stmt4.close();
 				connection.close();
 			
@@ -309,6 +312,9 @@ public class TextHandler {
     			type=FAQ;
         		record();
         		reply=rs.getString(4);
+        		rs.close();
+				stmt3.close();
+				connection.close();
         		rs.close();
 				stmt4.close();
 				connection.close();
@@ -322,6 +328,7 @@ public class TextHandler {
     }
     
    private String newCancel(Customer customer){
+	   String result=null;
 	   try {
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
@@ -342,19 +349,22 @@ public class TextHandler {
     		
     		stmt.close();
     		rs.close();
+
     		connection.close();
-    		return customer.cancelBooking(key);
+    		
+
+    		result=customer.cancelBooking(key);
+
     		}
     	else 
     		{
-    		stmt.close();
-    		rs.close();
-    		connection.close();
+
     		return newHitory(customer);}
 	  }
 	   catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-	   return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
+	   return result;
     }
    
     private String newHitory(Customer customer) {

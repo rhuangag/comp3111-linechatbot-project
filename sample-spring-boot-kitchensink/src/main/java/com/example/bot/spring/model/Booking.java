@@ -48,8 +48,7 @@ public class Booking {
 				return this.getFeedback(information);
 			
 			default:
-				return this.breakBooking();
-		}
+				return this.breakBooking();}
 	}
 	
 	
@@ -210,6 +209,7 @@ public class Booking {
 			PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
 			stmt1.executeQuery();
 			String asking = "Is there any more special request we can arrange for you?";
+    		connection.close();
 			return asking;
 		}
 		catch (Exception e){
@@ -275,17 +275,26 @@ public class Booking {
     		PreparedStatement getall = connection.prepareStatement("select * from " + 
 			this.customerBelonging.getID());
     		ResultSet all = getall.executeQuery();
-    		PreparedStatement insert = connection.prepareStatement("Insert Into CustomerTable "
+    		PreparedStatement insertCT = connection.prepareStatement("Insert Into CustomerTable "
     				+ "VALUES (" + all.getString(4) + ", " + all.getString(5) + ", " + all.getString(6)
     				+ ", " + all.getString(6) + ", " + all.getString(11) + ", " + all.getString(2) 
     				+ ", " + all.getInt(7) + ", " + all.getInt(8) + ", " + all.getInt(9) + ", "
     				+ all.getDouble(12) + ", 0, " + all.getString(10) + ", null, " + all.getString(1) + ")");
-    		insert.executeQuery();
-    		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
-    				+ this.customerBelonging.getID());
-    		deletethetable.executeQuery();
-    		return "Thanks for booking! Your order is being well processed, can you give any feedback on "
-    				+ "the service this time?";
+    		insertCT.executeQuery();
+    		PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
+    				+ " where tourID like " + all.getString(2));
+    		ResultSet duration = searchduration.executeQuery();
+    		
+    		PreparedStatement insertCR = connection.prepareStatement("Insert Into CustomerRecord "
+    				+ "VALUES (" + all.getString(1) + ", " + all.getString(2) + ", " + duration.getString(2)
+    				+ ", " + all.getString(3) + ", " + duration.getString(4) + ", " + all.getString(12) 
+    				+ ", 'booked' " + duration.getString(3) + ")");
+    		insertCR.executeQuery();
+    		connection.close();
+
+    		return "Thanks for booking! Your order is being well processed, can you give your marks on "
+    				+ "the service this time? (1-5: 1 for terrible and 5 for excellent) \n"
+    				+ "And you can also tell us any improvement we can make at the same time.";
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());}
@@ -296,7 +305,18 @@ public class Booking {
 	//and return an output to thank the customer
 	public String getFeedback(String feedback) {
 		try {
-			//unfinished
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement query = connection.prepareStatement("Select * from "
+    				+ this.customerBelonging.getID());
+    		ResultSet rs = query.executeQuery();
+    		PreparedStatement insert = connection.prepareStatement("Insert into feedbacktable values ( "
+    				+ this.customerBelonging.getID() + ", " + feedback + rs.getString(2) + ")");
+    		insert.executeQuery();
+    		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
+    				+ this.customerBelonging.getID());
+    		deletethetable.executeQuery();
+    		connection.close();
+    		return "Your feedback is received with thanks! Wish you a pleasant journey!";
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());}
@@ -313,6 +333,8 @@ public class Booking {
     		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
     				+ this.customerBelonging.getID());
     		deletethetable.executeQuery();
+    		connection.close();
+
     		return "Booking Cancled, thanks for coming!";
 		}
 		catch (Exception e){
