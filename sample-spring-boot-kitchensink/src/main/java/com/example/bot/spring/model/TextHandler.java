@@ -454,11 +454,9 @@ public class TextHandler {
     }
     
     private String newFiltering(Customer customer) {
-    	//from back keyword
-    		
-    	return newBooking( customer);
-    	    //return filter.filterSearch("hot spring");
-    		
+    		Filter filter=new Filter();
+    		return filter.filterSearch("book");
+
     }
     
     private String newBooking(Customer customer) {
