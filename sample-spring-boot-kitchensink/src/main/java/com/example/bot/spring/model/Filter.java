@@ -14,23 +14,19 @@ public class Filter {
 	
 	//Methods
 	//helper function to detect if the input keyword is totally numeric
-	private static boolean isNumeric(String str)
-	{
-	　　for (int i = 0; i < str.length(); i++)
-	　　{　　
-	　　　　System.out.println(str.charAt(i));
-	　　　　if (!Character.isDigit(str.charAt(i)))
-	　　　　{
-	    　　　　return false;
-	   　　　}
-	　　}
-	　　return true;
+	private boolean isNumeric(String str){
+		for (int i=0; i<str.length();i++){
+			if (!Character.isDigit(str.charAt(i))){
+					return false;
+			}
+		}
+		return true;
 	}
-	
 	////helper function to record and convert data after filtering into string
-	private string prepareResultAndUpdateTempTable(ResultSet rs) {
-		int order=1;
+	private String prepareResultAndUpdateTempTable(ResultSet rs,Connection connection) {
+		int orderNumber=1;
 		String result=null;
+		try {
 		if(rs.next()){
 			result="Yes.We have those tours that may match your requirements+\n";
 			rs.beforeFirst();
@@ -42,8 +38,15 @@ public class Filter {
 				updateTemporaryFilterTable.close();
 			}
 		}
-		else return "Sorry, we cannot find any match answer for your question :( we already record your question and will forward it to the tour company.";
+		else {
+			result="Sorry, we cannot find any match answer for your question :( we already record your question and will forward it to the tour company.";
+		}
+		}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());
+		}
+		return result;
 	}
+		
 		
 
 	//TODO
@@ -60,7 +63,7 @@ public class Filter {
 			PreparedStatement allListStmt= connection.prepareStatement
 					("SELECT TourID, TourName from TourList");
 			ResultSet rsForAllList=allListStmt.executeQuery();
-			result=prepareResultAndUpdateTempTable(rsForAllList);
+			result=prepareResultAndUpdateTempTable(rsForAllList,connection);
 			allListStmt.close();
 			rsForAllList.close();
 		}
@@ -72,14 +75,14 @@ public class Filter {
 		}
 		
 		//case 3: filter for price range
-		else if(keyword.contains(","){
+		else if(keyword.contains(",")){
 			String[] parts = keyword.split(",");
 			double lowerLimitation=Double.parseDouble(parts[0]);
 			double upperLimitation=Double.parseDouble(parts[1]);
 			PreparedStatement filterStmtForPriceRange = connection.prepareStatement
 						("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int) and" + upperLimitation+">=cast(weekdayprice as int)");
-			ResultSet rsForPriceRange=filterStmtForPrice.executeQuery();
-			result=prepareResultAndUpdateTempTable(rsForPriceRange);
+			ResultSet rsForPriceRange=filterStmtForPriceRange.executeQuery();
+			result=prepareResultAndUpdateTempTable(rsForPriceRange,connection);
 			filterStmtForPriceRange.close();
 			rsForPriceRange.close();
 		}
@@ -91,19 +94,19 @@ public class Filter {
 		 PreparedStatement filterStmtForPrice = connection.prepareStatement
 						("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int) and" + upperLimitation+">=cast(weekdayprice as int)");
 		 ResultSet rsForPrice=filterStmtForPrice.executeQuery();
-		 result=prepareResultAndUpdateTempTable(rsForPrice);
+		 result=prepareResultAndUpdateTempTable(rsForPrice,connection);
 		 filterStmtForPrice.close();
 		 rsForPrice.close();
 		}
 		
 		//case 5:filter for higher price
-		else if (keyword.contains('<')) {
+		else if (keyword.contains("<")) {
 			String[] parts = keyword.split("<");
 			double lowerLimitation=Double.parseDouble(parts[0]);
 			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
 					("SELECT TourID, TourName from TourList where"+lowerLimitation+"=<cast(weekdayprice as int)");
 			 ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
-			 result=prepareResultAndUpdateTempTable(rsForPrice);
+			 result=prepareResultAndUpdateTempTable(rsForHigherPrice,connection);
 			 filterStmtForHigherPrice.close();
 			 rsForHigherPrice.close();
 		}
@@ -120,7 +123,7 @@ public class Filter {
 			filterStmt.setString(2, keyword);
 			filterStmt.setString(3, keyword);
 			ResultSet rsForFilter = filterStmt.executeQuery();
-			result=prepareResultAndUpdateTempTable(rsForFilter);
+			result=prepareResultAndUpdateTempTable(rsForFilter,connection);
 			rsForFilter.close();
 			filterStmt.close();
 		}
@@ -156,7 +159,7 @@ public class Filter {
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
 			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "We have confirmed tour on"/*here need update and fix for confirmed tour etc.*/+" "+
-					"We have tour on "/*Here need to fixed for accept application tours etc.*/ +" Fee: Weekend "+detialRs.getint("WeekendPrice")+"Weekday: "+ detialRs.getint("WeekdayPrice")+". Do you want to book this one? \n";
+					"We have tour on "/*Here need to fixed for accept application tours etc.*/ +" Fee: Weekend "+detialRs.getInt("WeekendPrice")+"Weekday: "+ detialRs.getInt("WeekdayPrice")+". Do you want to book this one? \n";
 		}
 		
 		//clear Temporary Filter Table after used
@@ -168,12 +171,13 @@ public class Filter {
 		detailStmt.close();
 		detialRs.close();
 		connection.close();
-	}
+	
 	} catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 	}
 		return result;
 	}
 }
+
 	
 	
