@@ -14,26 +14,26 @@ public class TextHandler {
 	int type;
 	
 	//define different types for question
-	public static final int FAQ=1;
-    public static final int MEANINGLESS=2;
-    public static final int UNKNOWN=3;
-    public static final int CANCEL=4;
-    public static final int FILTER_I=5;
-    public static final int RECOMMENDATION=6;
-    public static final int HISTORY=7;
-    public static final int FILTER_II=8;
-    public static final int BOOK_I=9;
-    public static final int BOOK_II=10;
-    public static final int BOOK_III=11;
-    public static final int BOOK_IV=12;
-    public static final int BOOK_V=13;
-    public static final int BOOK_VI=14;
-    public static final int BOOK_VII=15;
-    public static final int BOOK_VIII=16;
-    public static final int BOOK_IX=17;
-    public static final int BOOK_X=18;
-    public static final int BOOK_XI=19;
-    public static final int BOOK_XII=20;
+	public  final int FAQ=1;
+    public  final int MEANINGLESS=2;
+    public  final int UNKNOWN=3;
+    public  final int CANCEL=4;
+    public  final int FILTER_I=5;
+    public  final int RECOMMENDATION=6;
+    public  final int HISTORY=7;
+    public  final int FILTER_II=8;
+    public  final int BOOK_I=9;
+    public  final int BOOK_II=10;
+    public  final int BOOK_III=11;
+    public  final int BOOK_IV=12;
+    public  final int BOOK_V=13;
+    public  final int BOOK_VI=14;
+    public  final int BOOK_VII=15;
+    public  final int BOOK_VIII=16;
+    public  final int BOOK_IX=17;
+    public  final int BOOK_X=18;
+    public  final int BOOK_XI=19;
+    public  final int BOOK_XII=20;
     
     
     
@@ -86,7 +86,7 @@ public class TextHandler {
     		if (rs.next()) {
     			if (rs.getInt(1)>=BOOK_I && rs.getInt(1)<BOOK_IX) {
     			
-    				this.type=rs.getInt(1)+1;
+    				type=rs.getInt(1)+1;
     				record();
     				
     				rs.close();
@@ -95,13 +95,13 @@ public class TextHandler {
     				//customer?
     				Booking booking=new Booking(customer);
     				//keyword is depending on the current type
-    				return Booking.askForInformation(type ,text);
+    				return booking.askForInformation(type ,text);
     				}
     			else
-    				checkFiltering(customer);
+    				return checkFiltering(customer);
     				}
     		else
-    			checkFiltering(customer);
+    			return checkFiltering(customer);
     		//TODO stop booking
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
@@ -123,7 +123,7 @@ public class TextHandler {
 			rs.last();
 			if (rs.getInt(1)==FILTER_I ) {
 				
-				this.type=FILTER_II;
+				type=FILTER_II;
 				record();
 					
 				
@@ -147,7 +147,7 @@ public class TextHandler {
 				return answer;}
 			else if (rs.getInt(1)==FILTER_II) {
 				if (text=="Yes") {
-					this.type=BOOK_I;
+					type=BOOK_I;
 					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
@@ -164,7 +164,7 @@ public class TextHandler {
 					connection.close();
 					Booking booking=new Booking(customer);
 					//keyword is depending on the current type
-					return Booking.askForInformation(type ,tourID);
+					return booking.askForInformation(type ,tourID);
 					}
 				else    {
 					PreparedStatement stmt5 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
@@ -183,7 +183,7 @@ public class TextHandler {
 					
 					
 			else
-				newFAQ(customer);
+				return newFAQ(customer);
 			//TODO stop booking
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());   
@@ -330,21 +330,26 @@ public class TextHandler {
     }
    
     private String newHitory(Customer customer) {
-    	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
-    		if (customer.getHistory()==null) {
-    			return unknown();
-    		}
+    	try {
+    		if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("history")) {
+    			if (customer.getHistory()==null) {
+    				return unknown();
+    			}
     			
-    		else {
-    			type=HISTORY;
-    			record();
+    			else {
+    				type=HISTORY;
+    				record();
     			
-    			return customer.getHistory();
+    				return customer.getHistory();
     			}
     		
-    		}
-    	else 
-    		return newRecommendation(customer);
+    			}
+    		else 
+    			return newRecommendation(customer);
+    	}catch(Exception e) {
+    		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
+    	}
     }
     
     private String newRecommendation(Customer customer) {
