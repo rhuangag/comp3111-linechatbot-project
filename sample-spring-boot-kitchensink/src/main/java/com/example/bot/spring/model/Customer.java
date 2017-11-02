@@ -194,6 +194,7 @@ public class Customer{
 		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
 		("Update CustomerTable SET Status='cancelled by customer' where UserID like cancat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
 		stmtForUpdateCustomerTable.setString(1, userID);
+		stmtForUpdateCustomerTable.setString(2, keyword);
 		stmtForUpdateCustomerTable.executeUpdate();
 		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
 		if (!rsForCustomerTable.next()) {
