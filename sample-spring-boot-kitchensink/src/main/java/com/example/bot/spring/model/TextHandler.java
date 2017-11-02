@@ -83,10 +83,16 @@ public class TextHandler {
     		String query = "SELECT type FROM questionRecord";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		ResultSet rs =stmt.executeQuery();
+
     		if (rs.next()) {
-    			if (rs.getInt(1)>=BOOK_I && rs.getInt(1)<BOOK_IX) {
+    			int temp=rs.getInt(1);
+    			while (rs.next()) {
+    				temp=rs.getInt(1);
+    			}
     			
-    				type=rs.getInt(1)+1;
+    			if (temp>=BOOK_I && temp<BOOK_IX) {
+    			
+    				type=temp+1;
     				record();
     				
     				rs.close();
@@ -97,11 +103,17 @@ public class TextHandler {
     				//keyword is depending on the current type
     				return booking.askForInformation(type ,text);
     				}
-    			else
-    				return checkFiltering(customer);
+    			else {
+    				rs.close();
+					stmt.close();
+					connection.close();
+    				return checkFiltering(customer);}
     				}
-    		else
-    			return checkFiltering(customer);
+    		else {
+    			rs.close();
+				stmt.close();
+				connection.close();
+    			return checkFiltering(customer);}
     		//TODO stop booking
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
@@ -120,8 +132,12 @@ public class TextHandler {
 				stmt.close();
 				connection.close();
 				return newFAQ(customer);}
-			rs.last();
-			if (rs.getInt(1)==FILTER_I ) {
+			int temp=rs.getInt(1);
+			while (rs.next()) {
+				temp=rs.getInt(1);
+			}
+				
+			if (temp==FILTER_I ) {
 				
 				type=FILTER_II;
 				record();
@@ -145,7 +161,7 @@ public class TextHandler {
 				stmt2.close();
 				connection.close();
 				return answer;}
-			else if (rs.getInt(1)==FILTER_II) {
+			else if (temp==FILTER_II) {
 				if (text=="Yes") {
 					type=BOOK_I;
 					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
@@ -182,8 +198,11 @@ public class TextHandler {
 			}
 					
 					
-			else
-				return newFAQ(customer);
+			else {
+				rs.close();
+				stmt.close();
+				connection.close();
+				return newFAQ(customer);}
 			//TODO stop booking
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());   
@@ -281,6 +300,9 @@ public class TextHandler {
     		//second keyword not found
     		if (countloop==parts.length) {
     			rs.close();
+				stmt3.close();
+				connection.close();
+    			rs.close();
 				stmt4.close();
 				connection.close();
 			
@@ -290,6 +312,9 @@ public class TextHandler {
     			type=FAQ;
         		record();
         		reply=rs.getString(4);
+        		rs.close();
+				stmt3.close();
+				connection.close();
         		rs.close();
 				stmt4.close();
 				connection.close();
@@ -303,6 +328,7 @@ public class TextHandler {
     }
     
    private String newCancel(Customer customer){
+	   String result=null;
 	   try {
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
@@ -323,14 +349,22 @@ public class TextHandler {
     		
     		stmt.close();
     		rs.close();
-    		return customer.cancelBooking(key);
+
+    		connection.close();
+    		
+
+    		result=customer.cancelBooking(key);
+
     		}
     	else 
-    		{return newHitory(customer);}
+    		{
+
+    		return newHitory(customer);}
 	  }
 	   catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-	   return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
+	   return result;
     }
    
     private String newHitory(Customer customer) {
