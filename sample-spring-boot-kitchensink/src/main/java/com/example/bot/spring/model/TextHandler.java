@@ -304,29 +304,33 @@ public class TextHandler {
     
    private String newCancel(Customer customer){
 	   try {
-     
 	   if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("cancel")) {
     		type=CANCEL;
     		record();
     		Connection connection = KitchenSinkController.getConnection();
-    		
+    		String key="noRecord";
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
     		String[] parts = text.toLowerCase().split(" ");
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
     		stmt.setString(1, parts[i]);
     		rs =stmt.executeQuery();
-    		if (rs.next())
-    			break;}
-    		String key=rs.getString(1);
-
+    		if (rs.next()) {
+    			key=rs.getString(1);
+    			break;
+    			}
+    		}
+    		
+    		stmt.close();
+    		rs.close();
     		return customer.cancelBooking(key);
     		}
     	else 
-    		return newHitory(customer);
-	   }catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();}
+    		{return newHitory(customer);}
+	  }
+	   catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());}
+	   return null;
     }
    
     private String newHitory(Customer customer) {
