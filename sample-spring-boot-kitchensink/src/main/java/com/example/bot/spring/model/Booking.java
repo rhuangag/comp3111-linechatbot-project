@@ -85,8 +85,8 @@ public class Booking {
 		connection.close();
 		return asking;
 		}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-    	return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 	
 	//TODO
@@ -103,8 +103,8 @@ public class Booking {
 		connection.close();
     	    return asking;
     	}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-    	return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
     }
     public String askage(String name) {
     	try {
@@ -119,8 +119,8 @@ public class Booking {
         	    return asking;    	
     
     	}catch (Exception e){
-    			log.info("Exception while reading database: {}", e.toString());}
-        	return null;
+    			log.info("Exception while reading database: {}", e.toString());
+    			return e.toString();}
     }
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
@@ -137,8 +137,8 @@ public class Booking {
         	    return asking;    	
     
     	}catch (Exception e){
-    			log.info("Exception while reading database: {}", e.toString());}
-        	return null;
+    			log.info("Exception while reading database: {}", e.toString());
+    			return e.toString();}
     }
     public String askphone(String ID){
     	try {
@@ -152,8 +152,8 @@ public class Booking {
     		connection.close();
         	    return asking;    	
     	    }catch (Exception e){
-    			log.info("Exception while reading database: {}", e.toString());}
-        	return null;
+    			log.info("Exception while reading database: {}", e.toString());
+    			return e.toString();}
     }
 	
 	//TODO
@@ -170,8 +170,8 @@ public class Booking {
     		connection.close();
         	    return asking;    	
     	    }catch (Exception e){
-    			log.info("Exception while reading database: {}", e.toString());}
-        	return null;
+    			log.info("Exception while reading database: {}", e.toString());
+    			return e.toString();}
     }
     
     //TODO
@@ -188,8 +188,8 @@ public class Booking {
     		connection.close();
         	    return asking;    
 		}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-    	return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 	
 	//TODO
@@ -206,8 +206,8 @@ public class Booking {
     		connection.close();
         	    return asking;    
 		}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-    	return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 	//TODO
 	//The 5th step of booking. Record the no. of Toodlers in the temporary database, use calculate() to calculate the fee,
@@ -224,8 +224,8 @@ public class Booking {
 			return asking;
 		}
 		catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-    	return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 	public String doubleCheck(String request) {
 		try {
@@ -274,8 +274,8 @@ public class Booking {
 		connection.close();
 		return DoubleCheckList;
 		}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-    	return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 	
 	//TODO
@@ -313,8 +313,8 @@ public class Booking {
     				+ "And you can also tell us any improvement we can make at the same time.";
 		}
 		catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-		return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 	//TODO
 	//Record the feedback, transter all the data in the log database to the feedback table, delete the log table,
@@ -338,9 +338,8 @@ public class Booking {
     		return "Your feedback is received with thanks! Wish you a pleasant journey!";
 		}
 		catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-		return null;	
-
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 	
 	//TODO
@@ -358,7 +357,7 @@ public class Booking {
     		return "Booking Cancled, thanks for coming!";
 		}
 		catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());}
-		return null;
+			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();}
 	}
 }
