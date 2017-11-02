@@ -99,7 +99,7 @@ public class Customer{
 			stmt_history.setString(1, userID);
 			
 			// 0-->hot+spring 1-->mountain
-			boolean[] label = {false, false};
+			boolean[] label = {false, false}; 
 			// 0--># of weekday, 1--># of weekend
 			int[] departureTime_number = {0, 0};
 			// 0--># of '2', 1--># of '3'
@@ -134,7 +134,7 @@ public class Customer{
 				prefer_departure = "weekday";
 			
 			if(duration_number[0]==0 && duration_number[1]==0 || duration_number[0] == duration_number[1])
-				prefer_duration = null;
+				prefer_duration = "0";
 			else if(duration_number[0]>duration_number[1])
 				prefer_duration = "2";
 			else
@@ -166,7 +166,7 @@ public class Customer{
 					
 				}
 				if(label[1]==true) {
-					if(rs.getString("TourDescription").toLowerCase().contains("hot") && rs.getString("TourDescription").toLowerCase().contains("spring")) {
+					if(rs.getString("TourDescription").toLowerCase().contains("mountain") ) {
 						prefer_recommendationID.add(rs.getString("TourID"));	
 						continue;
 					}
@@ -195,10 +195,12 @@ public class Customer{
 			prefer_recommendationID.remove(i);
 		}
 		
-		if(recommendationID.size() == 0) {
+		
+		if(recommendationID.isEmpty()) {
 			output = "Sorry, I have no more recommendation to you. Thanks for your support very much.";
 		}
-		else if(prefer_recommendationID.size() != 0) {
+		else if(!prefer_recommendationID.isEmpty()) {
+			
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(prefer_recommendationID.size());
 			String outputID = prefer_recommendationID.get(position);
@@ -206,12 +208,17 @@ public class Customer{
 			output= Statement(outputID);			
 		}
 		else {
+			
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(recommendationID.size());
 			String outputID = recommendationID.get(position);
+			output = outputID;
 			//select from db
-			output= Statement(outputID);
+			//output= Statement(outputID);
 		}
+		
+		if(output==null)
+			output="it is null";
 		
 		
 		return output;
@@ -225,7 +232,9 @@ public class Customer{
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourName, TourDescription, Duration, Date, WeekendPrice, WeekdayPrice from TourList where TourID = "+ tourID +";");
+					("SELECT TourID, TourName, TourDescription, Duration, Date, WeekendPrice, WeekdayPrice from TourList where TourID like concat('%', ?, '%')");
+			
+			stmt.setString(1, tourID);
 			
 			ResultSet rs = stmt.executeQuery();
 			
@@ -243,6 +252,9 @@ public class Customer{
 		} catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 		}
+		
+		if(result==null)
+			result = tourID;
 		return result;
 	}
 	
