@@ -103,11 +103,17 @@ public class TextHandler {
     				//keyword is depending on the current type
     				return booking.askForInformation(type ,text);
     				}
-    			else
-    				return checkFiltering(customer);
+    			else {
+    				rs.close();
+					stmt.close();
+					connection.close();
+    				return checkFiltering(customer);}
     				}
-    		else
-    			return checkFiltering(customer);
+    		else {
+    			rs.close();
+				stmt.close();
+				connection.close();
+    			return checkFiltering(customer);}
     		//TODO stop booking
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
@@ -192,8 +198,11 @@ public class TextHandler {
 			}
 					
 					
-			else
-				return newFAQ(customer);
+			else {
+				rs.close();
+				stmt.close();
+				connection.close();
+				return newFAQ(customer);}
 			//TODO stop booking
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());   
@@ -291,6 +300,9 @@ public class TextHandler {
     		//second keyword not found
     		if (countloop==parts.length) {
     			rs.close();
+				stmt3.close();
+				connection.close();
+    			rs.close();
 				stmt4.close();
 				connection.close();
 			
@@ -300,6 +312,9 @@ public class TextHandler {
     			type=FAQ;
         		record();
         		reply=rs.getString(4);
+        		rs.close();
+				stmt3.close();
+				connection.close();
         		rs.close();
 				stmt4.close();
 				connection.close();
@@ -334,10 +349,17 @@ public class TextHandler {
     		
     		stmt.close();
     		rs.close();
+
+    		connection.close();
+    		
+
     		result=customer.cancelBooking(key);
+
     		}
     	else 
-    		{return newHitory(customer);}
+    		{
+
+    		return newHitory(customer);}
 	  }
 	   catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
