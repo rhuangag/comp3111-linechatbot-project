@@ -200,7 +200,7 @@ public class Customer{
 			output = "Sorry, I have no more recommendation to you. Thanks for your support very much.";
 		}
 		else if(!prefer_recommendationID.isEmpty()) {
-			output = "here is prefer.";
+			
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(prefer_recommendationID.size());
 			String outputID = prefer_recommendationID.get(position);
@@ -208,12 +208,12 @@ public class Customer{
 			output= Statement(outputID);			
 		}
 		else {
-			
+			output = recommendationID.get(0);
 			Random rand = new Random(System.currentTimeMillis());
 			int position = rand.nextInt(recommendationID.size());
 			String outputID = recommendationID.get(position);
 			//select from db
-			output= Statement(outputID);
+			//output= Statement(outputID);
 		}
 		
 		if(output==null)
@@ -231,7 +231,9 @@ public class Customer{
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourName, TourDescription, Duration, Date, WeekendPrice, WeekdayPrice from TourList where TourID = "+ tourID +";");
+					("SELECT TourID, TourName, TourDescription, Duration, Date, WeekendPrice, WeekdayPrice from TourList where TourID like concat('%', ?, '%')");
+			
+			stmt.setString(1, tourID);
 			
 			ResultSet rs = stmt.executeQuery();
 			
@@ -249,6 +251,9 @@ public class Customer{
 		} catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 		}
+		
+		if(result==null)
+			result = tourID;
 		return result;
 	}
 	
