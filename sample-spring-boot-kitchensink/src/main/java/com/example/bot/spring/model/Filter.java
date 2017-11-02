@@ -30,7 +30,9 @@ public class Filter {
 		if(rs!=null) {
 			while(rs.next()) {
 				result="Yes.We have those tours that may match your requirements+\n";
-				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES ("+orderNumber+", "+rs.getString("TourID")+");");
+				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?)");
+				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
+				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
 				updateTemporaryFilterTable.executeUpdate();
 				result+=orderNumber+". "+rs.getString("TourID")+ " "+rs.getString("TourName")+"\n";
 				orderNumber++;
