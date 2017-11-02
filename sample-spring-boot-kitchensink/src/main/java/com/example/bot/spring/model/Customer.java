@@ -200,7 +200,7 @@ public class Customer{
 			output = "Sorry, I have no more recommendation to you. Thanks for your support very much.";
 		}
 		else if(!prefer_recommendationID.isEmpty()) {
-			output = "here is prefer."
+			output = "here is prefer.";
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(prefer_recommendationID.size());
 			//String outputID = prefer_recommendationID.get(position);
@@ -208,7 +208,7 @@ public class Customer{
 			//output= Statement(outputID);			
 		}
 		else {
-			output = "orginal recommendation."
+			output = "orginal recommendation.";
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(recommendationID.size());
 			//String outputID = recommendationID.get(position);
