@@ -485,7 +485,7 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord values ( ?,?)"
+			String query1 = " insert into questionRecord values ( ?,?)";
 			        
 			
 			PreparedStatement stmt = connection.prepareStatement(query1);
