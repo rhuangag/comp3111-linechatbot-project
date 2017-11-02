@@ -201,19 +201,19 @@ public class Customer{
 		}
 		else if(!prefer_recommendationID.isEmpty()) {
 			output = "here is prefer.";
-			//Random rand = new Random(System.currentTimeMillis());
-			//int position = rand.nextInt(prefer_recommendationID.size());
-			//String outputID = prefer_recommendationID.get(position);
-			//select from db
-			//output= Statement(outputID);			
+			Random rand = new Random(System.currentTimeMillis());
+			int position = rand.nextInt(prefer_recommendationID.size());
+			String outputID = prefer_recommendationID.get(position);
+			select from db
+			output= Statement(outputID);			
 		}
 		else {
-			output = "orginal recommendation.";
-			//Random rand = new Random(System.currentTimeMillis());
-			//int position = rand.nextInt(recommendationID.size());
-			//String outputID = recommendationID.get(position);
-			//select from db
-			//output= Statement(outputID);
+			
+			Random rand = new Random(System.currentTimeMillis());
+			int position = rand.nextInt(recommendationID.size());
+			String outputID = recommendationID.get(position);
+			select from db
+			output= Statement(outputID);
 		}
 		
 		if(output==null)
