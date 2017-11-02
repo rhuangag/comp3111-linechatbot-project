@@ -19,7 +19,7 @@ public class Customer{
 		Vector<String> history;
 		
 		public CustomerHistory() {
-			
+			history=new Vector<String>();
 		}
 		
 		
@@ -31,12 +31,12 @@ public class Customer{
 			try {
 				Connection connection = KitchenSinkController.getConnection();
 				PreparedStatement stmt = connection.prepareStatement
-						("SELECT TourID, TourName, Date, Duration, Price, Status from CustomerRecord where UserID "
+						("SELECT TourID, TourName, DepartureDate, Duration, Price, Status from CustomerRecord where UserID "
 								+ "like concat('%', ?, '%')");
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
-					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDate: "+rs.getString("Date")+ 
+					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDepartureDate: "+rs.getString("DepartureDate")+ 
 							"\tDuration: "+rs.getString("Duration")+"\tPrice: "+rs.getString("Price")+"\tStatus: "+rs.getString("Status")+"\n";
 					history.add(result);
 				}
@@ -181,51 +181,46 @@ public class Customer{
 	
 	public String cancelBooking(String keyword) {
 		String result =null;
-	try {
+		try {
 		Connection connection = KitchenSinkController.getConnection();
 		String searching=null;
-		
+
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-				("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE concat('%', ?, '%'); \n"
-						+"DELETE FROM CustomerTable where UserID LIKE " +userID + " and TourJoined LIKE concat('%', ?, '%')");
+		("SELECT * FROM CustomerTable where UserID LIKE " +userID +" and TourJoined LIKE cancat('%', ?, '%')");
 		//not sure whether can run with this + and + type, need test
-		
 		stmtForCustomerTable.setString(1, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
-		
-		
+		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
+		("Update CustomerTable SET Status='cancelled where UserID LIKE " +userID + " and TourJoined LIKE cancat('%', ?, '%')");
+		stmtForUpdateCustomerTable.executeUpdate();
 		//invalid or incorrect input. BUT seems this sentence is too long. Is it neccessary? Or how can we rewrite?
 		if (!rsForCustomerTable.next()) {
-			result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel.";
-			rsForCustomerTable.close();
-			stmtForCustomerTable.close();
-			connection.close();
-			return result;
+		result="Sorry but you provided invalid or incorrect tour ID you want to cancel. Please tell us that you want to cancel and provide tour ID in the same sentence again if you still want to cancel. If you are not sure for your tourID, you may ask me to search for your histroy";
 		}
-		
+
 		else{
-			
-		rsForCustomerTable.close();
-		stmtForCustomerTable.close();
-		
+		rsForCustomerTable.beforeFirst();
 		//update status to cancelled in customer record
 		PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-				("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE concat('%', ?, '%')");
+		("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE" +userID + " and TourID LIKE cancat('%', ?, '%')");
 		stmtForCustomerRecord.setString(1, keyword);
 		ResultSet rsForCustomerRecord = stmtForCustomerRecord.executeQuery();
 		rsForCustomerRecord.close();
 		stmtForCustomerRecord.close();
-		
 		result="Your booking has been cancelled. Hope to serve for you next time!";
-		
-		connection.close();
 		}
-	} catch (Exception e){
+		stmtForUpdateCustomerTable.close();
+		rsForCustomerTable.close();
+		stmtForCustomerTable.close();
+		connection.close();
+		} catch (Exception e){
 		log.info("Exception while reading database: {}", e.toString());
-	}
-	
+		}
+
 		return result;
-	}
+		}
+
+		
 	
 }
