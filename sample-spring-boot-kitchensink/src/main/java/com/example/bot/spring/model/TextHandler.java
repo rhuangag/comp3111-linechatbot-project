@@ -370,15 +370,20 @@ public class TextHandler {
     
     private String newFiltering(Customer customer) {
     	//from back keyword
-    	    return "you want to do filter-search";
+    		
+    	return newBooking( customer);
+    	    //return filter.filterSearch("hot spring");
+    		
     }
     
     private String newBooking(Customer customer) {
        	if (text.replaceAll("\\p{P}" , "").toLowerCase().contains("book")) {
-       		type=FILTER_I;
+       		/*type=FILTER_I;
        		record();
        		Filter filter=new Filter();
-       		return filter.filterSearch("book");
+       		return filter.filterSearch("book");*/
+       		Booking booking=new Booking(customer);
+       		return booking.askForInformation(9,"2D001");
        		}
        	else {
        		return unknown();}
