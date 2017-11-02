@@ -144,7 +144,7 @@ public class Customer{
 			//Suppose the Tour List table in excel is named as TourList in db
 			PreparedStatement stmt = connection.prepareStatement
 					("SELECT TourID, TourDescription, Duration, Date from TourList");
-			stmt.setString(1, userID);
+			
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
 				recommendationID.add(rs.getString("TourID"));
@@ -225,14 +225,14 @@ public class Customer{
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where TourID = "+ tourID +";");
+					("SELECT TourID, TourName, TourDescription, Duration, Date, WeekendPrice, WeekdayPrice from TourList where TourID = "+ tourID +";");
 			
 			ResultSet rs = stmt.executeQuery();
 			
 			
 			while(rs.next()) {
-				result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tTour Description: "+rs.getString("TourDescription")+ 
-						"\tDays: "+rs.getString("Days")+"\tDate: "+rs.getString("Date")+"\tWeekend Price: "+rs.getString("WeekendPrice")+"\tWeekday Price: "+rs.getString("WeekdayPrice")+"\n";
+				result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nTour Description: "+rs.getString("TourDescription")+ 
+						"\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice")+"\n";
 				
 			}
 			
