@@ -279,8 +279,9 @@ public class TextHandler {
 	    		String key=rs.getString(1);*/
 
 
-	    		return "you want to canel";
-	    		//return customer.cancelBooking();
+	    	return "you want to canel";
+	    	//return customer.cancelBooking();
+	    	//now try to resolve first
 	    		}
     	else 
     		return newHitory(customer);
