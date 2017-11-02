@@ -205,7 +205,7 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(prefer_recommendationID.size());
 			//String outputID = prefer_recommendationID.get(position);
-			output = Statement(prefer_recommendationID.get(0));
+			output = Statement(prefer_recommendationID.get(0))+"_prefer";
 			//select from db
 			//output= Statement(outputID);			
 		}
@@ -213,7 +213,7 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(recommendationID.size());
 			//String outputID = recommendationID.get(position);
-			output = Statement(recommendationID.get(0));
+			output = Statement(recommendationID.get(0))+"_original";
 			//select from db
 			//output= Statement(outputID);
 		}
