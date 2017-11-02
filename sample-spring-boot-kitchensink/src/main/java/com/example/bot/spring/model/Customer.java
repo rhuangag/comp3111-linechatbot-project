@@ -214,6 +214,7 @@ public class Customer{
 		connection.close();
 		} catch (Exception e){
 		log.info("Exception while reading database: {}", e.toString());
+		return e.toString();
 		}
 
 		return result;
