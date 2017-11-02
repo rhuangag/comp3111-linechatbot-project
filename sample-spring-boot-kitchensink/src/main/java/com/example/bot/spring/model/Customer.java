@@ -143,7 +143,7 @@ public class Customer{
 			
 			//Suppose the Tour List table in excel is named as TourList in db
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourDescription, Duration, Date from TourList where UserID like concat('%',?,'%')");
+					("SELECT TourID, TourDescription, Duration, Date from TourList");
 			stmt.setString(1, userID);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
@@ -225,7 +225,7 @@ public class Customer{
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement stmt = connection.prepareStatement
-					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where UserID = "+ this.userID +" AND TourID = "+ tourID +";");
+					("SELECT TourID, TourName, TourDescription, Days, Date, WeekendPrice, WeekdayPrice from TourList where TourID = "+ tourID +";");
 			
 			ResultSet rs = stmt.executeQuery();
 			
