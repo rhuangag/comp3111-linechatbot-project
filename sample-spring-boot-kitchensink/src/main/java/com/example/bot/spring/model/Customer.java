@@ -192,7 +192,7 @@ public class Customer{
 		stmtForCustomerTable.setString(2, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
 		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
-		("Update CustomerTable SET Status='cancelled by customer' where UserID like cancat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
+		("Update CustomerTable SET Status='cancelled by customer' where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
 		stmtForUpdateCustomerTable.setString(1, userID);
 		stmtForUpdateCustomerTable.setString(2, keyword);
 		stmtForUpdateCustomerTable.executeUpdate();
