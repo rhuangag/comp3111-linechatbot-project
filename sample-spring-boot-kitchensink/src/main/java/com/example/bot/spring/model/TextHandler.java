@@ -437,7 +437,8 @@ public class TextHandler {
     	if (count!=parts.length) {
     		if (customer.getRecommendation()==null) {
     			connection.close();
-    			return unknown();
+    			//return unknown();
+    			return "empty string";
     		}
     		else {
     			type=RECOMMENDATION;
@@ -490,7 +491,7 @@ public class TextHandler {
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
 			
-			stmt.setInt(1, type);
+			stmt.setInt(1, type); 
 			stmt.setString(2, text);
 			stmt.executeQuery();
 			if (type<8)
