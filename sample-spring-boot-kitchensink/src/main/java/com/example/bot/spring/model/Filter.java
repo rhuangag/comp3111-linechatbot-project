@@ -92,7 +92,7 @@ public class Filter {
 			int lowerLimitation=Integer.parseInt(parts[0]);
 			int upperLimitation=Integer.parseInt(parts[1]);
 			PreparedStatement filterStmtForPriceRange = connection.prepareStatement
-						("SELECT TourID, TourName from TourList where ?=<cast(weekdayprice as int) and ?>=cast(weekdayprice as int)");
+						("SELECT TourID, TourName from TourList where ?<cast(weekdayprice as int) and ?>cast(weekdayprice as int)");
 			filterStmtForPriceRange.setInt(1,lowerLimitation);
 			filterStmtForPriceRange.setInt(2, upperLimitation);
 			ResultSet rsForPriceRange=filterStmtForPriceRange.executeQuery();
@@ -141,7 +141,7 @@ public class Filter {
 		//higher price
 		if(lowerLimitation>=50) {
 			PreparedStatement filterStmtForHigherPrice = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where ?>=cast(weekdayprice as int)");
+					("SELECT TourID, TourName from TourList where ?<cast(weekdayprice as int)");
 			filterStmtForHigherPrice.setInt(1,lowerLimitation);
 			ResultSet rsForHigherPrice=filterStmtForHigherPrice.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForHigherPrice,connection);
@@ -152,7 +152,7 @@ public class Filter {
 		//longer duration
 		else {
 			PreparedStatement filterStmtForLongerDuration = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where ?>=cast(Duration as int)");
+					("SELECT TourID, TourName from TourList where ?<cast(Duration as int)");
 			filterStmtForLongerDuration.setInt(1,lowerLimitation);
 			ResultSet rsForLongerDuration=filterStmtForLongerDuration.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForLongerDuration,connection);
@@ -168,7 +168,7 @@ public class Filter {
 			//cheaper price
 			if (lowerLimitation>=50) {
 			PreparedStatement filterStmtForCheaperPrice = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where ?<=cast(weekdayprice as int)");
+					("SELECT TourID, TourName from TourList where ?>cast(weekdayprice as int)");
 			filterStmtForCheaperPrice.setInt(1,lowerLimitation);
 			 ResultSet rsForCheaperPrice=filterStmtForCheaperPrice.executeQuery();
 			 result=prepareResultAndUpdateTempTable(rsForCheaperPrice,connection);
@@ -179,7 +179,7 @@ public class Filter {
 			 //shorter duration
 			 else {
 			PreparedStatement filterStmtForShorterDuration = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where ?<=cast(Duration as int)");
+					("SELECT TourID, TourName from TourList where ?>cast(Duration as int)");
 			filterStmtForShorterDuration.setInt(1,lowerLimitation);
 			ResultSet rsForShorterDuration=filterStmtForShorterDuration.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForShorterDuration,connection);
@@ -193,7 +193,7 @@ public class Filter {
 		//Normal cases: filter for keywords in description or tour name(lcoation).
 		else {
 			PreparedStatement filterStmt = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%') or Duration like concat('%', ?, '%') ");
+					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%')");
 			filterStmt.setString(1, keyword);
 			filterStmt.setString(2, keyword);
 			filterStmt.setString(3, keyword);
