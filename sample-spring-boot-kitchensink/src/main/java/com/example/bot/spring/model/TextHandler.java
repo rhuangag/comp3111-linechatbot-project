@@ -460,7 +460,7 @@ public class TextHandler {
     		
     		Filter filter=new Filter(ID);
     	
-    		return filter.viewDetails(text);
+    		return filter.filterSearch(text);
     }
     
     private String newBooking(Customer customer) {

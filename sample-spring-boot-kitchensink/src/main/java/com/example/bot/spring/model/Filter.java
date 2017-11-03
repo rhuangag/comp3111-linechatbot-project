@@ -199,10 +199,11 @@ public class Filter {
 		//Normal cases: filter for keywords in description or tour name(lcoation).
 		else {
 			PreparedStatement filterStmt = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%') or TourName like concat('%', ?, '%')");
+					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%') or TourName like concat('%', ?, '%') or Date like concat('%', ?, '%')");
 			filterStmt.setString(1, keyword);
 			filterStmt.setString(2, keyword);
 			filterStmt.setString(3, keyword);
+			filterStmt.setString(4, keyword);
 			ResultSet rsForFilter = filterStmt.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForFilter,connection);
 			rsForFilter.close();
