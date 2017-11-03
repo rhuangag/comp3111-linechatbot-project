@@ -85,7 +85,6 @@ public class Customer{
 	//TODO
 	//Analyse the customer history and return the recommendation
 	public String getRecommendation() {
-		userID = "ymuaa";
 		
 		Vector<String> historyID = new Vector<String>();
 		Vector<String> recommendationID = new Vector<String>();//store all tourID first and remove historyID then
@@ -206,7 +205,7 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(prefer_recommendationID.size());
 			//String outputID = prefer_recommendationID.get(position);
-			output = Statement(prefer_recommendationID.get(0))+"_prefer";
+			output = Statement(prefer_recommendationID.get(0));
 			//select from db
 			//output= Statement(outputID);			
 		}
@@ -214,13 +213,11 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(recommendationID.size());
 			//String outputID = recommendationID.get(position);
-			output = Statement(recommendationID.get(0))+"_original";
+			output = Statement(recommendationID.get(0));
 			//select from db
 			//output= Statement(outputID);
 		}
 		
-		if(output==null)
-			output="it is null";
 		
 		
 		return output;
