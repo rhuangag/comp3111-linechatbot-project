@@ -251,7 +251,6 @@ public class Booking {
 		PreparedStatement queryPrice = connection.prepareStatement("select price from BookingTable where "
 				+ "(tourID like" + tour.getString(2) + "and " + "date like " + tour.getString(3) + ")");
 		ResultSet pricers = queryPrice.executeQuery();
-		queryPrice.close();
 		double price = pricers.getInt(1);
 
 		int NumA = tour.getInt(7);
@@ -261,7 +260,6 @@ public class Booking {
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
 		+ "Set fee = " + finalcost);
 		insertp.executeUpdate();
-		insertp.close();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
 				+ "Customer: " + tour.getString(4) + "\n"
@@ -276,6 +274,8 @@ public class Booking {
 				+ "Total Price: " + finalcost + "(HKD)\n"
 				+ "Special Request: " + tour.getString(10) + "\n"
 				+ "Please check if they are correct.If correct, please reply 'confirm'.";
+		queryPrice.close();
+		insertp.close();
 		connection.close();
 		return DoubleCheckList;
 		}catch (Exception e){
