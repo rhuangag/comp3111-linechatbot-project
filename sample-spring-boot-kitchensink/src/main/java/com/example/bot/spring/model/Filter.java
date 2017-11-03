@@ -224,11 +224,13 @@ public class Filter {
 	public String viewDetails(String keyword) {
 		String result=null;
 		String TourID=null;
+		int order=Integer.parseInt(keyword);
 		try {
 		Connection connection = KitchenSinkController.getConnection();
+		PreparedStatement clearTempTable =connection.prepareStatement("Delete from TemporaryFilterTable where userId like concat ('%', ?, '%')");
 		PreparedStatement filterFromTemTable = connection.prepareStatement
-				("SELECT TourID from TemporaryFilterTable where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
-		filterFromTemTable.setString(1, keyword);
+				("SELECT TourID from TemporaryFilterTable where OrderNumber =? and UserId LIKE concat('%', ?, '%')");
+		filterFromTemTable.setInt(1, order);
 		filterFromTemTable.setString(2, userID);
 		
 		ResultSet rsForOrder = filterFromTemTable.executeQuery();
@@ -236,6 +238,13 @@ public class Filter {
 			TourID=rsForOrder.getString("TourID");
 		}
 		else {
+			
+			connection.close();
+			filterFromTemTable.close();
+			rsForOrder.close();
+			clearTempTable.setString(1, userID);
+			clearTempTable.executeUpdate();
+			clearTempTable.close();
 			return "Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)";
 		}
 		//SELECT detials of the trip
@@ -251,7 +260,7 @@ public class Filter {
 		}
 		
 		//clear Temporary Filter Table after used
-		PreparedStatement clearTempTable =connection.prepareStatement("Delete from TemporaryFilterTable where userId like concat ('%', ?, '%')");
+	
 		clearTempTable.setString(1, userID);
 		clearTempTable.executeUpdate();
 		clearTempTable.close();
