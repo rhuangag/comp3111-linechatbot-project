@@ -199,7 +199,7 @@ public class Filter {
 		//Normal cases: filter for keywords in description or tour name(lcoation).
 		else {
 			PreparedStatement filterStmt = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where lower(TourDescription) like concat('%', ?, '%') or lower(TourID) like concat('%', ?, '%') or lower(TourName) like concat('%', ?, '%') or lower(Date) like concat('%', ?, '%')");
+					("SELECT TourID, TourName from TourList where lower(TourDescription) like concat('%', ?, '%') or TourID like concat('%', ?, '%') or lower(TourName) like concat('%', ?, '%') or lower(Date) like concat('%', ?, '%')");
 			filterStmt.setString(1, keyword);
 			filterStmt.setString(2, keyword);
 			filterStmt.setString(3, keyword);
@@ -275,7 +275,7 @@ public class Filter {
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
 			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on "+availiable+
-					"We have tour on "+confirmedButAcceptBook+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
+					"We have tour on these days still accept application:"+confirmedButAcceptBook+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
 		}
 		
 		//clear Temporary Filter Table after used
