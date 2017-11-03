@@ -117,7 +117,7 @@ public class TextHandler {
     			rs.close();
 				stmt.close();
 				connection.close();
-    			return newFAQ(customer);}
+    			return checkFiltering(customer);}
     	//TODO stop booking 
     		//now the chatbot did not support the interrupt of the booking process
     	}catch (Exception e){
