@@ -39,9 +39,9 @@ public class Booking {
 			case 16:
 				return this.askForToodler(information);
 			case 17:
-				return this.doubleCheck(information);
-			case 18:
 				return this.askrequest(information);
+			case 18:
+				return this.doubleCheck(information);
 			case 19:
 				return this.confirm(information);
 			case 20:
