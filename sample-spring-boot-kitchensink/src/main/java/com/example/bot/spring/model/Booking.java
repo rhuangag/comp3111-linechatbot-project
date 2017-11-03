@@ -31,9 +31,9 @@ public class Booking {
 			case 12:
 				return this.askage(information);
 			case 13:
-				return this.askForAdults(information);
-			case 14:
 				return this.askphone(information);
+			case 14:
+				return this.askForAdults(information);
 			case 15:
 				return this.askForChildrent(information);
 			case 16:
@@ -102,7 +102,7 @@ public class Booking {
 		String InsertDB = "Update " + this.customerBelonging.getID() + " SET dateDeparture = '" + date + "'";
 		
 		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-		String asking = "Do you mind telling us your age?";
+		String asking = "May I know your name?";
 		stmt.executeUpdate();
 		stmt.close();
 		connection.close();
@@ -111,10 +111,10 @@ public class Booking {
 			log.info("Exception while reading database: {}", e.toString());
 			return (e.toString()+"asking2");}
     }
-    public String askage(String name) {
+    public String askage(String ID) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = '" + name + "'";
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "May I know your ID?";
@@ -129,10 +129,10 @@ public class Booking {
     }
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
-    public String askForID(String age){
+    public String askForID(String name){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = '" + age + "'";
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = '" + name + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "May I know your ID?";
@@ -145,10 +145,10 @@ public class Booking {
     			log.info("Exception while reading database: {}", e.toString());
     			return (e.toString()+"asking4");}
     }
-    public String askphone(String ID){
+    public String askphone(String age){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = '" + age + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us your phone number?";
