@@ -243,14 +243,15 @@ public class Booking {
 		PreparedStatement queryTour = connection.prepareStatement("SELECT * from " +
 				this.customerBelonging.getID());
 		ResultSet tour = queryTour.executeQuery();
-		queryTour.close();
+		tour.next();		
 
 		//String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
 		//	+ ", numberOfToodlers) values " + number; 
 
 		PreparedStatement queryPrice = connection.prepareStatement("select price from BookingTable where "
-				+ "(tourID like" + tour.getString(2) + "and " + "date like " + tour.getString(3) + ")");
+				+ " tourID like '" + tour.getString(2) + "' and " + "departuredate like '" + tour.getString(3)+"'" );
 		ResultSet pricers = queryPrice.executeQuery();
+		pricers.next();
 		double price = pricers.getInt(1);
 
 		int NumA = tour.getInt(7);
@@ -258,7 +259,7 @@ public class Booking {
 		int NumT = tour.getInt(9);
 		double finalcost = NumA*price + NumC*0.8*price;
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
-		+ "Set fee = " + finalcost);
+		+ " Set fee = " + finalcost);
 		insertp.executeUpdate();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
@@ -274,6 +275,8 @@ public class Booking {
 				+ "Total Price: " + finalcost + "(HKD)\n"
 				+ "Special Request: " + tour.getString(10) + "\n"
 				+ "Please check if they are correct.If correct, please reply 'confirm'.";
+		queryTour.close();
+		tour.close();
 		queryPrice.close();
 		insertp.close();
 		connection.close();
@@ -289,27 +292,33 @@ public class Booking {
 	public String confirm(String checkAnswer) {
 		try
 		{
+			if (!checkAnswer.toLowerCase().contains("confirm"))
+				return breakBooking();
+
 			Connection connection = KitchenSinkController.getConnection();
     		PreparedStatement getall = connection.prepareStatement("select * from " + 
 			this.customerBelonging.getID());
     		ResultSet all = getall.executeQuery();
-    		getall.close();
+    		all.next();
+    		//getstring(3) need to fix.
     		PreparedStatement insertCT = connection.prepareStatement("Insert Into CustomerTable "
-    				+ "VALUES (" + all.getString(4) + ", " + all.getString(5) + ", " + all.getString(6)
-    				+ ", " + all.getString(6) + ", " + all.getString(11) + ", " + all.getString(2) 
-    				+ ", " + all.getInt(7) + ", " + all.getInt(8) + ", " + all.getInt(9) + ", "
-    				+ all.getDouble(12) + ", 0, " + all.getString(10) + ", null, " + all.getString(1) + ")");
+    				+ "VALUES ('" + all.getString(4) + "', '" + all.getString(5) + "', '" + all.getString(6)
+    				+ "', " + Integer.parseInt(all.getString(11)) + ", '" + all.getString(2) +all.getString(3) 
+    				+ "', " + all.getInt(7) + ", '" + all.getInt(8) + "', '" + all.getInt(9) + "', '"
+    				+ all.getDouble(12) + "', 0, '" + all.getString(10) + "', 'booked', '" + all.getString(1) + "')");
     		insertCT.executeUpdate();
-    		insertCT.close();
-    		PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
-    				+ " where tourID like " + all.getString(2));
+        	PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
+    				+ " where tourID like '" + all.getString(2)+"'");
     		ResultSet duration = searchduration.executeQuery();
-    		searchduration.close();
+    		duration.next();
     		PreparedStatement insertCR = connection.prepareStatement("Insert Into CustomerRecord "
-    				+ "VALUES (" + all.getString(1) + ", " + all.getString(2) + ", " + duration.getString(2)
-    				+ ", " + all.getString(3) + ", " + duration.getString(4) + ", " + all.getString(12) 
-    				+ ", 'booked' " + duration.getString(3) + ")");
+    				+ "VALUES ('" + all.getString(1) + "', '" + all.getString(2) + "', '" + duration.getString(2)
+    				+ "', '" + all.getString(3) + "', '" + duration.getString(4) + "', '" + all.getString(12) 
+    				+ "', 'booked' , '" + duration.getString(3) + "')");
     		insertCR.executeUpdate();
+    		searchduration.close();
+    		insertCT.close();
+    		getall.close();
     		insertCR.close();
     		connection.close();
 
@@ -330,14 +339,15 @@ public class Booking {
 			PreparedStatement query = connection.prepareStatement("Select * from "
     				+ this.customerBelonging.getID());
     		ResultSet rs = query.executeQuery();
-    		query.close();
-    		PreparedStatement insert = connection.prepareStatement("Insert into feedbacktable values ( "
-    				+ this.customerBelonging.getID() + ", " + feedback + rs.getString(2) + ")");
+    		rs.next();
+    		PreparedStatement insert = connection.prepareStatement("Insert into feedbacktable values ( '"
+    				+ this.customerBelonging.getID() + "', '" + rs.getString(2) +"', '"+ feedback + "')");
     		insert.executeUpdate();
     		insert.close();
     		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
     				+ this.customerBelonging.getID());
-    		deletethetable.executeQuery();
+    		deletethetable.executeUpdate();
+    		query.close();
     		deletethetable.close();
     		connection.close();
     		return "Your feedback is received with thanks! Wish you a pleasant journey!";
@@ -355,7 +365,7 @@ public class Booking {
 			Connection connection = KitchenSinkController.getConnection();
     		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
     				+ this.customerBelonging.getID());
-    		deletethetable.executeQuery();
+    		deletethetable.executeUpdate();
     		deletethetable.close();
     		connection.close();
 
