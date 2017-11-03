@@ -36,8 +36,8 @@ public class Customer{
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
-					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDepartureDate: "+rs.getString("DepartureDate")+ 
-							"\tDuration: "+rs.getString("Duration")+"\tPrice: "+rs.getString("Price")+"\tStatus: "+rs.getString("Status")+"\n";
+					String result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nDepartureDate: "+rs.getString("DepartureDate")+ 
+							"\nDuration: "+rs.getString("Duration")+"\nPrice: "+rs.getString("Price")+"\nStatus: "+rs.getString("Status")+"\n";
 					history.add(result);
 				}
 				rs.close();
@@ -55,7 +55,7 @@ public class Customer{
 			if(history.isEmpty())
 			    return "There is no record.";
 			else {
-				String result=null;
+				String result="";
 				Iterator<String> iterator=history.iterator();
 				while(iterator.hasNext()) {
 					result=result+iterator.next()+"\n";
@@ -85,7 +85,6 @@ public class Customer{
 	//TODO
 	//Analyse the customer history and return the recommendation
 	public String getRecommendation() {
-		userID = "ymuaa";
 		
 		Vector<String> historyID = new Vector<String>();
 		Vector<String> recommendationID = new Vector<String>();//store all tourID first and remove historyID then
@@ -116,10 +115,11 @@ public class Customer{
 				else
 					departureTime_number[1]++;
 				
-				if(rs_history.getString("Duration") == "2")
+				if(rs_history.getString("Duration").contains("2"))
 					duration_number[0]++;
 				else
 					duration_number[1]++;
+				
 				if(label[0]==false)
 					label[0] = (rs_history.getString("TourDescription").toLowerCase().contains("hot") && rs_history.getString("TourDescription").toLowerCase().contains("spring"));
 				if(label[1]==false)
@@ -136,7 +136,7 @@ public class Customer{
 			
 			if(((duration_number[0]==0) && (duration_number[1]==0)) || (duration_number[0] == duration_number[1]))
 				prefer_duration = "0";
-			else if(duration_number[0]>duration_number[1])
+			if(duration_number[0]>duration_number[1])
 				prefer_duration = "2";
 			else
 				prefer_duration = "3";
@@ -149,7 +149,7 @@ public class Customer{
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
 				recommendationID.add(rs.getString("TourID"));
-				if(rs.getString("Duration")==prefer_duration) {
+				if(rs.getString("Duration").contains(prefer_duration)) {
 					prefer_recommendationID.add(rs.getString("TourID"));
 					continue;
 				}
@@ -205,7 +205,7 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(prefer_recommendationID.size());
 			//String outputID = prefer_recommendationID.get(position);
-			output = Statement(prefer_recommendationID.get(0))+"_prefer";
+			output = Statement(prefer_recommendationID.get(0));
 			//select from db
 			//output= Statement(outputID);			
 		}
@@ -213,13 +213,11 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(recommendationID.size());
 			//String outputID = recommendationID.get(position);
-			output = Statement(recommendationID.get(0))+"_original";
+			output = Statement(recommendationID.get(0));
 			//select from db
 			//output= Statement(outputID);
 		}
 		
-		if(output==null)
-			output="it is null";
 		
 		
 		return output;
