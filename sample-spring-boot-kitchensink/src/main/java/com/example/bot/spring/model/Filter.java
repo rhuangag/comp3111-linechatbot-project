@@ -53,7 +53,7 @@ public class Filter {
 				orderNumber++;
 				updateTemporaryFilterTable.close();
 			}
-			result+="Please select one to view detials if you are interested";
+			result+="\nPlease select one of the number to view detials if you are interested";
 		}
 		else {
 			result="Sorry, we cannot find any match answer for your question :( we already record your question and will forward it to the tour company.";
@@ -246,8 +246,8 @@ public class Filter {
 		detailStmt.setString(1, TourID);
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
-			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "We have confirmed tour on"/*here need update and fix for confirmed tour etc.*/+" "+
-					"We have tour on "/*Here need to fixed for accept application tours etc.*/ +" Fee: Weekend "+detialRs.getInt("WeekendPrice")+"Weekday: "+ detialRs.getInt("WeekdayPrice")+". Do you want to book this one? \n";
+			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on"/*here need update and fix for confirmed tour etc.*/+" "+
+					"We have tour on "/*Here need to fixed for accept application tours etc.*/ +"\nFee: Weekend "+detialRs.getInt("WeekendPrice")+" Weekday: "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
 		}
 		
 		//clear Temporary Filter Table after used
