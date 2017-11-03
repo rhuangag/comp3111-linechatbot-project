@@ -224,13 +224,13 @@ public class Filter {
 	public String viewDetails(String keyword) {
 		String result=null;
 		String TourID=null;
-		int order=Integer.parseInt(keyword);
+		
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement clearTempTable =connection.prepareStatement("Delete from TemporaryFilterTable where userId =?");
 		PreparedStatement filterFromTemTable = connection.prepareStatement
 				("SELECT TourID from TemporaryFilterTable where OrderNumber =? and UserId LIKE concat('%', ?, '%')");
-		filterFromTemTable.setInt(1, order);
+		filterFromTemTable.setString(1, keyword);
 		filterFromTemTable.setString(2, userID);
 		
 		ResultSet rsForOrder = filterFromTemTable.executeQuery();
