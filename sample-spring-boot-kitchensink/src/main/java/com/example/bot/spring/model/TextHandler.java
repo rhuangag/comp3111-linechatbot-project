@@ -94,7 +94,7 @@ public class TextHandler {
     			if (temp>=BOOK_I && temp<BOOK_IX) {
     			
     				type=temp+1;
-    				record();
+    				record(customer);
     				
     				rs.close();
     				stmt.close();
@@ -142,7 +142,7 @@ public class TextHandler {
 			if (temp==FILTER_I ) {
 				
 				type=FILTER_II;
-				record();
+				record(customer);
 					
 				
 				//customer?
@@ -173,7 +173,7 @@ public class TextHandler {
 					PreparedStatement stmt4 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
 					stmt4.executeQuery();
-					record();
+					record(customer);
 					
 					rs.close();
 					stmt.close();
@@ -194,7 +194,7 @@ public class TextHandler {
 					
 					connection.close();
 					type=MEANINGLESS;
-					record();
+					record(customer);
 					return "Do you have any other questions?";}
 
 			}
@@ -221,7 +221,7 @@ public class TextHandler {
 		ResultSet rs =stmt1.executeQuery();
 		if(rs.next()) {
 			type =rs.getInt(1);
-			record();
+			record(customer);
 			reply= rs.getString(2);
 			
 			rs.close();
@@ -312,7 +312,7 @@ public class TextHandler {
     		
     		else {
     			type=FAQ;
-        		record();
+        		record(customer);
         		reply=rs.getString(4);
         		rs.close();
 				stmt3.close();
@@ -346,7 +346,7 @@ public class TextHandler {
 		   trigger.close();
 		   if (count!=parts.length) {
     		type=CANCEL;
-    		record();
+    		record(customer);
     		
     		String reply="noRecord";
     		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
@@ -400,12 +400,12 @@ public class TextHandler {
     		if (count!=parts.length) {
     			if (customer.getHistory()==null) {
     				connection.close();
-    				return unknown();
+    				return unknown(customer);
     			}
     			
     			else {
     				type=HISTORY;
-    				record();
+    				record(customer);
     				connection.close();
     				return customer.getHistory();
     			}
@@ -439,12 +439,12 @@ public class TextHandler {
     	if (count!=parts.length) {
     		if (customer.getRecommendation()==null) {
     			connection.close();
-    			return unknown();
+    			return unknown(customer);
     			
     		}
     		else {
     			type=RECOMMENDATION;
-    			record();
+    			record(customer);
     			connection.close();
     			return customer.getRecommendation();
     			}}
@@ -461,6 +461,9 @@ public class TextHandler {
     
     private String newFiltering(Customer customer) {
     		try {
+    			String ID=customer.getID();
+        		Filter filter=new Filter(ID);
+        		
     			String[] parts = text.replaceAll("[^a-zA-Z0-9-\\s]" , "").toLowerCase().split(" ");
     	    	String reply=null;
     	    	int countloop=0;
@@ -483,7 +486,7 @@ public class TextHandler {
     	    	
     	    	if (countloop!=parts.length) {
     	    		type=FILTER_I;
-    	    		record();
+    	    		record(customer);
     	    		connection.close();
     	    		return filter.filterSearch(reply);	
     	    		
@@ -521,7 +524,7 @@ public class TextHandler {
 	    			findtwokey2.close();
     			if (countloop!=parts.length){
     				type=FILTER_I;
-    				record();
+    				record(customer);
     				connection.close();
     				return filter.filterSearch(reply);
     			}
@@ -573,7 +576,7 @@ public class TextHandler {
             			findthreekey3.close();
             			if (countloop!=parts.length) {
             				type=FILTER_I;
-            				record();
+            				record(customer);
             				connection.close();
             				return filter.filterSearch(reply); 
             			}
@@ -593,12 +596,10 @@ public class TextHandler {
     			connection.close();
     			return newBooking(customer);}
     		type=FILTER_I;
-			record();
+			record(customer);
 			connection.close();
 			return filter.filterSearch(temp);
-    	   /* String ID=customer.getID();
-    		Filter filter=new Filter(ID);
-    		return filter.filterSearch(text);*/
+    	   /* */
     		}catch(Exception e) {
     			log.info("Exception while reading database: {}", e.toString());
     	   		return e.toString();
@@ -625,14 +626,14 @@ public class TextHandler {
    		   trigger.close();
     	if (count!=parts.length) {
        		type=FILTER_I;
-       		record();
+       		record(customer);
        		connection.close();
        		Filter filter=new Filter(customer.getID());
        		return filter.filterSearch("book");
        		}
        	else {
        		connection.close();
-       		return unknown();}
+       		return unknown(customer);}
        	
        	}catch(Exception e) {
        		log.info("Exception while reading database: {}", e.toString());
@@ -640,15 +641,15 @@ public class TextHandler {
        	}
     }
     
-    private String unknown() {
+    private String unknown(Customer customer) {
     	type = UNKNOWN;
-    	record();
+    	record(customer);
     	return "Sorry, we can not find matched result.";
     }
     
     //TODO
     //After analysing the text, record the type of input in a temporary database(log) and record the question to the question-recording database
-    public void record() {
+    public void record(Customer customer) {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
