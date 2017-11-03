@@ -44,7 +44,7 @@ public class Filter {
 				
 			while(rs.next()) {
 				updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
-				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
+				updateTemporaryFilterTable.setInt(1,orderNumber);
 				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
 				updateTemporaryFilterTable.setString(3,userID);
 				updateTemporaryFilterTable.executeUpdate();
