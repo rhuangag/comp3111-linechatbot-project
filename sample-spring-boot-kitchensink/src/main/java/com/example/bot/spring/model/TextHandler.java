@@ -475,7 +475,7 @@ public class TextHandler {
     	if(true) { 	String ID=customer.getID();
 		Filter filter=new Filter(ID);
     		
-    		return filter.filterSearch("shimen");}
+    		return filter.filterSearch(text);}
     	
     		try {
     			String ID=customer.getID();
