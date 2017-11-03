@@ -180,7 +180,7 @@ public class TextHandler {
 				if (text=="Yes") {
 					type=BOOK_I;
 					PreparedStatement stmt3 = 
-							connection.prepareStatement("SELECT tourid from tempfortourid where customerid=?");
+							connection.prepareStatement("SELECT temptourid from tempfortourid where customerid=?");
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
 					rs.next();
@@ -201,9 +201,9 @@ public class TextHandler {
 					return booking.askForInformation(type ,tourID);
 					}
 				else    {
-					PreparedStatement stmt5 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					PreparedStatement stmt5 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt5.setString(1,customer.getID());
-					stmt5.executeQuery();
+					stmt5.executeUpdate();
 					rs.close();
 					stmt.close();
 					stmt5.close();
