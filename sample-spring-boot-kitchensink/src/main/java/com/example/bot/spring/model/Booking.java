@@ -301,9 +301,13 @@ public class Booking {
     		ResultSet all = getall.executeQuery();
     		all.next();
     		//getstring(3) need to fix.
+    		String A = "";
+    		A = A + all.getString(3).split("/")[2];
+    		A = A + all.getString(3).split("/")[1];
+    		A = A + all.getString(3).split("/")[0];
     		PreparedStatement insertCT = connection.prepareStatement("Insert Into CustomerTable "
     				+ "VALUES ('" + all.getString(4) + "', '" + all.getString(5) + "', '" + all.getString(6)
-    				+ "', " + Integer.parseInt(all.getString(11)) + ", '" + all.getString(2) +all.getString(3) 
+    				+ "', " + Integer.parseInt(all.getString(11)) + ", '" + all.getString(2) + A 
     				+ "', " + all.getInt(7) + ", '" + all.getInt(8) + "', '" + all.getInt(9) + "', '"
     				+ all.getDouble(12) + "', 0, '" + all.getString(10) + "', 'booked', '" + all.getString(1) + "')");
     		insertCT.executeUpdate();
