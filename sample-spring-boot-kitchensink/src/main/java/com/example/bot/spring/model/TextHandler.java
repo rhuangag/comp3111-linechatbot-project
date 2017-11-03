@@ -145,13 +145,6 @@ public class TextHandler {
 			//now temp is the type of the last question 	
 			if (temp==FILTER_I ) {
 				//the customer just do the filter searching and we have returned a list of tour
-				type=FILTER_II;
-				record(customer);
-					
-				
-				
-					
-				
 				Filter filter =new Filter(customer.getID());
 
 				String number_text=text.replaceAll("[^0-9]" , "");
@@ -168,6 +161,8 @@ public class TextHandler {
 				}
 					
 				//answer is a reply that confirming the information
+				type=FILTER_II;
+				record(customer);
 				String answer=filter.viewDetails(number_text);
 				String answer_reply=answer;
 				String[] parts = answer.split(" ");
