@@ -252,19 +252,20 @@ public class Filter {
 				("SELECT  departuredate from bookingtable where status='availiable' and tourID =?");
 		findAvailiable.setString(1, TourID);
 		ResultSet rsFindAvailiable=findAvailiable.executeQuery();
-		String availiable=null;
+		String availiable="";
 		while(rsFindAvailiable.next()) { 
-		 availiable+=rsFindAvailiable.getString(1)+ " ";
+		 availiable+=rsFindAvailiable.getString(1)+ "\n";
 		}
 		
 		PreparedStatement findConfirmedButAcceptBooking = connection.prepareStatement
 				("SELECT  departuredate from bookingtable where status='availiable' and tourID =?");
 		findConfirmedButAcceptBooking.setString(1, TourID);
 		ResultSet rsFindConfirmedButAcceptBooking=findConfirmedButAcceptBooking.executeQuery();
-		String confirmedButAcceptBook=null;
+		String confirmedButAcceptBook="";
 		while(rsFindConfirmedButAcceptBooking.next()) { 
-		confirmedButAcceptBook+=rsFindConfirmedButAcceptBooking.getString(1)+ " ";
+		confirmedButAcceptBook+=rsFindConfirmedButAcceptBooking.getString(1)+ "\n";
 		}
+		
 		
 		
 		PreparedStatement detailStmt = connection.prepareStatement
@@ -274,7 +275,7 @@ public class Filter {
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
 			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on "+availiable+
-					"We have tour on "+confirmedButAcceptBook+"\nFee: Weekend "+detialRs.getInt("WeekendPrice")+" Weekday: "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
+					"We have tour on "+confirmedButAcceptBook+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
 		}
 		
 		//clear Temporary Filter Table after used
