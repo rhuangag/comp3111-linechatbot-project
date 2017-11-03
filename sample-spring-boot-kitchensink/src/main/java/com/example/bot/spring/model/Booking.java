@@ -292,25 +292,28 @@ public class Booking {
 	public String confirm(String checkAnswer) {
 		try
 		{
+			if (!checkAnswer.toLowerCase().contains("confirm"))
+				return breakBooking();
+
 			Connection connection = KitchenSinkController.getConnection();
     		PreparedStatement getall = connection.prepareStatement("select * from " + 
 			this.customerBelonging.getID());
     		ResultSet all = getall.executeQuery();
     		all.next();
     		PreparedStatement insertCT = connection.prepareStatement("Insert Into CustomerTable "
-    				+ "VALUES (" + all.getString(4) + ", " + all.getString(5) + ", " + all.getString(6)
-    				+ ", " + all.getString(6) + ", " + all.getString(11) + ", " + all.getString(2) 
-    				+ ", " + all.getInt(7) + ", " + all.getInt(8) + ", " + all.getInt(9) + ", "
-    				+ all.getDouble(12) + ", 0, " + all.getString(10) + ", null, " + all.getString(1) + ")");
+    				+ "VALUES ('" + all.getString(4) + "', '" + all.getString(5) + "', '" + all.getString(6)
+    				+ "', '" + all.getString(6) + "', '" + all.getString(11) + "', '" + all.getString(2) 
+    				+ "', '" + all.getInt(7) + "', '" + all.getInt(8) + "', '" + all.getInt(9) + "', '"
+    				+ all.getDouble(12) + "', 0, '" + all.getString(10) + "', null, '" + all.getString(1) + "')");
     		insertCT.executeUpdate();
         	PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
     				+ " where tourID like '" + all.getString(2)+"'");
     		ResultSet duration = searchduration.executeQuery();
     		duration.next();
     		PreparedStatement insertCR = connection.prepareStatement("Insert Into CustomerRecord "
-    				+ "VALUES (" + all.getString(1) + ", " + all.getString(2) + ", " + duration.getString(2)
-    				+ ", " + all.getString(3) + ", " + duration.getString(4) + ", " + all.getString(12) 
-    				+ ", 'booked' " + duration.getString(3) + ")");
+    				+ "VALUES ('" + all.getString(1) + "', '" + all.getString(2) + "', '" + duration.getString(2)
+    				+ "', '" + all.getString(3) + "', '" + duration.getString(4) + "', '" + all.getString(12) 
+    				+ "', 'booked' , '" + duration.getString(3) + "')");
     		insertCR.executeUpdate();
     		searchduration.close();
     		insertCT.close();
@@ -336,8 +339,8 @@ public class Booking {
     				+ this.customerBelonging.getID());
     		ResultSet rs = query.executeQuery();
     		rs.next();
-    		PreparedStatement insert = connection.prepareStatement("Insert into feedbacktable values ( "
-    				+ this.customerBelonging.getID() + ", " + feedback + rs.getString(2) + ")");
+    		PreparedStatement insert = connection.prepareStatement("Insert into feedbacktable values ( '"
+    				+ this.customerBelonging.getID() + "', '" + feedback +"', '"+ rs.getString(2) + "')");
     		insert.executeUpdate();
     		insert.close();
     		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
