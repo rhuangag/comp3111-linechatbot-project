@@ -633,7 +633,7 @@ public class TextHandler {
     private String newBooking(Customer customer) {
        	try {
        	   Connection connection = KitchenSinkController.getConnection();
-   		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=6 and keyword like concat('%',concat(',',?,','),'%')");
+   		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=5 and keyword like concat('%',concat(',',?,','),'%')");
    		   ResultSet key=null;
    		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
    		   int count=0;
