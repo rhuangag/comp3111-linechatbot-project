@@ -31,10 +31,10 @@ public class Filter {
 		String result=null;
 		try {
 		if(rs.next()) {
-				result="Yes.We have those tours that may match your requirements:\n";
+				result="Yes.We have those similar tours that may match your requirements:\n";
 				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
-				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
-				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
+				updateTemporaryFilterTable.setInt(1,orderNumber);
+				updateTemporaryFilterTable.setString(2,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(3,userID);
 				updateTemporaryFilterTable.executeUpdate();
 				
@@ -44,8 +44,8 @@ public class Filter {
 				
 			while(rs.next()) {
 				updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
-				updateTemporaryFilterTable.setString(1,rs.getString("TourID"));
-				updateTemporaryFilterTable.setString(2,rs.getString("TourName"));
+				updateTemporaryFilterTable.setInt(1,orderNumber);
+				updateTemporaryFilterTable.setString(2,rs.getString("TourID"));
 				updateTemporaryFilterTable.setString(3,userID);
 				updateTemporaryFilterTable.executeUpdate();
 				
@@ -53,6 +53,7 @@ public class Filter {
 				orderNumber++;
 				updateTemporaryFilterTable.close();
 			}
+			result+="\nPlease select one of the number to view detials if you are interested";
 		}
 		else {
 			result="Sorry, we cannot find any match answer for your question :( we already record your question and will forward it to the tour company.";
@@ -198,10 +199,11 @@ public class Filter {
 		//Normal cases: filter for keywords in description or tour name(lcoation).
 		else {
 			PreparedStatement filterStmt = connection.prepareStatement
-					("SELECT TourID, TourName from TourList where TourDescription like concat('%', ?, '%') or TourID like concat('%', ?, '%')");
+					("SELECT TourID, TourName from TourList where lower(TourDescription) like concat('%', ?, '%') or lower(TourID) like concat('%', ?, '%') or lower(TourName) like concat('%', ?, '%') or lower(Date) like concat('%', ?, '%')");
 			filterStmt.setString(1, keyword);
 			filterStmt.setString(2, keyword);
 			filterStmt.setString(3, keyword);
+			filterStmt.setString(4, keyword);
 			ResultSet rsForFilter = filterStmt.executeQuery();
 			result=prepareResultAndUpdateTempTable(rsForFilter,connection);
 			rsForFilter.close();
@@ -225,7 +227,7 @@ public class Filter {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement filterFromTemTable = connection.prepareStatement
-				("SELECT TourID from TemporarayFilterTalbe where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
+				("SELECT TourID from TemporaryFilterTable where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
 		filterFromTemTable.setString(1, keyword);
 		filterFromTemTable.setString(2, userID);
 		
@@ -239,13 +241,13 @@ public class Filter {
 		//SELECT detials of the trip
 		//HERE NEED to update since need to show confirmed trip and those still accept application
 		PreparedStatement detailStmt = connection.prepareStatement
-				("SELECT TourID, TourName, TourDescrption, Date, WeekendPrice, WeekdayPrice from TourList where TourID "
+				("SELECT TourID, TourName, TourDescription, Date, WeekendPrice, WeekdayPrice from TourList where TourID "
 						+ "like concat('%', ?, '%')");
 		detailStmt.setString(1, TourID);
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
-			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "We have confirmed tour on"/*here need update and fix for confirmed tour etc.*/+" "+
-					"We have tour on "/*Here need to fixed for accept application tours etc.*/ +" Fee: Weekend "+detialRs.getInt("WeekendPrice")+"Weekday: "+ detialRs.getInt("WeekdayPrice")+". Do you want to book this one? \n";
+			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on"/*here need update and fix for confirmed tour etc.*/+" "+
+					"We have tour on "/*Here need to fixed for accept application tours etc.*/ +"\nFee: Weekend "+detialRs.getInt("WeekendPrice")+" Weekday: "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
 		}
 		
 		//clear Temporary Filter Table after used
