@@ -117,7 +117,7 @@ public class Booking {
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "May I know your ID?";
+    		String asking = "May I know your age?";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
