@@ -275,7 +275,7 @@ public class Filter {
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
 			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on "+availiable+
-					"We have tour on "+confirmedButAcceptBook+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
+					"We have tour on these days still accept application:"+confirmedButAcceptBook+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
 		}
 		
 		//clear Temporary Filter Table after used
