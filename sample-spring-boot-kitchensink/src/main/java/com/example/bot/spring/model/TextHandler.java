@@ -180,7 +180,7 @@ public class TextHandler {
 				if (text=="Yes") {
 					type=BOOK_I;
 					PreparedStatement stmt3 = 
-							connection.prepareStatement("select tourID from tempfortourID where customerID="+customer.getID());
+							connection.prepareStatement("select tourID from tempfortourID where customerID= '"+customer.getID()+"'");
 					//stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
 					rs.next();
