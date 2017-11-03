@@ -99,7 +99,7 @@ public class Booking {
     public String askForName(String date) {
     	try {
     	Connection connection = KitchenSinkController.getConnection();
-		String InsertDB = "Update " + this.customerBelonging.getID() + " SET dateDeparture = " + date;
+		String InsertDB = "Update " + this.customerBelonging.getID() + " SET dateDeparture = '" + date + "'";
 		
 		PreparedStatement stmt = connection.prepareStatement(InsertDB);
 		String asking = "Do you mind telling us your age?";
