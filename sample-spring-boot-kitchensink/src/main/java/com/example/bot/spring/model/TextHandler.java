@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TextHandler {
     //Declaration of data members
 	String text;
-	String keyword;
+	//String keyword;
 	int type;
 	
 	//define different types for question
@@ -41,22 +41,22 @@ public class TextHandler {
     //Constructor
     public TextHandler(String t) {
     	    text=t;
-    	    keyword=null;
+    	   // keyword=null;
     	    type = UNKNOWN;
     }
     
     //Methods
     
-    public String getKeyword() {
-    	    return keyword;
-    }
+  //  public String getKeyword() {
+   // 	    return keyword;
+  //  }
     
     public int getType() {
 	    return type;
 }
     
     //TODO
-    //Analyse the text input and initialize the data member "keyword" with the type and keywords
+    //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
     	
@@ -77,45 +77,49 @@ public class TextHandler {
 		    
 }
    private String checkBooking(Customer customer) {
-    	//check whether the customer is booking
+    	//check whether the customer is in booking process
     	try {
+    		//find the last quetion type for the specific customer who is sending text now
     		Connection connection = KitchenSinkController.getConnection();	
     		String query = "SELECT type FROM questionRecord where customerid=?";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		stmt.setString(1,customer.getID());
     		ResultSet rs =stmt.executeQuery();
-
+    		//check whether the customer ask questions before
     		if (rs.next()) {
     			int temp=rs.getInt(1);
     			while (rs.next()) {
     				temp=rs.getInt(1);
     			}
-    			
+    		//we find the customer did ask question before, temp is the type of last question	
     			if (temp>=BOOK_I && temp<BOOK_IX) {
-    			
+    			    //the customer is in the booking process
     				type=temp+1;
     				record(customer);
     				
     				rs.close();
     				stmt.close();
     				connection.close();
-    				//customer?
+    				
     				Booking booking=new Booking(customer);
-    				//keyword is depending on the current type
+    				//now just assume the customer will perfectly reply the correct information in the prototype
     				return booking.askForInformation(type ,text);
     				}
     			else {
+    				//the customer is not in the booking process
     				rs.close();
 					stmt.close();
 					connection.close();
     				return checkFiltering(customer);}
     				}
     		else {
+    			//the customer did not ask question before. 
     			rs.close();
 				stmt.close();
 				connection.close();
     			return checkFiltering(customer);}
-    		//TODO stop booking
+    	//TODO stop booking 
+    		//now the chatbot did not support the interrupt of the booking process
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 			return e.toString();}
@@ -138,20 +142,28 @@ public class TextHandler {
 			while (rs.next()) {
 				temp=rs.getInt(1);
 			}
-				
+			//now temp is the type of the last question 	
 			if (temp==FILTER_I ) {
-				
+				//the customer just do the filter searching and we have returned a list of tour
 				type=FILTER_II;
 				record(customer);
 					
 				
-				//customer?
+				
 					
-				//keyword is depending on the current type
+				
 				Filter filter =new Filter(customer.getID());
 
-				//the text here is expected to be a number, we can add some code to check it later
-				String answer=filter.viewDetails(text);
+				String number_text=text.replaceAll("[^0-9]" , "");
+				if (number_text.isEmpty()) {
+					rs.close();
+					stmt.close();
+					connection.close();
+					return newFAQ(customer);
+				}
+					
+				//answer is a reply that confirming the information
+				String answer=filter.viewDetails(number_text);
 				String[] parts = answer.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
 				String tourID=parts[0];
 				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
@@ -172,7 +184,7 @@ public class TextHandler {
 					String tourID=rs.getString(1);
 					PreparedStatement stmt4 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
-					stmt4.executeQuery();
+					stmt4.executeUpdate();
 					record(customer);
 					
 					rs.close();
