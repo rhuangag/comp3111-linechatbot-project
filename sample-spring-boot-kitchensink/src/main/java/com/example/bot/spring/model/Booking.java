@@ -249,7 +249,7 @@ public class Booking {
 		//	+ ", numberOfToodlers) values " + number; 
 
 		PreparedStatement queryPrice = connection.prepareStatement("select price from BookingTable where "
-				+ "(tourID like " + tour.getString(2) + " and " + "date like " + tour.getString(3) + ")");
+				+ " tourID like '" + tour.getString(2) + "' and " + "date like '" + tour.getString(3)+"'" );
 		ResultSet pricers = queryPrice.executeQuery();
 		pricers.next();
 		double price = pricers.getInt(1);
@@ -304,7 +304,7 @@ public class Booking {
     				+ all.getDouble(12) + ", 0, " + all.getString(10) + ", null, " + all.getString(1) + ")");
     		insertCT.executeUpdate();
         	PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
-    				+ " where tourID like " + all.getString(2));
+    				+ " where tourID like '" + all.getString(2)+"'");
     		ResultSet duration = searchduration.executeQuery();
     		duration.next();
     		PreparedStatement insertCR = connection.prepareStatement("Insert Into CustomerRecord "
