@@ -302,8 +302,8 @@ public class Booking {
     		all.next();
     		PreparedStatement insertCT = connection.prepareStatement("Insert Into CustomerTable "
     				+ "VALUES ('" + all.getString(4) + "', '" + all.getString(5) + "', '" + all.getString(6)
-    				+ "', '" + all.getString(6) + "', '" + all.getString(11) + "', '" + all.getString(2) 
-    				+ "', '" + all.getInt(7) + "', '" + all.getInt(8) + "', '" + all.getInt(9) + "', '"
+    				+ "', " + Integer.parseInt(all.getString(6)) + ", '" + all.getString(11) +all.getString(2) 
+    				+ "', " + all.getInt(7) + ", '" + all.getInt(8) + "', '" + all.getInt(9) + "', '"
     				+ all.getDouble(12) + "', 0, '" + all.getString(10) + "', null, '" + all.getString(1) + "')");
     		insertCT.executeUpdate();
         	PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
