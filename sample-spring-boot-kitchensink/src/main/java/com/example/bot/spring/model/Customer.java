@@ -134,9 +134,9 @@ public class Customer{
 			else
 				prefer_departure = "weekday";
 			
-			if(((duration_number[0]==0) && (duration_number[1]==0)) || (duration_number[0] == duration_number[1]))
-				prefer_duration = "0";
-			else if(duration_number[0]>duration_number[1])
+			//if(((duration_number[0]==0) && (duration_number[1]==0)) || (duration_number[0] == duration_number[1]))
+			//	prefer_duration = "0";
+			if(duration_number[0]>duration_number[1])
 				prefer_duration = "2";
 			else
 				prefer_duration = "3";
