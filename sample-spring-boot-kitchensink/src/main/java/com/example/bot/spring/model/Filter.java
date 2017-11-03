@@ -31,7 +31,7 @@ public class Filter {
 		String result=null;
 		try {
 		if(rs.next()) {
-				result="Yes.We have those tours that may match your requirements:\n";
+				result="Yes.We have those similar tours that may match your requirements:\n";
 				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
 				updateTemporaryFilterTable.setInt(1,orderNumber);
 				updateTemporaryFilterTable.setString(2,rs.getString("TourID"));
@@ -53,7 +53,7 @@ public class Filter {
 				orderNumber++;
 				updateTemporaryFilterTable.close();
 			}
-			
+			result+="Please select one to view detials if you are interested";
 		}
 		else {
 			result="Sorry, we cannot find any match answer for your question :( we already record your question and will forward it to the tour company.";
@@ -240,7 +240,7 @@ public class Filter {
 		//SELECT detials of the trip
 		//HERE NEED to update since need to show confirmed trip and those still accept application
 		PreparedStatement detailStmt = connection.prepareStatement
-				("SELECT TourID, TourName, TourDescrption, Date, WeekendPrice, WeekdayPrice from TourList where TourID "
+				("SELECT TourID, TourName, TourDescription, Date, WeekendPrice, WeekdayPrice from TourList where TourID "
 						+ "like concat('%', ?, '%')");
 		detailStmt.setString(1, TourID);
 		ResultSet detialRs=detailStmt.executeQuery();
