@@ -170,7 +170,7 @@ public class TextHandler {
 				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
 				stmt2.setString(1,customer.getID());
 				stmt2.setString(2,tourID);
-				stmt2.executeQuery();
+				stmt2.executeUpdate();
 				rs.close();
 				stmt.close();
 				stmt2.close();
@@ -681,7 +681,7 @@ public class TextHandler {
 			stmt.setString(1, text); 
 			stmt.setInt(2, type);
 			stmt.setString(3, customer.getID());
-			stmt.executeQuery();
+			stmt.executeUpdate();
 			if (type<8)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
@@ -689,7 +689,7 @@ public class TextHandler {
 			stmt2.setString(1, text);
 			stmt2.setInt(2, type);
 			stmt2.setString(3, customer.getID());
-			stmt2.executeQuery();
+			stmt2.executeUpdate();
 			stmt2.close();}
 			
 			stmt.close();
