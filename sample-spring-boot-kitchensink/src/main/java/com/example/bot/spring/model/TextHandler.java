@@ -472,6 +472,11 @@ public class TextHandler {
     
     
     private String newFiltering(Customer customer) {
+    	if(true) { 	String ID=customer.getID();
+		Filter filter=new Filter(ID);
+    		
+    		return filter.filterSearch("shimen");}
+    	
     		try {
     			String ID=customer.getID();
         		Filter filter=new Filter(ID);
@@ -491,6 +496,7 @@ public class TextHandler {
     	    		countloop++;
     	    		
     	    	}
+    	 
     			onekey.close();
     			findonekey.close();
     			
