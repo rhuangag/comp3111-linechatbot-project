@@ -60,7 +60,7 @@ public class TextHandler {
     public String messageHandler(Customer customer) {
     	String reply=null;
     	
-    	//reply=checkBooking(customer);
+    	reply=checkBooking(customer);
     /*	checkFiltering();
     	
     	newCancel();
@@ -72,8 +72,6 @@ public class TextHandler {
     	newBooking();
     	otherReply();*/
     	
-    	Booking booking = new Booking (customer);
-    	reply = booking.askForInformation(17,"2");
     	return reply;
     	
 		    
