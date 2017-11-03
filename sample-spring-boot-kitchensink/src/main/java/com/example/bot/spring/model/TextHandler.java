@@ -154,7 +154,7 @@ public class TextHandler {
 				
 				Filter filter =new Filter(customer.getID());
 
-				String number_text=string.replaceAll("[^0-9]" , "");
+				String number_text=text.replaceAll("[^0-9]" , "");
 				if (number_text.isEmpty()) {
 					rs.close();
 					stmt.close();
