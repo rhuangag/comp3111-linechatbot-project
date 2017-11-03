@@ -182,6 +182,7 @@ public class TextHandler {
 					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
+					rs.next();
 					String tourID=rs.getString(1);
 					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
