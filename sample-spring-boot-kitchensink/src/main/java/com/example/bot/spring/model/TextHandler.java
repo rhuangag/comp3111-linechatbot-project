@@ -332,9 +332,11 @@ public class TextHandler {
 				connection.close();
         		return reply;}  
     //	}
+    		
     	}catch (Exception e){
     		log.info("Exception while reading database: {}", e.toString());
-    		return e.toString();}
+    		
+    		return (e.toString()+"newFAQ");}
         
         
     }
@@ -386,10 +388,12 @@ public class TextHandler {
     		{
     		 connection.close();
     		return newHitory(customer);}
+		 
 	  }
 	   catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return e.toString();}
+			
+			return (e.toString()+"newcancel");}
 	   return result;
     }
    
@@ -596,11 +600,13 @@ public class TextHandler {
     			}
     		String[] number=text.replaceAll("[^0-9]", ",").split(",");
     		String temp="";
-    		temp+=number[0];
-    		for (int i=1;i<number.length;i++) {
+    		
+    		for (int i=0;i<number.length;i++) {
     			if (!number[i].isEmpty()) {
-    				temp+=",";
+    				
     				temp+=number[i];
+    				if (i!=number.length-1)
+    					temp+=",";
     				
     			}
     		}
@@ -614,7 +620,7 @@ public class TextHandler {
     	   /* */
     		}catch(Exception e) {
     			log.info("Exception while reading database: {}", e.toString());
-    	   		return e.toString();
+    	   		return (e.toString()+"newfiltering");
     		}
     }
     
@@ -649,7 +655,7 @@ public class TextHandler {
        	
        	}catch(Exception e) {
        		log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();
+	   		return (e.toString()+"newbooking");
        	}
     }
     
