@@ -305,7 +305,7 @@ public class Booking {
     				+ "VALUES ('" + all.getString(4) + "', '" + all.getString(5) + "', '" + all.getString(6)
     				+ "', " + Integer.parseInt(all.getString(11)) + ", '" + all.getString(2) +all.getString(3) 
     				+ "', " + all.getInt(7) + ", '" + all.getInt(8) + "', '" + all.getInt(9) + "', '"
-    				+ all.getDouble(12) + "', 0, '" + all.getString(10) + "', null, '" + all.getString(1) + "')");
+    				+ all.getDouble(12) + "', 0, '" + all.getString(10) + "', 'booked', '" + all.getString(1) + "')");
     		insertCT.executeUpdate();
         	PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
     				+ " where tourID like '" + all.getString(2)+"'");
@@ -341,7 +341,7 @@ public class Booking {
     		ResultSet rs = query.executeQuery();
     		rs.next();
     		PreparedStatement insert = connection.prepareStatement("Insert into feedbacktable values ( '"
-    				+ this.customerBelonging.getID() + "', '" + feedback +"', '"+ rs.getString(2) + "')");
+    				+ this.customerBelonging.getID() + "', '" + rs.getString(2) +"', '"+ feedback + "')");
     		insert.executeUpdate();
     		insert.close();
     		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
