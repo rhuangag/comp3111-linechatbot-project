@@ -31,7 +31,7 @@ public class Filter {
 		String result=null;
 		try {
 		if(rs.next()) {
-				result="Yes.We have those similar tours that may match your requirements:\n";
+				result="Yes. We have those similar tours that may match your requirements:\n";
 				PreparedStatement updateTemporaryFilterTable = connection.prepareStatement("INSERT into TemporaryFilterTable VALUES (?,?,?)");
 				updateTemporaryFilterTable.setInt(1,orderNumber);
 				updateTemporaryFilterTable.setString(2,rs.getString("TourID"));
@@ -53,10 +53,10 @@ public class Filter {
 				orderNumber++;
 				updateTemporaryFilterTable.close();
 			}
-			result+="\nPlease select one of the number to view detials if you are interested";
+			result+="\nPlease select one of the number to view details if you are interested";
 		}
 		else {
-			result="Sorry, we cannot find any match answer for your question :( we already record your question and will forward it to the tour company.";
+			result="Sorry, we cannot find any match answer for your question :( We already record your question and will forward it to the tour company.";
 		}
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
@@ -224,13 +224,13 @@ public class Filter {
 	public String viewDetails(String keyword) {
 		String result=null;
 		String TourID=null;
-		int order=Integer.parseInt(keyword);
+		
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		PreparedStatement clearTempTable =connection.prepareStatement("Delete from TemporaryFilterTable where userId like concat ('%', ?, '%')");
+		PreparedStatement clearTempTable =connection.prepareStatement("Delete from TemporaryFilterTable where userId =?");
 		PreparedStatement filterFromTemTable = connection.prepareStatement
 				("SELECT TourID from TemporaryFilterTable where OrderNumber =? and UserId LIKE concat('%', ?, '%')");
-		filterFromTemTable.setInt(1, order);
+		filterFromTemTable.setString(1, keyword);
 		filterFromTemTable.setString(2, userID);
 		
 		ResultSet rsForOrder = filterFromTemTable.executeQuery();
@@ -248,15 +248,34 @@ public class Filter {
 			return "Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)";
 		}
 		//SELECT detials of the trip
-		//HERE NEED to update since need to show confirmed trip and those still accept application
+		PreparedStatement findAvailiable = connection.prepareStatement
+				("SELECT  departuredate from bookingtable where status='availiable' and tourID =?");
+		findAvailiable.setString(1, TourID);
+		ResultSet rsFindAvailiable=findAvailiable.executeQuery();
+		String availiable="";
+		while(rsFindAvailiable.next()) { 
+		 availiable+=rsFindAvailiable.getString(1)+ "\n";
+		}
+		
+		PreparedStatement findConfirmedButAcceptBooking = connection.prepareStatement
+				("SELECT  departuredate from bookingtable where status='confrimed1' and tourID =?");
+		findConfirmedButAcceptBooking.setString(1, TourID);
+		ResultSet rsFindConfirmedButAcceptBooking=findConfirmedButAcceptBooking.executeQuery();
+		String confirmedButAcceptBook="";
+		while(rsFindConfirmedButAcceptBooking.next()) { 
+		confirmedButAcceptBook+=rsFindConfirmedButAcceptBooking.getString(1)+ "\n";
+		}
+		
+		
+		
 		PreparedStatement detailStmt = connection.prepareStatement
 				("SELECT TourID, TourName, TourDescription, Date, WeekendPrice, WeekdayPrice from TourList where TourID "
 						+ "like concat('%', ?, '%')");
 		detailStmt.setString(1, TourID);
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
-			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on"/*here need update and fix for confirmed tour etc.*/+" "+
-					"We have tour on "/*Here need to fixed for accept application tours etc.*/ +"\nFee: Weekend "+detialRs.getInt("WeekendPrice")+" Weekday: "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
+			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on "+availiable+
+					"We have tour on "+confirmedButAcceptBook+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
 		}
 		
 		//clear Temporary Filter Table after used
@@ -264,6 +283,10 @@ public class Filter {
 		clearTempTable.setString(1, userID);
 		clearTempTable.executeUpdate();
 		clearTempTable.close();
+		findConfirmedButAcceptBooking.close();
+		rsFindConfirmedButAcceptBooking.close();
+		findAvailiable.close();
+		rsFindAvailiable.close();
 		rsForOrder.close();
 		filterFromTemTable.close();
 		detailStmt.close();

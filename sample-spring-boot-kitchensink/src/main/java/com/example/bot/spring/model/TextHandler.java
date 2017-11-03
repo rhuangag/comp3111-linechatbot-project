@@ -152,6 +152,11 @@ public class TextHandler {
 					rs.close();
 					stmt.close();
 					connection.close();
+					PreparedStatement clearTempFilterTable = connection.prepareStatement
+							("Delete from TemporaryFilterTable where userId =?");
+					clearTempFilterTable.setString(1, customer.getID());
+					clearTempFilterTable.executeUpdate();
+					clearTempFilterTable.close();
 					return newFAQ(customer);
 				}
 					
