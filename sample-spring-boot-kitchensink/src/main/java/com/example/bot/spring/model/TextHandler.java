@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TextHandler {
     //Declaration of data members
 	String text;
-	String keyword;
+	//String keyword;
 	int type;
 	
 	//define different types for question
@@ -41,22 +41,22 @@ public class TextHandler {
     //Constructor
     public TextHandler(String t) {
     	    text=t;
-    	    keyword=null;
+    	   // keyword=null;
     	    type = UNKNOWN;
     }
     
     //Methods
     
-    public String getKeyword() {
-    	    return keyword;
-    }
+  //  public String getKeyword() {
+   // 	    return keyword;
+  //  }
     
     public int getType() {
 	    return type;
 }
     
     //TODO
-    //Analyse the text input and initialize the data member "keyword" with the type and keywords
+    //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
     	
@@ -77,45 +77,49 @@ public class TextHandler {
 		    
 }
    private String checkBooking(Customer customer) {
-    	//check whether the customer is booking
+    	//check whether the customer is in booking process
     	try {
+    		//find the last quetion type for the specific customer who is sending text now
     		Connection connection = KitchenSinkController.getConnection();	
     		String query = "SELECT type FROM questionRecord where customerid=?";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		stmt.setString(1,customer.getID());
     		ResultSet rs =stmt.executeQuery();
-
+    		//check whether the customer ask questions before
     		if (rs.next()) {
     			int temp=rs.getInt(1);
     			while (rs.next()) {
     				temp=rs.getInt(1);
     			}
-    			
+    		//we find the customer did ask question before, temp is the type of last question	
     			if (temp>=BOOK_I && temp<BOOK_IX) {
-    			
+    			    //the customer is in the booking process
     				type=temp+1;
     				record(customer);
     				
     				rs.close();
     				stmt.close();
     				connection.close();
-    				//customer?
+    				
     				Booking booking=new Booking(customer);
-    				//keyword is depending on the current type
+    				//now just assume the customer will perfectly reply the correct information in the prototype
     				return booking.askForInformation(type ,text);
     				}
     			else {
+    				//the customer is not in the booking process
     				rs.close();
 					stmt.close();
 					connection.close();
     				return checkFiltering(customer);}
     				}
     		else {
+    			//the customer did not ask question before. 
     			rs.close();
 				stmt.close();
 				connection.close();
     			return checkFiltering(customer);}
-    		//TODO stop booking
+    	//TODO stop booking 
+    		//now the chatbot did not support the interrupt of the booking process
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 			return e.toString();}
@@ -138,31 +142,40 @@ public class TextHandler {
 			while (rs.next()) {
 				temp=rs.getInt(1);
 			}
-				
+			//now temp is the type of the last question 	
 			if (temp==FILTER_I ) {
-				
+				//the customer just do the filter searching and we have returned a list of tour
 				type=FILTER_II;
 				record(customer);
 					
 				
-				//customer?
+				
 					
-				//keyword is depending on the current type
+				
 				Filter filter =new Filter(customer.getID());
 
-				//the text here is expected to be a number, we can add some code to check it later
-				String answer=filter.viewDetails(text);
-				String[] parts = answer.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+				String number_text=text.replaceAll("[^0-9]" , "");
+				if (number_text.isEmpty()) {
+					rs.close();
+					stmt.close();
+					connection.close();
+					return newFAQ(customer);
+				}
+					
+				//answer is a reply that confirming the information
+				String answer=filter.viewDetails(number_text);
+				String answer_reply=answer;
+				String[] parts = answer.split(" ");
 				String tourID=parts[0];
 				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
 				stmt2.setString(1,customer.getID());
 				stmt2.setString(2,tourID);
-				stmt2.executeQuery();
+				stmt2.executeUpdate();
 				rs.close();
 				stmt.close();
 				stmt2.close();
 				connection.close();
-				return answer;}
+				return answer_reply;}
 			else if (temp==FILTER_II) {
 				if (text=="Yes") {
 					type=BOOK_I;
@@ -170,9 +183,9 @@ public class TextHandler {
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
 					String tourID=rs.getString(1);
-					PreparedStatement stmt4 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
-					stmt4.executeQuery();
+					stmt4.executeUpdate();
 					record(customer);
 					
 					rs.close();
@@ -320,9 +333,11 @@ public class TextHandler {
 				connection.close();
         		return reply;}  
     //	}
+    		
     	}catch (Exception e){
     		log.info("Exception while reading database: {}", e.toString());
-    		return e.toString();}
+    		
+    		return (e.toString()+"newFAQ");}
         
         
     }
@@ -374,10 +389,12 @@ public class TextHandler {
     		{
     		 connection.close();
     		return newHitory(customer);}
+		 
 	  }
 	   catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return e.toString();}
+			
+			return (e.toString()+"newcancel");}
 	   return result;
     }
    
@@ -468,7 +485,7 @@ public class TextHandler {
     	    	String reply=null;
     	    	int countloop=0;
     	    	Connection connection = KitchenSinkController.getConnection();
-    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE keyword1 =?");
+    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
     	    	ResultSet onekey=null;
     	    	for (int i=0; i<parts.length;i++) {
     	    		findonekey.setString(1, parts[i]);
@@ -493,7 +510,7 @@ public class TextHandler {
     				
     	    	}
     		//now check two keywords
-    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
     	    	ResultSet twokey1=null;
     	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
@@ -508,7 +525,7 @@ public class TextHandler {
     			twokey1.close();
     			findtwokey1.close();
     			if (countloop!=parts.length) {
-	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
 	    			ResultSet twokey2=null;
 	    			countloop=0;
     	    		for (int i=0; i<parts.length;i++) {
@@ -530,7 +547,7 @@ public class TextHandler {
     			}
     		}
     		//now find three keyword
-    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
     	    	ResultSet threekey1=null;
     	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
@@ -545,7 +562,7 @@ public class TextHandler {
     			threekey1.close();
     			findthreekey1.close();
     			if (countloop!=parts.length) {
-    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
         	    	ResultSet threekey2=null;
         	    	countloop=0;
         	    	for (int i=0; i<parts.length;i++) {
@@ -560,7 +577,7 @@ public class TextHandler {
         			threekey2.close();
         			findthreekey2.close();
         			if (countloop!=parts.length) {
-        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword3 LIKE concat('%',concat(',',?,','),'%')");
+        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
             	    	ResultSet threekey3=null;
             	    	countloop=0;
             	    	for (int i=0; i<parts.length;i++) {
@@ -584,11 +601,13 @@ public class TextHandler {
     			}
     		String[] number=text.replaceAll("[^0-9]", ",").split(",");
     		String temp="";
-    		temp+=number[0];
-    		for (int i=1;i<number.length;i++) {
+    		
+    		for (int i=0;i<number.length;i++) {
     			if (!number[i].isEmpty()) {
-    				temp+=",";
+    				
     				temp+=number[i];
+    				if (i!=number.length-1)
+    					temp+=",";
     				
     			}
     		}
@@ -602,7 +621,7 @@ public class TextHandler {
     	   /* */
     		}catch(Exception e) {
     			log.info("Exception while reading database: {}", e.toString());
-    	   		return e.toString();
+    	   		return (e.toString()+"newfiltering");
     		}
     }
     
@@ -637,7 +656,7 @@ public class TextHandler {
        	
        	}catch(Exception e) {
        		log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();
+	   		return (e.toString()+"newbooking");
        	}
     }
     
@@ -662,7 +681,7 @@ public class TextHandler {
 			stmt.setString(1, text); 
 			stmt.setInt(2, type);
 			stmt.setString(3, customer.getID());
-			stmt.executeQuery();
+			stmt.executeUpdate();
 			if (type<8)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
@@ -670,7 +689,7 @@ public class TextHandler {
 			stmt2.setString(1, text);
 			stmt2.setInt(2, type);
 			stmt2.setString(3, customer.getID());
-			stmt2.executeQuery();
+			stmt2.executeUpdate();
 			stmt2.close();}
 			
 			stmt.close();
