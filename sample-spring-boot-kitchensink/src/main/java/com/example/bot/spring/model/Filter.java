@@ -53,6 +53,7 @@ public class Filter {
 				orderNumber++;
 				updateTemporaryFilterTable.close();
 			}
+			
 		}
 		else {
 			result="Sorry, we cannot find any match answer for your question :( we already record your question and will forward it to the tour company.";
@@ -225,7 +226,7 @@ public class Filter {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement filterFromTemTable = connection.prepareStatement
-				("SELECT TourID from TemporarayFilterTalbe where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
+				("SELECT TourID from TemporarayFilterTable where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
 		filterFromTemTable.setString(1, keyword);
 		filterFromTemTable.setString(2, userID);
 		
