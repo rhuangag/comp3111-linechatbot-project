@@ -92,7 +92,7 @@ public class TextHandler {
     				temp=rs.getInt(1);
     			}
     		//we find the customer did ask question before, temp is the type of last question	
-    			if (temp>=BOOK_I && temp<BOOK_IX) {
+    			if (temp>=BOOK_I && temp<=BOOK_XII) {
     			    //the customer is in the booking process
     				type=temp+1;
     				record(customer);
@@ -177,16 +177,19 @@ public class TextHandler {
 				connection.close();
 				return answer_reply;}
 			else if (temp==FILTER_II) {
-				if (text=="Yes") {
+				if (text.toLowerCase().contains("yes")) {
 					type=BOOK_I;
-					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
+					PreparedStatement stmt3 = 
+							connection.prepareStatement("SELECT temptourid from tempfortourid where customerid=?");
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
+					rs.next();
 					String tourID=rs.getString(1);
+					record(customer);
 					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
 					stmt4.executeUpdate();
-					record(customer);
+					
 					
 					rs.close();
 					stmt.close();
@@ -198,9 +201,9 @@ public class TextHandler {
 					return booking.askForInformation(type ,tourID);
 					}
 				else    {
-					PreparedStatement stmt5 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					PreparedStatement stmt5 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt5.setString(1,customer.getID());
-					stmt5.executeQuery();
+					stmt5.executeUpdate();
 					rs.close();
 					stmt.close();
 					stmt5.close();
