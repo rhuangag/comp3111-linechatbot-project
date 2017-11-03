@@ -120,6 +120,7 @@ public class Customer{
 					duration_number[0]++;
 				else
 					duration_number[1]++;
+				
 				if(label[0]==false)
 					label[0] = (rs_history.getString("TourDescription").toLowerCase().contains("hot") && rs_history.getString("TourDescription").toLowerCase().contains("spring"));
 				if(label[1]==false)
@@ -205,7 +206,7 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(prefer_recommendationID.size());
 			//String outputID = prefer_recommendationID.get(position);
-			output = Statement(prefer_recommendationID.get(0))+"_prefer";
+			output = Statement(prefer_recommendationID.get(0))+"_prefer"+prefer_duration;
 			//select from db
 			//output= Statement(outputID);			
 		}
@@ -213,7 +214,7 @@ public class Customer{
 			//Random rand = new Random(System.currentTimeMillis());
 			//int position = rand.nextInt(recommendationID.size());
 			//String outputID = recommendationID.get(position);
-			output = Statement(recommendationID.get(0))+"_original";
+			output = Statement(recommendationID.get(0))+"_original"+prefer_duration;
 			//select from db
 			//output= Statement(outputID);
 		}
