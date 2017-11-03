@@ -164,6 +164,7 @@ public class TextHandler {
 					
 				//answer is a reply that confirming the information
 				String answer=filter.viewDetails(number_text);
+				String answer_reply=answer;
 				String[] parts = answer.split(" ");
 				String tourID=parts[0];
 				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
@@ -174,7 +175,7 @@ public class TextHandler {
 				stmt.close();
 				stmt2.close();
 				connection.close();
-				return answer;}
+				return answer_reply;}
 			else if (temp==FILTER_II) {
 				if (text=="Yes") {
 					type=BOOK_I;
