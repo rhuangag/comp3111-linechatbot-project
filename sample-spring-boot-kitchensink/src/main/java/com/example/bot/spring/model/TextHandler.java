@@ -151,12 +151,13 @@ public class TextHandler {
 				if (number_text.isEmpty()) {
 					rs.close();
 					stmt.close();
-					connection.close();
+					
 					PreparedStatement clearTempFilterTable = connection.prepareStatement
 							("Delete from TemporaryFilterTable where userId =?");
 					clearTempFilterTable.setString(1, customer.getID());
 					clearTempFilterTable.executeUpdate();
 					clearTempFilterTable.close();
+					connection.close();
 					return newFAQ(customer);
 				}
 					
