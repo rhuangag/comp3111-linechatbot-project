@@ -484,7 +484,7 @@ public class TextHandler {
     	    	String reply=null;
     	    	int countloop=0;
     	    	Connection connection = KitchenSinkController.getConnection();
-    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE keyword1 =?");
+    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
     	    	ResultSet onekey=null;
     	    	for (int i=0; i<parts.length;i++) {
     	    		findonekey.setString(1, parts[i]);
@@ -509,7 +509,7 @@ public class TextHandler {
     				
     	    	}
     		//now check two keywords
-    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
     	    	ResultSet twokey1=null;
     	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
@@ -524,7 +524,7 @@ public class TextHandler {
     			twokey1.close();
     			findtwokey1.close();
     			if (countloop!=parts.length) {
-	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
 	    			ResultSet twokey2=null;
 	    			countloop=0;
     	    		for (int i=0; i<parts.length;i++) {
@@ -546,7 +546,7 @@ public class TextHandler {
     			}
     		}
     		//now find three keyword
-    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
     	    	ResultSet threekey1=null;
     	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
@@ -561,7 +561,7 @@ public class TextHandler {
     			threekey1.close();
     			findthreekey1.close();
     			if (countloop!=parts.length) {
-    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
         	    	ResultSet threekey2=null;
         	    	countloop=0;
         	    	for (int i=0; i<parts.length;i++) {
@@ -576,7 +576,7 @@ public class TextHandler {
         			threekey2.close();
         			findthreekey2.close();
         			if (countloop!=parts.length) {
-        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword3 LIKE concat('%',concat(',',?,','),'%')");
+        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
             	    	ResultSet threekey3=null;
             	    	countloop=0;
             	    	for (int i=0; i<parts.length;i++) {
