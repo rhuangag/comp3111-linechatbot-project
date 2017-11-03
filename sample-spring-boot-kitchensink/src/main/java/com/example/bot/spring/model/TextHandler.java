@@ -73,7 +73,7 @@ public class TextHandler {
     	otherReply();*/
     	
     	Booking booking = new Booking (customer);
-    	reply = booking.askForInformation(13,"20");
+    	reply = booking.askForInformation(14,"13355288976");
     	return reply;
     	
 		    
