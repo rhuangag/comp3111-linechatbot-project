@@ -249,7 +249,7 @@ public class Booking {
 		//	+ ", numberOfToodlers) values " + number; 
 
 		PreparedStatement queryPrice = connection.prepareStatement("select price from BookingTable where "
-				+ "(tourID like" + tour.getString(2) + "and " + "date like " + tour.getString(3) + ")");
+				+ "(tourID like " + tour.getString(2) + " and " + "date like " + tour.getString(3) + ")");
 		ResultSet pricers = queryPrice.executeQuery();
 		pricers.next();
 		double price = pricers.getInt(1);
@@ -259,7 +259,7 @@ public class Booking {
 		int NumT = tour.getInt(9);
 		double finalcost = NumA*price + NumC*0.8*price;
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
-		+ "Set fee = " + finalcost);
+		+ " Set fee = " + finalcost);
 		insertp.executeUpdate();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
