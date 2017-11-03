@@ -314,13 +314,13 @@ public class Customer{
 		Connection connection = KitchenSinkController.getConnection();
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-		("SELECT * FROM CustomerTable where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
+		("SELECT * FROM CustomerTable where UserID =? and lower(TourJoined) LIKE concat('%', ?, '%')");
 		//not sure whether can run with this + and + type, need test
 		stmtForCustomerTable.setString(1, userID);
 		stmtForCustomerTable.setString(2, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
 		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
-		("Update CustomerTable SET Status='cancelled by customer' where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
+		("Update CustomerTable SET Status='cancelled by customer' where UserID =? and lower(TourJoined) LIKE concat('%', ?, '%')");
 		stmtForUpdateCustomerTable.setString(1, userID);
 		stmtForUpdateCustomerTable.setString(2, keyword);
 		stmtForUpdateCustomerTable.executeUpdate();
@@ -328,7 +328,7 @@ public class Customer{
 		if (rsForCustomerTable.next()) {
 			//update status to cancelled in customer record
 			PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-			("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE concat('%', ?, '%') and TourID LIKE concat('%', ?, '%')");
+			("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID =? and lower(TourID) LIKE concat('%', ?, '%')");
 			stmtForCustomerRecord.setString(1, userID);
 			stmtForCustomerRecord.setString(2, keyword);
 			stmtForCustomerRecord.executeUpdate();
