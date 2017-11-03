@@ -249,7 +249,7 @@ public class Booking {
 		//	+ ", numberOfToodlers) values " + number; 
 
 		PreparedStatement queryPrice = connection.prepareStatement("select price from BookingTable where "
-				+ " tourID like '" + tour.getString(2) + "' and " + "date like '" + tour.getString(3)+"'" );
+				+ " tourID like '" + tour.getString(2) + "' and " + "departuredate like '" + tour.getString(3)+"'" );
 		ResultSet pricers = queryPrice.executeQuery();
 		pricers.next();
 		double price = pricers.getInt(1);
