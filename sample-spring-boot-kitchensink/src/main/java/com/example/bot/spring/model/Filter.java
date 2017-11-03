@@ -226,7 +226,7 @@ public class Filter {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement filterFromTemTable = connection.prepareStatement
-				("SELECT TourID from TemporarayFilterTable where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
+				("SELECT TourID from TemporaryFilterTable where OrderNumber like concat('%', ?, '%') and UserId LIKE concat('%', ?, '%')");
 		filterFromTemTable.setString(1, keyword);
 		filterFromTemTable.setString(2, userID);
 		
