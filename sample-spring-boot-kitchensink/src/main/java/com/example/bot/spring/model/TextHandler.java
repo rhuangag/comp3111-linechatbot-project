@@ -164,17 +164,18 @@ public class TextHandler {
 					
 				//answer is a reply that confirming the information
 				String answer=filter.viewDetails(number_text);
-				String[] parts = answer.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+				String answer_reply=answer;
+				String[] parts = answer.split(" ");
 				String tourID=parts[0];
 				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
 				stmt2.setString(1,customer.getID());
 				stmt2.setString(2,tourID);
-				stmt2.executeQuery();
+				stmt2.executeUpdate();
 				rs.close();
 				stmt.close();
 				stmt2.close();
 				connection.close();
-				return answer;}
+				return answer_reply;}
 			else if (temp==FILTER_II) {
 				if (text=="Yes") {
 					type=BOOK_I;
@@ -182,7 +183,7 @@ public class TextHandler {
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
 					String tourID=rs.getString(1);
-					PreparedStatement stmt4 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
 					stmt4.executeUpdate();
 					record(customer);
@@ -680,7 +681,7 @@ public class TextHandler {
 			stmt.setString(1, text); 
 			stmt.setInt(2, type);
 			stmt.setString(3, customer.getID());
-			stmt.executeQuery();
+			stmt.executeUpdate();
 			if (type<8)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
@@ -688,7 +689,7 @@ public class TextHandler {
 			stmt2.setString(1, text);
 			stmt2.setInt(2, type);
 			stmt2.setString(3, customer.getID());
-			stmt2.executeQuery();
+			stmt2.executeUpdate();
 			stmt2.close();}
 			
 			stmt.close();
