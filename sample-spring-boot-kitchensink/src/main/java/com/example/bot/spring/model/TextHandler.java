@@ -179,8 +179,9 @@ public class TextHandler {
 			else if (temp==FILTER_II) {
 				if (text=="Yes") {
 					type=BOOK_I;
-					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
-					stmt3.setString(1,customer.getID());
+					PreparedStatement stmt3 = 
+							connection.prepareStatement("select tourID from tempfortourID where customerID="+customer.getID());
+					//stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
 					rs.next();
 					String tourID=rs.getString(1);
