@@ -368,7 +368,7 @@ public class TextHandler {
     		record(customer);
     		
     		String reply="noRecord";
-    		PreparedStatement stmt = connection.prepareStatement("SELECT Tourid FROM Customerrecord WHERE lower(Tourid) like concat('%',?,'%')");
+    		PreparedStatement stmt = connection.prepareStatement("SELECT Tourid FROM Customerrecord WHERE lower(Tourid) =?");
     		
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
