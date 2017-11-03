@@ -114,7 +114,7 @@ public class Booking {
     public String askage(String name) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = " + name;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = '" + name + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "May I know your ID?";
@@ -132,7 +132,7 @@ public class Booking {
     public String askForID(String age){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = " + age;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = '" + age + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "May I know your ID?";
@@ -148,7 +148,7 @@ public class Booking {
     public String askphone(String ID){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = " + ID;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us your phone number?";
@@ -166,7 +166,7 @@ public class Booking {
     public String askForAdults(String phone) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = " + phone;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = '" + phone + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us the number of adults?";
@@ -235,7 +235,7 @@ public class Booking {
 	public String doubleCheck(String request) {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String InsertDB = "Update " + this.customerBelonging.getID() + " SET SpecialRequest = " + request;
+		String InsertDB = "Update " + this.customerBelonging.getID() + " SET SpecialRequest = '" + request + "'";
 		PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
 		stmt1.executeUpdate();
 		
