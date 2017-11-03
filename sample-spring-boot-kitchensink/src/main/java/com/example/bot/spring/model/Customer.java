@@ -36,8 +36,8 @@ public class Customer{
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
-					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDepartureDate: "+rs.getString("DepartureDate")+ 
-							"\tDuration: "+rs.getString("Duration")+"\tPrice: "+rs.getString("Price")+"\tStatus: "+rs.getString("Status")+"\n";
+					String result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nDepartureDate: "+rs.getString("DepartureDate")+ 
+							"\nDuration: "+rs.getString("Duration")+"\nPrice: "+rs.getString("Price")+"\nStatus: "+rs.getString("Status")+"\n";
 					history.add(result);
 				}
 				rs.close();
@@ -55,7 +55,7 @@ public class Customer{
 			if(history.isEmpty())
 			    return "There is no record.";
 			else {
-				String result=null;
+				String result="";
 				Iterator<String> iterator=history.iterator();
 				while(iterator.hasNext()) {
 					result=result+iterator.next()+"\n";
