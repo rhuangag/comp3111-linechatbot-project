@@ -180,15 +180,16 @@ public class TextHandler {
 				if (text=="Yes") {
 					type=BOOK_I;
 					PreparedStatement stmt3 = 
-							connection.prepareStatement("select tourID from tempfortourID where customerID= '"+customer.getID()+"'");
-					//stmt3.setString(1,customer.getID());
+							connection.prepareStatement("SELECT tourid from tempfortourid where customerid=?");
+					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
 					rs.next();
 					String tourID=rs.getString(1);
+					record(customer);
 					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
 					stmt4.executeUpdate();
-					record(customer);
+					
 					
 					rs.close();
 					stmt.close();
