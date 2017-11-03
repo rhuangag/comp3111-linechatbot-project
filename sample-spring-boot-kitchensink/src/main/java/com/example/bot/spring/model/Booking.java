@@ -243,7 +243,7 @@ public class Booking {
 		PreparedStatement queryTour = connection.prepareStatement("SELECT * from " +
 				this.customerBelonging.getID());
 		ResultSet tour = queryTour.executeQuery();
-		queryTour.close();
+		
 
 		//String queryAns = " insert into questionRecord (" + this.customerBelonging.getID()
 		//	+ ", numberOfToodlers) values " + number; 
@@ -274,6 +274,8 @@ public class Booking {
 				+ "Total Price: " + finalcost + "(HKD)\n"
 				+ "Special Request: " + tour.getString(10) + "\n"
 				+ "Please check if they are correct.If correct, please reply 'confirm'.";
+		queryTour.close();
+		tour.close();
 		queryPrice.close();
 		insertp.close();
 		connection.close();

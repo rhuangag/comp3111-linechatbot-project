@@ -92,7 +92,7 @@ public class TextHandler {
     				temp=rs.getInt(1);
     			}
     		//we find the customer did ask question before, temp is the type of last question	
-    			if (temp>=BOOK_I && temp<BOOK_XII) {
+    			if (temp>=BOOK_I && temp<=BOOK_XII) {
     			    //the customer is in the booking process
     				type=temp+1;
     				record(customer);
