@@ -164,7 +164,7 @@ public class TextHandler {
 					
 				//answer is a reply that confirming the information
 				String answer=filter.viewDetails(number_text);
-				String[] parts = answer.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+				String[] parts = answer.split(" ");
 				String tourID=parts[0];
 				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
 				stmt2.setString(1,customer.getID());
@@ -182,7 +182,7 @@ public class TextHandler {
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
 					String tourID=rs.getString(1);
-					PreparedStatement stmt4 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
 					stmt4.executeUpdate();
 					record(customer);
