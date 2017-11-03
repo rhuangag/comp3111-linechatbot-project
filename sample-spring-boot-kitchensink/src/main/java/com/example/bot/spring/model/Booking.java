@@ -320,7 +320,7 @@ public class Booking {
     		duration.next();
     		PreparedStatement insertCR = connection.prepareStatement("Insert Into CustomerRecord "
     				+ "VALUES ('" + all.getString(1) + "', '" + all.getString(2) + "', '" + duration.getString(2)
-    				+ "', '" + all.getString(3) + "', '" + duration.getString(4) + "', '" + all.getString(12) 
+    				+ "', '" + all.getString(3) + "', '" + duration.getString(4) + "', '" + all.getDouble(12) 
     				+ "', 'booked' , '" + duration.getString(3) + "')");
     		insertCR.executeUpdate();
     		searchduration.close();
