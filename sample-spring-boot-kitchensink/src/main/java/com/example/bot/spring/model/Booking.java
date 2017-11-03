@@ -31,17 +31,17 @@ public class Booking {
 			case 12:
 				return this.askage(information);
 			case 13:
-				return this.askForAdults(information);
-			case 14:
 				return this.askphone(information);
+			case 14:
+				return this.askForAdults(information);
 			case 15:
 				return this.askForChildrent(information);
 			case 16:
 				return this.askForToodler(information);
 			case 17:
-				return this.doubleCheck(information);
-			case 18:
 				return this.askrequest(information);
+			case 18:
+				return this.doubleCheck(information);
 			case 19:
 				return this.confirm(information);
 			case 20:
@@ -102,7 +102,7 @@ public class Booking {
 		String InsertDB = "Update " + this.customerBelonging.getID() + " SET dateDeparture = '" + date + "'";
 		
 		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-		String asking = "Do you mind telling us your age?";
+		String asking = "May I know your name?";
 		stmt.executeUpdate();
 		stmt.close();
 		connection.close();
@@ -111,7 +111,25 @@ public class Booking {
 			log.info("Exception while reading database: {}", e.toString());
 			return (e.toString()+"asking2");}
     }
-    public String askage(String name) {
+    public String askage(String ID) {
+    	try {
+    		Connection connection = KitchenSinkController.getConnection();
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
+    		
+    		PreparedStatement stmt = connection.prepareStatement(InsertDB);
+    		String asking = "May I know your age?";
+    		stmt.executeUpdate();
+    		stmt.close();
+    		connection.close();
+        	    return asking;    	
+    
+    	}catch (Exception e){
+    			log.info("Exception while reading database: {}", e.toString());
+    			return (e.toString()+ "asking3");}
+    }
+    //TODO
+    //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
+    public String askForID(String name){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = '" + name + "'";
@@ -125,30 +143,12 @@ public class Booking {
     
     	}catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (e.toString()+ "asking3");}
+    			return (e.toString()+"asking4");}
     }
-    //TODO
-    //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
-    public String askForID(String age){
+    public String askphone(String age){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = '" + age + "'";
-    		
-    		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "May I know your ID?";
-    		stmt.executeUpdate();
-    		stmt.close();
-    		connection.close();
-        	    return asking;    	
-    
-    	}catch (Exception e){
-    			log.info("Exception while reading database: {}", e.toString());
-    			return (e.toString()+"asking4");}
-    }
-    public String askphone(String ID){
-    	try {
-    		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us your phone number?";
@@ -251,7 +251,6 @@ public class Booking {
 		PreparedStatement queryPrice = connection.prepareStatement("select price from BookingTable where "
 				+ "(tourID like" + tour.getString(2) + "and " + "date like " + tour.getString(3) + ")");
 		ResultSet pricers = queryPrice.executeQuery();
-		queryPrice.close();
 		double price = pricers.getInt(1);
 
 		int NumA = tour.getInt(7);
@@ -261,7 +260,6 @@ public class Booking {
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
 		+ "Set fee = " + finalcost);
 		insertp.executeUpdate();
-		insertp.close();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
 				+ "Customer: " + tour.getString(4) + "\n"
@@ -276,6 +274,8 @@ public class Booking {
 				+ "Total Price: " + finalcost + "(HKD)\n"
 				+ "Special Request: " + tour.getString(10) + "\n"
 				+ "Please check if they are correct.If correct, please reply 'confirm'.";
+		queryPrice.close();
+		insertp.close();
 		connection.close();
 		return DoubleCheckList;
 		}catch (Exception e){
