@@ -177,7 +177,7 @@ public class TextHandler {
 				connection.close();
 				return answer_reply;}
 			else if (temp==FILTER_II) {
-				if (text=="Yes") {
+				if (text.toLowerCase().contains("yes")) {
 					type=BOOK_I;
 					PreparedStatement stmt3 = 
 							connection.prepareStatement("SELECT temptourid from tempfortourid where customerid=?");
