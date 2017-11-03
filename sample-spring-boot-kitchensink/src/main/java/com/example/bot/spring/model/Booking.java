@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import java.math.BigDecimal;
+
 
 @Slf4j
 public class Booking {
@@ -258,8 +260,9 @@ public class Booking {
 		int NumC = tour.getInt(8);
 		int NumT = tour.getInt(9);
 		double finalcost = NumA*price + NumC*0.8*price;
+		String s = String.format("%.2f", finalcost);
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
-		+ " Set fee = " + finalcost);
+		+ " Set fee = " + s);
 		insertp.executeUpdate();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
