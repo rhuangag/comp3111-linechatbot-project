@@ -67,15 +67,15 @@ public class Booking {
 				+ " null, null, 0)";
 		
 		String asking = "When are you planning to go for the trip? (The dates available are: \n" + "(";
-		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%','2D001','%')";
+		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%', ?,'%')";
 		PreparedStatement stmt1 = connection.prepareStatement(createdb);
 		PreparedStatement stmt2 = connection.prepareStatement(insertdb);
 		PreparedStatement stmt3 = connection.prepareStatement(queryDate);
 		/*stmt1.setString(1, this.customerBelonging.getID());
 		stmt2.setString(1, this.customerBelonging.getID());
 		stmt2.setString(2, this.customerBelonging.getID());
-		stmt2.setString(3, tourID);
-		stmt3.setString(1, tourID); */
+		stmt2.setString(3, tourID); */
+		stmt3.setString(1, tourID); 
  
 		stmt1.executeUpdate();
 		stmt2.executeUpdate();
@@ -99,11 +99,11 @@ public class Booking {
     public String askForName(String date) {
     	try {
     	Connection connection = KitchenSinkController.getConnection();
-		String InsertDB = "Update " + this.customerBelonging.getID() + " SET dateDeparture = " + date;
+		String InsertDB = "Update " + this.customerBelonging.getID() + " SET dateDeparture = '" + date + "'";
 		
 		PreparedStatement stmt = connection.prepareStatement(InsertDB);
 		String asking = "Do you mind telling us your age?";
-		stmt.executeQuery();
+		stmt.executeUpdate();
 		stmt.close();
 		connection.close();
     	    return asking;
@@ -114,11 +114,11 @@ public class Booking {
     public String askage(String name) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = " + name;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = '" + name + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "May I know your ID?";
-    		stmt.executeQuery();
+    		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    	
@@ -132,11 +132,11 @@ public class Booking {
     public String askForID(String age){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = " + age;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = '" + age + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "May I know your ID?";
-    		stmt.executeQuery();
+    		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    	
@@ -148,11 +148,11 @@ public class Booking {
     public String askphone(String ID){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = " + ID;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us your phone number?";
-    		stmt.executeQuery();
+    		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    	
@@ -166,11 +166,11 @@ public class Booking {
     public String askForAdults(String phone) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = " + phone;
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = '" + phone + "'";
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us the number of adults?";
-    		stmt.executeQuery();
+    		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    	
@@ -188,7 +188,7 @@ public class Booking {
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us the number of children?";
-    		stmt.executeQuery();
+    		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    
@@ -206,7 +206,7 @@ public class Booking {
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us the number of toodlers?";
-    		stmt.executeQuery();
+    		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    
@@ -222,7 +222,7 @@ public class Booking {
 			Connection connection = KitchenSinkController.getConnection();
 			String InsertDB = "Update " + this.customerBelonging.getID() + " SET Toodlers = " + numberOfToodlers;
 			PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
-			stmt1.executeQuery();
+			stmt1.executeUpdate();
 			stmt1.close();
 			String asking = "Is there any more special request we can arrange for you?";
     		connection.close();
@@ -235,9 +235,9 @@ public class Booking {
 	public String doubleCheck(String request) {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
-		String InsertDB = "Update " + this.customerBelonging.getID() + " SET SpecialRequest = " + request;
+		String InsertDB = "Update " + this.customerBelonging.getID() + " SET SpecialRequest = '" + request + "'";
 		PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
-		stmt1.executeQuery();
+		stmt1.executeUpdate();
 		
 		stmt1.close();
 		PreparedStatement queryTour = connection.prepareStatement("SELECT * from " +
@@ -260,7 +260,7 @@ public class Booking {
 		double finalcost = NumA*price + NumC*0.8*price;
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
 		+ "Set fee = " + finalcost);
-		insertp.executeQuery();
+		insertp.executeUpdate();
 		insertp.close();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
@@ -299,7 +299,7 @@ public class Booking {
     				+ ", " + all.getString(6) + ", " + all.getString(11) + ", " + all.getString(2) 
     				+ ", " + all.getInt(7) + ", " + all.getInt(8) + ", " + all.getInt(9) + ", "
     				+ all.getDouble(12) + ", 0, " + all.getString(10) + ", null, " + all.getString(1) + ")");
-    		insertCT.executeQuery();
+    		insertCT.executeUpdate();
     		insertCT.close();
     		PreparedStatement searchduration = connection.prepareStatement("Select * from tourlist"
     				+ " where tourID like " + all.getString(2));
@@ -309,7 +309,7 @@ public class Booking {
     				+ "VALUES (" + all.getString(1) + ", " + all.getString(2) + ", " + duration.getString(2)
     				+ ", " + all.getString(3) + ", " + duration.getString(4) + ", " + all.getString(12) 
     				+ ", 'booked' " + duration.getString(3) + ")");
-    		insertCR.executeQuery();
+    		insertCR.executeUpdate();
     		insertCR.close();
     		connection.close();
 
@@ -333,7 +333,7 @@ public class Booking {
     		query.close();
     		PreparedStatement insert = connection.prepareStatement("Insert into feedbacktable values ( "
     				+ this.customerBelonging.getID() + ", " + feedback + rs.getString(2) + ")");
-    		insert.executeQuery();
+    		insert.executeUpdate();
     		insert.close();
     		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
     				+ this.customerBelonging.getID());
