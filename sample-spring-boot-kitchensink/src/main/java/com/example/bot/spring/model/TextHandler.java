@@ -92,7 +92,7 @@ public class TextHandler {
     				temp=rs.getInt(1);
     			}
     		//we find the customer did ask question before, temp is the type of last question	
-    			if (temp>=BOOK_I && temp<BOOK_IX) {
+    			if (temp>=BOOK_I && temp<=BOOK_XII) {
     			    //the customer is in the booking process
     				type=temp+1;
     				record(customer);
@@ -164,28 +164,32 @@ public class TextHandler {
 					
 				//answer is a reply that confirming the information
 				String answer=filter.viewDetails(number_text);
-				String[] parts = answer.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+				String answer_reply=answer;
+				String[] parts = answer.split(" ");
 				String tourID=parts[0];
 				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
 				stmt2.setString(1,customer.getID());
 				stmt2.setString(2,tourID);
-				stmt2.executeQuery();
+				stmt2.executeUpdate();
 				rs.close();
 				stmt.close();
 				stmt2.close();
 				connection.close();
-				return answer;}
+				return answer_reply;}
 			else if (temp==FILTER_II) {
-				if (text=="Yes") {
+				if (text.toLowerCase().contains("yes")) {
 					type=BOOK_I;
-					PreparedStatement stmt3 = connection.prepareStatement("select tourID from tempfortourID where customerID=?");
+					PreparedStatement stmt3 = 
+							connection.prepareStatement("SELECT temptourid from tempfortourid where customerid=?");
 					stmt3.setString(1,customer.getID());
 					rs =stmt3.executeQuery();
+					rs.next();
 					String tourID=rs.getString(1);
-					PreparedStatement stmt4 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					record(customer);
+					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt4.setString(1,customer.getID());
 					stmt4.executeUpdate();
-					record(customer);
+					
 					
 					rs.close();
 					stmt.close();
@@ -197,9 +201,9 @@ public class TextHandler {
 					return booking.askForInformation(type ,tourID);
 					}
 				else    {
-					PreparedStatement stmt5 = connection.prepareStatement("Delete tourID from TempfortourID where customerID=?");
+					PreparedStatement stmt5 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
 					stmt5.setString(1,customer.getID());
-					stmt5.executeQuery();
+					stmt5.executeUpdate();
 					rs.close();
 					stmt.close();
 					stmt5.close();
@@ -484,7 +488,7 @@ public class TextHandler {
     	    	String reply=null;
     	    	int countloop=0;
     	    	Connection connection = KitchenSinkController.getConnection();
-    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE keyword1 =?");
+    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
     	    	ResultSet onekey=null;
     	    	for (int i=0; i<parts.length;i++) {
     	    		findonekey.setString(1, parts[i]);
@@ -509,7 +513,7 @@ public class TextHandler {
     				
     	    	}
     		//now check two keywords
-    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
     	    	ResultSet twokey1=null;
     	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
@@ -524,7 +528,7 @@ public class TextHandler {
     			twokey1.close();
     			findtwokey1.close();
     			if (countloop!=parts.length) {
-	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
 	    			ResultSet twokey2=null;
 	    			countloop=0;
     	    		for (int i=0; i<parts.length;i++) {
@@ -546,7 +550,7 @@ public class TextHandler {
     			}
     		}
     		//now find three keyword
-    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
+    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
     	    	ResultSet threekey1=null;
     	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
@@ -561,7 +565,7 @@ public class TextHandler {
     			threekey1.close();
     			findthreekey1.close();
     			if (countloop!=parts.length) {
-    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword2 LIKE concat('%',concat(',',?,','),'%')");
+    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
         	    	ResultSet threekey2=null;
         	    	countloop=0;
         	    	for (int i=0; i<parts.length;i++) {
@@ -576,7 +580,7 @@ public class TextHandler {
         			threekey2.close();
         			findthreekey2.close();
         			if (countloop!=parts.length) {
-        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE keyword3 LIKE concat('%',concat(',',?,','),'%')");
+        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
             	    	ResultSet threekey3=null;
             	    	countloop=0;
             	    	for (int i=0; i<parts.length;i++) {
@@ -680,7 +684,7 @@ public class TextHandler {
 			stmt.setString(1, text); 
 			stmt.setInt(2, type);
 			stmt.setString(3, customer.getID());
-			stmt.executeQuery();
+			stmt.executeUpdate();
 			if (type<8)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
@@ -688,7 +692,7 @@ public class TextHandler {
 			stmt2.setString(1, text);
 			stmt2.setInt(2, type);
 			stmt2.setString(3, customer.getID());
-			stmt2.executeQuery();
+			stmt2.executeUpdate();
 			stmt2.close();}
 			
 			stmt.close();
