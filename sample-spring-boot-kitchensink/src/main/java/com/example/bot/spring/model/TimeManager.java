@@ -23,7 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 public class TimeManager extends Observable {
 	//Data member declaration
     private final ScheduledExecutorService scheduler;
-	private static SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private String time;
+	private static SimpleDateFormat format=new SimpleDateFormat("yyyy/MM/dd/HH");
+	
 	
 	//Constructor
 	public TimeManager() {
@@ -33,12 +35,12 @@ public class TimeManager extends Observable {
 
 	//Timer
 	public void timing() {
-		long delay = computeNextDelay(30,0);
+		long delay = computeNextDelay(0,0);
 		scheduler.scheduleAtFixedRate(new Runnable() {
 			public void run() {
-				test();
+				passTime();
 			}
-		}, delay, 10, TimeUnit.SECONDS);
+		}, delay, 60*60, TimeUnit.SECONDS);
 	}
 	
 	
@@ -59,16 +61,18 @@ public class TimeManager extends Observable {
 	
 	
 	//Methods
-	public void test() {
-		try {
+	private void passTime() {
+		/*try {
 		String temp=format.format(new Date());
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement pstm=connection.prepareStatement("insert into testfortimer values ('"+temp+"')");
 		pstm.executeUpdate();
 		}catch (Exception e) {
 			log.info("Exception while reading file: {}", e.toString());
-		}
-		
+		}*/
+		time = format.format(new Date());
+		setChanged();
+		notifyObservers(this);
 		
 	}
 
