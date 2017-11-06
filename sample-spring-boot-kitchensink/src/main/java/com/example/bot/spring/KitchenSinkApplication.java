@@ -29,7 +29,10 @@ public class KitchenSinkApplication {
 
     public static void main(String[] args) throws IOException {
         downloadedContentDir = Files.createTempDirectory("line-bot");
+        TimeManager tm = new TimeManager();
+        tm.timing();
         SpringApplication.run(KitchenSinkApplication.class, args);
+        
     }
 
 }
