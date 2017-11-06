@@ -96,6 +96,8 @@ public class KitchenSinkController {
 
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
+	
+	final private TimeManager tm=new TimeManager();
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -227,6 +229,10 @@ public class KitchenSinkController {
         String text = content.getText();
 
         log.info("Got text message from {}: {}", replyToken, text);
+        
+        if(text.toLowerCase().contains("start")) {
+        	    tm.timing();
+        }
         
        	String reply = null;
        	
