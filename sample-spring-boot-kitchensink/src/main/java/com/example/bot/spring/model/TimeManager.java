@@ -30,13 +30,10 @@ public class TimeManager extends Observable {
         this.scheduler = Executors.newScheduledThreadPool(1);
 
 	}
-	
-	
-	
-	
+
 	//Timer
 	public void timing() {
-		long delay = computeNextDelay(10,0);
+		long delay = computeNextDelay(30,0);
 		scheduler.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				test();
@@ -48,11 +45,11 @@ public class TimeManager extends Observable {
 	private long computeNextDelay(int targetMin, int targetSec) 
     {
         LocalDateTime localNow = LocalDateTime.now();
-        ZoneId currentZone = ZoneId.of("CTT");
+        ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.of(localNow, currentZone);
         ZonedDateTime zonedNextTarget = zonedNow.withMinute(targetMin).withSecond(targetSec);
         if(zonedNow.compareTo(zonedNextTarget) > 0)
-            zonedNextTarget = zonedNextTarget.plusDays(1);
+            zonedNextTarget = zonedNextTarget.plusHours(1);
         
 
         Duration duration = Duration.between(zonedNow, zonedNextTarget);
