@@ -97,7 +97,6 @@ public class KitchenSinkController {
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
 	
-	//final private TimeManager tm=new TimeManager();
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -230,30 +229,16 @@ public class KitchenSinkController {
 
         log.info("Got text message from {}: {}", replyToken, text);
         
-        /*if(text.toLowerCase().contains("start")) {
-        	    tm.timing();
-        }*/
-        
+                
        	String reply = null;
-       	reply=text;
-       	//Customer customer=new Customer(event.getSource().getUserId());
-       	//TextHandler handler=new TextHandler(text);
-       	//reply=handler.messageHandler(customer);
+       	
+       	Customer customer=new Customer(event.getSource().getUserId());
+       	TextHandler handler=new TextHandler(text);
+       	reply=handler.messageHandler(customer);
        	this.replyText(replyToken, reply);
        	
        	
-       	
-        /*	try {
-            	reply = database.search(text);
-        	} catch (Exception e) {
-            	reply = text;
-        	}
-        log.info("Returns echo message {}: {}", replyToken, reply);
-        this.replyText(
-              replyToken,
-              itscLOGIN + " says " + reply
-        );
-        */
+      
     }
     
 
@@ -300,11 +285,10 @@ public class KitchenSinkController {
 
 
 	public KitchenSinkController() {
-		database = new SQLDatabaseEngine();
 		itscLOGIN = System.getenv("ITSC_LOGIN");
 	}
 
-	private DatabaseEngine database;
+
 	private String itscLOGIN;
 	
 
