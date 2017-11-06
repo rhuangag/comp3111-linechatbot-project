@@ -36,7 +36,7 @@ public class TimeManager extends Observable {
 	
 	//Timer
 	public void timing() {
-		long delay = computeNextDelay(5,0);
+		long delay = computeNextDelay(10,0);
 		scheduler.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				test();
