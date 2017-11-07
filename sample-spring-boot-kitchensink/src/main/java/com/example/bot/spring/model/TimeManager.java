@@ -46,9 +46,8 @@ public class TimeManager extends Observable {
 	
 	private long computeNextDelay(int targetMin, int targetSec) 
     {
-        LocalDateTime localNow = LocalDateTime.now();
         ZoneId currentZone = ZoneId.of("Asia/Shanghai");
-        ZonedDateTime zonedNow = ZonedDateTime.of(localNow, currentZone);
+        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
         ZonedDateTime zonedNextTarget = zonedNow.withMinute(targetMin).withSecond(targetSec);
         if(zonedNow.compareTo(zonedNextTarget) > 0)
             zonedNextTarget = zonedNextTarget.plusHours(1);
