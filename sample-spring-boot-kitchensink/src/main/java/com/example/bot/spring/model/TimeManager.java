@@ -27,6 +27,7 @@ public class TimeManager extends Observable {
 	//Data member declaration
     private final ScheduledExecutorService scheduler;
     private String time;
+    private ZonedDateTime dateTime;
 	private static SimpleDateFormat format=new SimpleDateFormat("yyyy/MM/dd/HH");
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
 	
@@ -35,6 +36,15 @@ public class TimeManager extends Observable {
 	public TimeManager() {
         this.scheduler = Executors.newScheduledThreadPool(1);
 
+	}
+	
+	//Access function
+	public String getTime() {
+		return time;
+	}
+	
+	public ZonedDateTime getDateTime() {
+		return dateTime;
 	}
 
 	//Timer
@@ -77,6 +87,7 @@ public class TimeManager extends Observable {
 		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
 		time = FORMAT.format(zonedNow);
+		dateTime=zonedNow;
 		setChanged();
 		notifyObservers(this);
 		
