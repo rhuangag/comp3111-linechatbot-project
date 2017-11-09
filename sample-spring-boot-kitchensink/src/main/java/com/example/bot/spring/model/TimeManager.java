@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.TimeZone;
@@ -15,6 +16,8 @@ import java.time.LocalDateTime;
 import java.time.*;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.time.format.DateTimeFormatter;
+
 import java.util.Observable;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +27,24 @@ public class TimeManager extends Observable {
 	//Data member declaration
     private final ScheduledExecutorService scheduler;
     private String time;
+    private ZonedDateTime dateTime;
 	private static SimpleDateFormat format=new SimpleDateFormat("yyyy/MM/dd/HH");
+	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
 	
 	
 	//Constructor
 	public TimeManager() {
         this.scheduler = Executors.newScheduledThreadPool(1);
 
+	}
+	
+	//Access function
+	public String getTime() {
+		return time;
+	}
+	
+	public ZonedDateTime getDateTime() {
+		return dateTime;
 	}
 
 	//Timer
@@ -61,7 +75,8 @@ public class TimeManager extends Observable {
 	
 	//Methods
 	private void passTime() {
-		/*try {
+		/* ONLY FOR TEST
+		 * try {
 		String temp=format.format(new Date());
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement pstm=connection.prepareStatement("insert into testfortimer values ('"+temp+"')");
@@ -69,7 +84,10 @@ public class TimeManager extends Observable {
 		}catch (Exception e) {
 			log.info("Exception while reading file: {}", e.toString());
 		}*/
-		time = format.format(new Date());
+		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
+        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
+		time = FORMAT.format(zonedNow);
+		dateTime=zonedNow;
 		setChanged();
 		notifyObservers(this);
 		
