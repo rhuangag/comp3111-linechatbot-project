@@ -92,7 +92,7 @@ public class TextHandler {
     				temp=rs.getInt(1);
     			}
     		//we find the customer did ask question before, temp is the type of last question	
-    			if (temp>=BOOK_I && temp<=BOOK_XII) {
+    			if (temp>=BOOK_I && temp<BOOK_XII) {
     			    //the customer is in the booking process
     				type=temp+1;
     				record(customer);
@@ -145,29 +145,25 @@ public class TextHandler {
 			//now temp is the type of the last question 	
 			if (temp==FILTER_I ) {
 				//the customer just do the filter searching and we have returned a list of tour
-				type=FILTER_II;
-				record(customer);
-					
-				
-				
-					
-				
 				Filter filter =new Filter(customer.getID());
 
 				String number_text=text.replaceAll("[^0-9]" , "");
 				if (number_text.isEmpty()) {
 					rs.close();
 					stmt.close();
-					connection.close();
+					
 					PreparedStatement clearTempFilterTable = connection.prepareStatement
 							("Delete from TemporaryFilterTable where userId =?");
 					clearTempFilterTable.setString(1, customer.getID());
 					clearTempFilterTable.executeUpdate();
 					clearTempFilterTable.close();
+					connection.close();
 					return newFAQ(customer);
 				}
 					
 				//answer is a reply that confirming the information
+				type=FILTER_II;
+				record(customer);
 				String answer=filter.viewDetails(number_text);
 				String answer_reply=answer;
 				String[] parts = answer.split(" ");
@@ -372,7 +368,7 @@ public class TextHandler {
     		record(customer);
     		
     		String reply="noRecord";
-    		PreparedStatement stmt = connection.prepareStatement("SELECT TourJoined FROM CustomerTable WHERE TourJoined like concat('%',?,'%')");
+    		PreparedStatement stmt = connection.prepareStatement("SELECT Tourid FROM Customerrecord WHERE lower(Tourid) =?");
     		
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
