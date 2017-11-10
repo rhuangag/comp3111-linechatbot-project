@@ -36,8 +36,8 @@ public class Customer{
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
-					String result="Tour ID: "+rs.getString("TourID")+ "\tTour Name: "+rs.getString("TourName")+"\tDepartureDate: "+rs.getString("DepartureDate")+ 
-							"\tDuration: "+rs.getString("Duration")+"\tPrice: "+rs.getString("Price")+"\tStatus: "+rs.getString("Status")+"\n";
+					String result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nDepartureDate: "+rs.getString("DepartureDate")+ 
+							"\nDuration: "+rs.getString("Duration")+"\nPrice: "+rs.getString("Price")+"\nStatus: "+rs.getString("Status")+"\n";
 					history.add(result);
 				}
 				rs.close();
@@ -55,7 +55,7 @@ public class Customer{
 			if(history.isEmpty())
 			    return "There is no record.";
 			else {
-				String result=null;
+				String result="";
 				Iterator<String> iterator=history.iterator();
 				while(iterator.hasNext()) {
 					result=result+iterator.next()+"\n";
@@ -312,13 +312,13 @@ public class Customer{
 		Connection connection = KitchenSinkController.getConnection();
 		//delete booking from Customer Table
 		PreparedStatement stmtForCustomerTable = connection.prepareStatement
-		("SELECT * FROM CustomerTable where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
+		("SELECT * FROM CustomerTable where UserID =? and TourJoined like concat ('%',?,'%')");
 		//not sure whether can run with this + and + type, need test
 		stmtForCustomerTable.setString(1, userID);
 		stmtForCustomerTable.setString(2, keyword);
 		ResultSet rsForCustomerTable = stmtForCustomerTable.executeQuery();
 		PreparedStatement stmtForUpdateCustomerTable=connection.prepareStatement
-		("Update CustomerTable SET Status='cancelled by customer' where UserID like concat('%', ?, '%') and TourJoined LIKE concat('%', ?, '%')");
+		("Update CustomerTable SET Status='cancelled by customer' where UserID =? and TourJoined like concat ('%',?,'%')");
 		stmtForUpdateCustomerTable.setString(1, userID);
 		stmtForUpdateCustomerTable.setString(2, keyword);
 		stmtForUpdateCustomerTable.executeUpdate();
@@ -326,7 +326,7 @@ public class Customer{
 		if (rsForCustomerTable.next()) {
 			//update status to cancelled in customer record
 			PreparedStatement stmtForCustomerRecord = connection.prepareStatement
-			("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID LIKE concat('%', ?, '%') and TourID LIKE concat('%', ?, '%')");
+			("UPDATE CustomerRecord SET Status='cancelled by customer' where UserID =? and TourID=?");
 			stmtForCustomerRecord.setString(1, userID);
 			stmtForCustomerRecord.setString(2, keyword);
 			stmtForCustomerRecord.executeUpdate();

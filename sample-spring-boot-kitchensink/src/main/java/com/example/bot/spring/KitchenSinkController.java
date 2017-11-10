@@ -96,6 +96,7 @@ public class KitchenSinkController {
 
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
+	
 
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -228,6 +229,7 @@ public class KitchenSinkController {
 
         log.info("Got text message from {}: {}", replyToken, text);
         
+                
        	String reply = null;
        	
        	Customer customer=new Customer(event.getSource().getUserId());
@@ -236,18 +238,7 @@ public class KitchenSinkController {
        	this.replyText(replyToken, reply);
        	
        	
-       	
-        /*	try {
-            	reply = database.search(text);
-        	} catch (Exception e) {
-            	reply = text;
-        	}
-        log.info("Returns echo message {}: {}", replyToken, reply);
-        this.replyText(
-              replyToken,
-              itscLOGIN + " says " + reply
-        );
-        */
+      
     }
     
 
@@ -294,11 +285,10 @@ public class KitchenSinkController {
 
 
 	public KitchenSinkController() {
-		database = new SQLDatabaseEngine();
 		itscLOGIN = System.getenv("ITSC_LOGIN");
 	}
 
-	private DatabaseEngine database;
+
 	private String itscLOGIN;
 	
 

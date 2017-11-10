@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import java.math.BigDecimal;
+
 
 @Slf4j
 public class Booking {
@@ -258,8 +260,9 @@ public class Booking {
 		int NumC = tour.getInt(8);
 		int NumT = tour.getInt(9);
 		double finalcost = NumA*price + NumC*0.8*price;
+		String s = String.format("%.2f", finalcost);
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
-		+ " Set fee = " + finalcost);
+		+ " Set fee = " + s);
 		insertp.executeUpdate();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
@@ -301,9 +304,13 @@ public class Booking {
     		ResultSet all = getall.executeQuery();
     		all.next();
     		//getstring(3) need to fix.
+    		String A = "";
+    		A = A + all.getString(3).split("/")[2];
+    		A = A + all.getString(3).split("/")[1];
+    		A = A + all.getString(3).split("/")[0];
     		PreparedStatement insertCT = connection.prepareStatement("Insert Into CustomerTable "
     				+ "VALUES ('" + all.getString(4) + "', '" + all.getString(5) + "', '" + all.getString(6)
-    				+ "', " + Integer.parseInt(all.getString(11)) + ", '" + all.getString(2) +all.getString(3) 
+    				+ "', " + Integer.parseInt(all.getString(11)) + ", '" + all.getString(2) + A 
     				+ "', " + all.getInt(7) + ", '" + all.getInt(8) + "', '" + all.getInt(9) + "', '"
     				+ all.getDouble(12) + "', 0, '" + all.getString(10) + "', 'booked', '" + all.getString(1) + "')");
     		insertCT.executeUpdate();
@@ -313,7 +320,7 @@ public class Booking {
     		duration.next();
     		PreparedStatement insertCR = connection.prepareStatement("Insert Into CustomerRecord "
     				+ "VALUES ('" + all.getString(1) + "', '" + all.getString(2) + "', '" + duration.getString(2)
-    				+ "', '" + all.getString(3) + "', '" + duration.getString(4) + "', '" + all.getString(12) 
+    				+ "', '" + all.getString(3) + "', '" + duration.getString(4) + "', '" + all.getDouble(12) 
     				+ "', 'booked' , '" + duration.getString(3) + "')");
     		insertCR.executeUpdate();
     		searchduration.close();
