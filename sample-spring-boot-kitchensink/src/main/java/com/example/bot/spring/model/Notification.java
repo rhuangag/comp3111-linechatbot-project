@@ -4,14 +4,16 @@ import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
 import java.util.Observable;
+import java.util.Observer;
 
 
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-public class Notification {
+public class Notification implements Observer{
 	private final String[] cancelMessage= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
 	private final String[] confirmMessage= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
 	private String currentDate;
@@ -21,7 +23,16 @@ public class Notification {
 	}
 	
 	//update the time and check if fulfill the requirement to go to Notify()
-	public void update(){}
+	public void update(Observable o, Object arg){
+		TimeManager temp = (TimeManager)o;
+		String[] time = temp.getTime().split("/");
+		if(time[3]=="10") {
+			currentDate = time[2]+"/"+time[1]+"/"+time[0];
+			NotifyStatus();
+			
+		}
+		
+	}
 	
 	private String TargetDate(int remindDays){
 		String targetDate="";
