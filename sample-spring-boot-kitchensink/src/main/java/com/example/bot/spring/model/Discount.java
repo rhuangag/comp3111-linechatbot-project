@@ -20,14 +20,23 @@ import java.util.Observable;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Discount {
+public class Discount implements Observer{
 	//Dclaration of data members
 	String targetdate;
 	String tourID;
 	String targettime;
+	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 	
-	public void update() {
+	public void update(Observable o, Object arg) {
+		TimeManager temp = (TimeManager)o;
+		String dateTime = FORMAT.format(temp.getDateTime());
+		String date = dateTime.substring(0, 8);
+		String time = dateTime.substring(8, 12);
+		if((date == targetdate) && (time.substring(0, 3) == targettime.substring(0,3))) {
+			discountNews();
 		}
+	}
+	
 	public String getTourID() {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
