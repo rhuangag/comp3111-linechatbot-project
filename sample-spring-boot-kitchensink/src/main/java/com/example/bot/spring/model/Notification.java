@@ -54,7 +54,9 @@ public class Notification {
 		}
 		
 		if (day < 10) {targetDate+="0";}
-		targetDate+=Integer.toString(day)+"/"+Integer.toString(month)+"/"+Integer.toString(year);
+		targetDate+=Integer.toString(day)+"/";
+		if (month < 10) {targetDate+="0";}
+		targetDate+=Integer.toString(month)+"/"+Integer.toString(year);
 		return targetDate;
 }
 	
@@ -127,6 +129,21 @@ public class Notification {
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
 	private String pushConfirmMessage(String userID, String tour, String guideInformation){
 		String message=confirmMessage[0]+tour+confirmMessage[1]+guideInformation;
+		TextMessage textMessage = new TextMessage(message);
+		PushMessage pushMessage = new PushMessage(
+		        "<to>",
+		        textMessage
+		);
+
+		Response<BotApiResponse> response =
+		        LineMessagingServiceBuilder
+		                .create("<channel access token>")
+		                .build()
+		                .pushMessage(pushMessage)
+		                .execute();
+		System.out.println(response.code() + " " + response.message());
+
+
 		return message;
 		
 	}
