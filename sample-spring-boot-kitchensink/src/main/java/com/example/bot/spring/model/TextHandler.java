@@ -34,7 +34,7 @@ public class TextHandler {
     public  final int BOOK_X=18;
     public  final int BOOK_XI=19;
     public  final int BOOK_XII=20;
-    
+    public  final int DISCOUNT=100;
     
     
     
@@ -59,8 +59,8 @@ public class TextHandler {
     //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
-    	
-    	reply=checkBooking(customer);
+    	reply=discount(customer);
+    	//reply=checkBooking(customer);
     /*	checkFiltering();
     	
     	newCancel();
@@ -76,6 +76,70 @@ public class TextHandler {
     	
 		    
 }
+   private String discount(Customer customer) {
+   	try {
+   		   Connection connection = KitchenSinkController.getConnection();
+		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 100 and keyword like concat('%',concat(',',?,','),'%')");
+		   ResultSet key=null;
+		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+		   int count=0;
+		   for (int i=0;i<parts.length;i++) {
+		   trigger.setString(1, parts[i]);
+		   key=trigger.executeQuery();
+		   if (key.next())
+			   break;
+		   count++;
+		   }
+		   key.close();
+		   trigger.close();
+		   PreparedStatement event = connection.prepareStatement("SELECT tourid FROM discounttourlist");
+		   ResultSet exist=event.executeQuery();
+		   String tourid=null;
+		   while (exist.next()) {
+			   tourid= exist.getString(1);
+		   }
+		   event.close();
+		   exist.close();
+ 		if (count!=parts.length&& tourid!=null) {
+ 			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
+ 			ResultSet number=counting.executeQuery();
+ 			if (number.getInt(1)>=4) {
+ 				number.close();
+ 				counting.close();
+ 				connection.close();
+ 				type= MEANINGLESS;
+ 				record(customer);
+ 				return "Sorry ticket sold out.";
+ 			}
+ 			
+ 			else {
+ 				type=DISCOUNT;
+ 				record(customer);
+ 				number.close();
+ 				counting.close();
+ 				
+ 				
+			
+ 				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
+ 				
+ 				insertdiscount.setString(1, customer.getID()); 
+ 				insertdiscount.setString(2, tourid);
+ 				insertdiscount.executeUpdate();
+ 				
+ 				insertdiscount.close();
+ 				connection.close();
+ 				return "Congratulations! You get the discount.";
+ 			}
+ 		
+ 			}
+ 		else {
+ 			connection.close();
+ 			return checkBooking(customer);}
+ 	}catch(Exception e) {
+ 		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
+ 	}
+   }
    private String checkBooking(Customer customer) {
     	//check whether the customer is in booking process
     	try {
@@ -618,6 +682,10 @@ public class TextHandler {
     		if (temp.isEmpty()) {
     			connection.close();
     			return newBooking(customer);}
+    		if (text.contains("cheaper than")|text.contains("less than"))
+    				temp="<"+temp;
+    		if (text.contains("higher than")|text.contains("more than"))
+    				temp=">"+temp;
     		type=FILTER_I;
 			record(customer);
 			connection.close();
