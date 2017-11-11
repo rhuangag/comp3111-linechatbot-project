@@ -5,9 +5,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
+import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.bot.model.PushMessage;
+import com.example.bot.spring.KitchenSinkController;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,9 +36,40 @@ public class Notification implements Observer{
 		if(time[3]=="10") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
+			promotionStatus(time[0],time[1],time[2]);
 			
 		}
 		
+	}
+	
+	private void pushPromotion() {		
+		String imageUrl1 = KitchenSinkController.createUri("beach3.jpg");
+		String imageUrl2 = KitchenSinkController.createUri("gd1.jpg");
+		String imageUrl3 = KitchenSinkController.createUri("cellphone.jpg");
+		String imageUrl4 = KitchenSinkController.createUri("join-now.jpg");
+        CarouselTemplate carouselTemplate = new CarouselTemplate(
+                Arrays.asList(
+                        new CarouselColumn(imageUrl1, "beach","",null),
+                        new CarouselColumn(imageUrl2, "Guangzhou","",null),
+                        new CarouselColumn(imageUrl3, "photograph","",null),
+                        new CarouselColumn(imageUrl4, "Come and join us","",null)
+                ));
+        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+        PushMessage pushMessage = new PushMessage(
+                "<to>",
+                templateMessage
+        );
+        KitchenSinkController.pushMessageController(pushMessage);
+	}
+	
+	private void promotionStatus(String year, String month, String day) {
+		
+		
+		Calendar c = Calendar.getInstance();
+		c.set(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
+		
+		if((c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)||(c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY))
+			pushPromotion();
 	}
 	
 	private String TargetDate(int remindDays){
