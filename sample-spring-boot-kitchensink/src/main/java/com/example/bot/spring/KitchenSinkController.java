@@ -42,6 +42,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.common.io.ByteStreams;
 
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.client.LineMessagingServiceBuilder;
+import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.ReplyMessage;
@@ -357,6 +360,16 @@ public class KitchenSinkController {
 		return connection;
 	}
 	
-	
+	@EventMapping
+	static void pushMessageController(PushMessage pushMessage) {
+		
+		        LineMessagingServiceBuilder
+		        // channel access token need to be changed later
+		                .create("r86qziEzLBU9qxauyLRXaTHO3972Fya7M+BUYDrXy/vkv1nbPILv4EQsdMElSUWeO6C0YZ/tIitE81kMkzJkilGjbrzNyn11FXCe7tULF79kkMjyFxl2zQTiO8n67MIdfGf6Konj7x+ICA2b0CNXhQdB04t89/1O/w1cDnyilFU=")
+		                .build()
+		                .pushMessage(pushMessage);
+		                //execute();
+		
+	}
 
 }
