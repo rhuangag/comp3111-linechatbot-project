@@ -61,6 +61,7 @@ public class TextHandler {
     	String reply=null;
     	text=text.replaceAll("[\\p{P}\n]" , "");
     	reply=discount(customer);
+    	String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
     	//reply=checkBooking(customer);
     /*	checkFiltering();
     	
@@ -467,31 +468,21 @@ public class TextHandler {
 	   return result;
     }
    
-   private String newHitory(Customer customer,int type,String[] parts) {
-   	try {
-   
+   private String newHitory(Customer customer) {
+   		String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
    		if (functionMatch(HISTORY,parts)) {
-   			if (customer.getHistory()==null) {
-   				
-   				return unknown(customer);
-   			}
-   			
+   			if (customer.getHistory()==null)  				
+   				return unknown(customer);   			
    			else {
    				type=HISTORY;
-   				record(customer);
-   				
+   				record(customer);   				
    				return customer.getHistory();
+   			}   		
    			}
-   		
-   			}
-   		else {
-   			
-   			return newRecommendation(customer);}
-   	}catch(Exception e) {
-   		log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();
-   	}
-   }
+   		else   			
+   			return newRecommendation(customer);
+}
+
     
     private String newRecommendation(Customer customer) {
     	try {
@@ -761,13 +752,12 @@ public class TextHandler {
 		}
     
     }
-    private viod functionMatch(int type,String[] parts){
-    	Connection connection = KitchenSinkController.getConnection();
+    private boolean functionMatch(int type,String[] parts){
+    	try {
+    			   Connection connection = KitchenSinkController.getConnection();
     	 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = ? and keyword like concat('%',concat(',',?,','),'%')");
-    	 		   trigger.setString(1,type);
-    			   ResultSet key=null;
-    			   //change
-    	 		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+    	 		   trigger.setInt(1,type);
+    			   ResultSet key=null;   	 		   
     	 		   int count=0;
     	 		   for (int i=0;i<parts.length;i++) {
     	 		   trigger.setString(2, parts[i]);
@@ -783,5 +773,8 @@ public class TextHandler {
     				return true;
     			   else 
     				return false;
-    	}
+    }catch (Exception e) {
+		log.info("Exception while reading file: {}", e.toString());
+		return false;}
+	}
 }
