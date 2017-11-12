@@ -1,5 +1,8 @@
 package com.example.bot.spring;
 
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.PushMessage;
+
 import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,7 +62,9 @@ public class PaymentReminder implements Observer {
 						+ "TourID: "+tourId+"\nDeparture Date[dd/MM/yyyy]: "+departureDate+"\nAmount owed: "+amountOwed+" HKD\n\n"
 						+ "Please be noted that the rest amount of tour fee need to be paid at least 3 days before departure. "
 						+"Otherwise, your booking may be cancelled. Thanks for your cooperation.";
-				// TODO push message to users here
+				// push message to users here
+				TextMessage textMessage = new TextMessage(message);
+				PushMessage pushMessage = new PushMessage(rs.getString("userid"), textMessage);
 			}
 		}
 		rs.close();
