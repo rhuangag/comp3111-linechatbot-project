@@ -176,7 +176,7 @@ public class KitchenSinkController {
 		try{
 		Connection connection = KitchenSinkController.getConnection();
 		
-		PreparedStatement add = connection.prepareStatement("insert into frineds values (?)");
+		PreparedStatement add = connection.prepareStatement("insert into friends values (?)");
 		add.setString(1, event.getSource().getUserId());
 		add.executeUpdate();
 		add.close();
