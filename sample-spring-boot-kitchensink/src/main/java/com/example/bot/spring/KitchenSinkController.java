@@ -360,15 +360,18 @@ public class KitchenSinkController {
 		return connection;
 	}
 	
-	@EventMapping
+	
 	static void pushMessageController(PushMessage pushMessage) {
-		
+		try {
 		        LineMessagingServiceBuilder
 		        // channel access token need to be changed later
-		                .create("r86qziEzLBU9qxauyLRXaTHO3972Fya7M+BUYDrXy/vkv1nbPILv4EQsdMElSUWeO6C0YZ/tIitE81kMkzJkilGjbrzNyn11FXCe7tULF79kkMjyFxl2zQTiO8n67MIdfGf6Konj7x+ICA2b0CNXhQdB04t89/1O/w1cDnyilFU=")
+		                .create("9xlCVi1/ahHiIRgB0tWNwmzB0mq/KkDHSmAGL+aXWYxK/rEi7chuPonwjtL1nh4Y+LN6He2nPOLLRh0RGuPjOGc6/1CIPQOtZi9klVr04EnKiK83oBv2rXk9IQvfGZD3gJFOZ3YFUQBp6Y55+uvfmwdB04t89/1O/w1cDnyilFU=")
 		                .build()
-		                .pushMessage(pushMessage);
-		                //execute();
+		                .pushMessage(pushMessage)
+		                .execute();
+		}catch(Exception e) {
+			System.out.println("There is an exception");
+		}
 		
 	}
 
