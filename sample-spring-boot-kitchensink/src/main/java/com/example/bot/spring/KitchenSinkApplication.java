@@ -31,6 +31,12 @@ public class KitchenSinkApplication {
         downloadedContentDir = Files.createTempDirectory("line-bot");
         TimeManager tm = TimeManager.getTimer();
         tm.timing();
+        Discount discount = new Discount();
+        PaymentReminder pr = new PaymentReminder();
+        Notification notification = new Notification();
+        tm.addObserver(discount);
+        tm.addObserver(pr);
+        tm.addObserver(notification);
         SpringApplication.run(KitchenSinkApplication.class, args);
         
     }
