@@ -90,12 +90,23 @@ public class TimeManager extends Observable {
 		}catch (Exception e) {
 			log.info("Exception while reading file: {}", e.toString());
 		}*/
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
+		try{
+			ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
 		time = FORMAT.format(zonedNow);
 		dateTime=zonedNow;
+		Connection connection = KitchenSinkController.getConnection();
+		PreparedStatement ps = connection.prepareStatement("insert into timer values ('"+time+"')");
+		ps.executeUpdate();
+		
+		ps.close();
+		connection.close();
+		
 		setChanged();
 		notifyObservers(this);
+	}catch (Exception e){
+		log.info("Exception while reading database: {}", e.toString());
+	}
 		
 	}
 
