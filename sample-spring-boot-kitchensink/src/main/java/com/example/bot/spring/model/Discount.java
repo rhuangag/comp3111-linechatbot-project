@@ -107,7 +107,7 @@ public class Discount implements Observer{
 		info.setString(1, getTourID());
 		ResultSet news = info.executeQuery();
 		String message;
-		message="We a discount event now. For tour "+news.getString(1)+", the first "+news.getInt(4)+" customers reply can have a discount rate ("+news.getString(2)+" off) for that tour. Each customer can reserve "+news.getInt(5)+" seats at most. If you want to get discount, reply Double11";
+		message="We have a discount event now. For tour "+news.getString(1)+", the first "+news.getInt(4)+" customers reply can have a discount rate ("+news.getString(2)+" off) for that tour. Each customer can reserve "+news.getInt(5)+" seats at most. If you want to get discount, reply Double11";
 		
 		PreparedStatement friend = connection.prepareStatement("select * from friends");
 		
