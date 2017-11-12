@@ -59,6 +59,7 @@ public class TextHandler {
     //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
+    	text=text.replaceAll("\\p{P}[\n]" , "");
     	reply=discount(customer);
     	//reply=checkBooking(customer);
     /*	checkFiltering();
