@@ -34,7 +34,7 @@ public class Discount implements Observer{
 		String dateTime = FORMAT.format(temp.getDateTime());
 		String date = dateTime.substring(0, 8);
 		String time = dateTime.substring(8, 12);
-		if((date == targetdate) && (time.substring(0, 3) == targettime.substring(0,3))) {
+		if((date == getTargetDate()) && (time.substring(0, 3) == getTargetTime().substring(0,3))) {
 			discountNews();
 		}
 	}
