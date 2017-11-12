@@ -65,6 +65,7 @@ public class PaymentReminder implements Observer {
 				// push message to users here
 				TextMessage textMessage = new TextMessage(message);
 				PushMessage pushMessage = new PushMessage(rs.getString("userid"), textMessage);
+				KitchenSinkController.pushMessageController(pushMessage);
 			}
 		}
 		rs.close();
