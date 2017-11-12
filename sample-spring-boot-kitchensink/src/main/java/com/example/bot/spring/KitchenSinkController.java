@@ -23,6 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -168,6 +170,17 @@ public class KitchenSinkController {
 
 	@EventMapping
 	public void handleFollowEvent(FollowEvent event) {
+		try{
+		Connection connection = KitchenSinkController.getConnection();
+		
+		PreparedStatement add = connection.prepareStatement("insert into frineds values (?)");
+		add.setString(1, event.getSource().getUserId());
+		add.executeUpdate();
+		add.close();
+		connection.close();
+		}catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());
+		}
 		String replyToken = event.getReplyToken();
 		this.replyText(replyToken, "Got followed event");
 	}
