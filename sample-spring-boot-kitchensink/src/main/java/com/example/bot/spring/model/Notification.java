@@ -4,25 +4,97 @@ import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Observable;
+import java.util.Observer;
+import java.util.Vector;
 
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
+import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.bot.model.PushMessage;
+import com.example.bot.spring.KitchenSinkController;
 
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-public class Notification {
+public class Notification implements Observer{
 	private final String[] cancelMessage= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
 	private final String[] confirmMessage= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
 	private String currentDate;
-	
+
 	public Notification(){
 		currentDate=null;
 	}
-	
+
 	//update the time and check if fulfill the requirement to go to Notify()
-	public void update(){}
-	
+	public void update(Observable o, Object arg){
+		TimeManager temp = (TimeManager)o;
+		String[] time = temp.getTime().split("/");
+		if(time[3]=="10") {
+			currentDate = time[2]+"/"+time[1]+"/"+time[0];
+			NotifyStatus();
+			promotionStatus(time[0],time[1],time[2]);
+
+		}
+
+	}
+
+	private void pushPromotion() {		
+		String imageUrl1 = KitchenSinkController.createUri("beach3.jpg");
+		String imageUrl2 = KitchenSinkController.createUri("gd1.jpg");
+		String imageUrl3 = KitchenSinkController.createUri("cellphone.jpg");
+		String imageUrl4 = KitchenSinkController.createUri("join-now.jpg");
+		CarouselTemplate carouselTemplate = new CarouselTemplate(
+				Arrays.asList(
+						new CarouselColumn(imageUrl1, "beach","",null),
+						new CarouselColumn(imageUrl2, "Guangzhou","",null),
+						new CarouselColumn(imageUrl3, "photograph","",null),
+						new CarouselColumn(imageUrl4, "Come and join us","",null)
+						));
+		TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+
+		Vector<String> userID = new Vector<String>();
+
+		try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement stmt = connection.prepareStatement
+					("SELECT userid from friends");
+
+
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				userID.add(rs.getString("userid"));
+			}
+
+			rs.close();
+			stmt.close();
+			connection.close();
+		} catch (Exception e){
+			log.info("Exception while reading database: {}", e.toString());
+		}	
+		for(String userid : userID) {
+			PushMessage pushMessage = new PushMessage(
+					userid,
+					templateMessage
+					);
+			KitchenSinkController.pushMessageController(pushMessage);
+		}
+	}
+
+	private void promotionStatus(String year, String month, String day) {
+
+
+		Calendar c = Calendar.getInstance();
+		c.set(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
+
+		if((c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)||(c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY))
+			pushPromotion();
+	}
+
 	private String TargetDate(int remindDays){
 		String targetDate="";
 		String[] parts = currentDate.split("/");
@@ -52,80 +124,80 @@ public class Notification {
 			day-=30;
 			month++;
 		}
-		
+
 		if (day < 10) {targetDate+="0";}
 		targetDate+=Integer.toString(day)+"/";
 		if (month < 10) {targetDate+="0";}
 		targetDate+=Integer.toString(month)+"/"+Integer.toString(year);
 		return targetDate;
-}
-	
-	
-	
+	}
+
+
+
 	//check the condition (3 days before a tour) and determine whether the tour is confirmed, full or cancelled. Update this status in database;
 	private void NotifyStatus(){
 		String targetDate=TargetDate(3);
 		String remindDate=TargetDate(2);
 		String CancelMessage="";
 		try {
-		Connection connection = KitchenSinkController.getConnection();
-		PreparedStatement notifyCancelled =connection.prepareStatement("Select booktableid from BookingTable where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-		PreparedStatement notifyConfirmed =connection.prepareStatement("Select booktableid, tourguide, tourguideaccount from BookingTable where status='availiable' and cast(confirmedCustomer as int)>=cast(minimumcustomer as int)");
-		
-		notifyCancelled.setString(1, targetDate);
-		ResultSet cancelRs=notifyCancelled.executeQuery();
-		ResultSet confirmRs=notifyConfirmed.executeQuery();
-		
-		while(cancelRs.next()) {
-			String cancelTour=cancelRs.getString(1);
-			PreparedStatement notifyUserCancel =connection.prepareStatement("Select userid from customertable where tourjoined=?");
-			notifyUserCancel.setString(1, cancelTour);
-			ResultSet rsNotifyCancel=notifyUserCancel.executeQuery();
-			while(rsNotifyCancel.next()) {
-				String cancelUser=rsNotifyCancel.getString(1);
-				pushCancelMessage(cancelUser,cancelTour);
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement notifyCancelled =connection.prepareStatement("Select booktableid from BookingTable where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement notifyConfirmed =connection.prepareStatement("Select booktableid, tourguide, tourguideaccount from BookingTable where status='availiable' and cast(confirmedCustomer as int)>=cast(minimumcustomer as int)");
+
+			notifyCancelled.setString(1, targetDate);
+			ResultSet cancelRs=notifyCancelled.executeQuery();
+			ResultSet confirmRs=notifyConfirmed.executeQuery();
+
+			while(cancelRs.next()) {
+				String cancelTour=cancelRs.getString(1);
+				PreparedStatement notifyUserCancel =connection.prepareStatement("Select userid from customertable where tourjoined=?");
+				notifyUserCancel.setString(1, cancelTour);
+				ResultSet rsNotifyCancel=notifyUserCancel.executeQuery();
+				while(rsNotifyCancel.next()) {
+					String cancelUser=rsNotifyCancel.getString(1);
+					pushCancelMessage(cancelUser,cancelTour);
+				}
+				rsNotifyCancel.close();
+				notifyUserCancel.close();
 			}
-			rsNotifyCancel.close();
-			notifyUserCancel.close();
-		}
-		cancelRs.close();
-		
-		while(confirmRs.next()) {
-			String confirmedTour=confirmRs.getString(1);
-			String guideInformation="Name: "+ confirmRs.getString(2) + " LINE account: "+ confirmRs.getString(3) ;
-			PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=?");
-			notifyUserConfirm.setString(1, confirmedTour);
-			ResultSet rsNotifyConfirm=notifyUserConfirm.executeQuery();
-			while(rsNotifyConfirm.next()) {
-				String confirmedUser=rsNotifyConfirm.getString(1);
-				pushConfirmMessage(confirmedUser,confirmedTour,guideInformation);
+			cancelRs.close();
+
+			while(confirmRs.next()) {
+				String confirmedTour=confirmRs.getString(1);
+				String guideInformation="Name: "+ confirmRs.getString(2) + " LINE account: "+ confirmRs.getString(3) ;
+				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=?");
+				notifyUserConfirm.setString(1, confirmedTour);
+				ResultSet rsNotifyConfirm=notifyUserConfirm.executeQuery();
+				while(rsNotifyConfirm.next()) {
+					String confirmedUser=rsNotifyConfirm.getString(1);
+					pushConfirmMessage(confirmedUser,confirmedTour,guideInformation);
+				}
+				rsNotifyConfirm.close();
+				notifyUserConfirm.close();
 			}
-			rsNotifyConfirm.close();
-			notifyUserConfirm.close();
-		}
-		confirmRs.close();
-	
-		PreparedStatement UpdateCancelled =connection.prepareStatement("Update BookingTable set status='cancelled' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-		PreparedStatement UpdateFull =connection.prepareStatement("Update BookingTable set status='full' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-		PreparedStatement UpdateConfirmed =connection.prepareStatement("Update BookingTable set status='confirmed' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-		UpdateCancelled.executeUpdate();
-		UpdateFull.executeUpdate();
-		UpdateConfirmed.executeUpdate();
-		
-		
-		notifyCancelled.close();
-		notifyConfirmed.close();
-		UpdateCancelled.close();
-		UpdateFull.close();
-		UpdateConfirmed.close();
-		connection.close();
-		
+			confirmRs.close();
+
+			PreparedStatement UpdateCancelled =connection.prepareStatement("Update BookingTable set status='cancelled' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement UpdateFull =connection.prepareStatement("Update BookingTable set status='full' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement UpdateConfirmed =connection.prepareStatement("Update BookingTable set status='confirmed' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			UpdateCancelled.executeUpdate();
+			UpdateFull.executeUpdate();
+			UpdateConfirmed.executeUpdate();
+
+
+			notifyCancelled.close();
+			notifyConfirmed.close();
+			UpdateCancelled.close();
+			UpdateFull.close();
+			UpdateConfirmed.close();
+			connection.close();
+
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+		}
 	}
-}
 
-	
+
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
 	private String pushConfirmMessage(String userID, String tour, String guideInformation){
 		String message=confirmMessage[0]+tour+confirmMessage[1]+guideInformation;
@@ -145,13 +217,13 @@ public class Notification {
 
 
 		return message;
-		
+
 	}
 	private String pushCancelMessage(String userID, String tour) {
 		String message=cancelMessage[0]+tour+ cancelMessage[1];
 		return message;
 	}
-	
+
 	//functional function in this class
-	
+
 }
