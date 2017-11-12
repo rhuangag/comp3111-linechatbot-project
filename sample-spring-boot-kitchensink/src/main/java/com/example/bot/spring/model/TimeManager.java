@@ -28,14 +28,20 @@ public class TimeManager extends Observable {
     private final ScheduledExecutorService scheduler;
     private String time;
     private ZonedDateTime dateTime;
-	private static SimpleDateFormat format=new SimpleDateFormat("yyyy/MM/dd/HH");
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
+	
+	private static TimeManager uniqueTimer = new TimeManager();
 	
 	
 	//Constructor
-	public TimeManager() {
+	private TimeManager() {
         this.scheduler = Executors.newScheduledThreadPool(1);
 
+	}
+	
+	//Get the singleton object
+	public static TimeManager getTimer() {
+		return uniqueTimer;
 	}
 	
 	//Access function

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 import java.math.BigDecimal;
+import java.math.*;
 
 
 @Slf4j
@@ -169,9 +170,18 @@ public class Booking {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = '" + phone + "'";
-    		
-    		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of adults?";
+    		PreparedStatement Querydata = connection.prepareStatement("Select * from "+ this.customerBelonging.getID());
+			ResultSet datas = Querydata.executeQuery();
+			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
+					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
+					+ datas.getString(3));
+			ResultSet moredata = QueryMax.executeQuery();    		
+			PreparedStatement stmt = connection.prepareStatement(InsertDB);
+    		String asking = "Could you please tell us the number of adults? \n"
+    				+ "The capacity of the trip is " + moredata.getInt(1) + "\n"
+    				+ "and currently there are " + moredata.getInt(2)+ " people already.";
+    		Querydata.close();
+    		QueryMax.close();
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
@@ -222,6 +232,16 @@ public class Booking {
 	public String askrequest(String numberOfToodlers) {
 		try {
 			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement Querydata = connection.prepareStatement("Select * from "+ this.customerBelonging.getID());
+			ResultSet datas = Querydata.executeQuery();
+			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
+					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
+					+ datas.getString(3));
+			ResultSet moredata = QueryMax.executeQuery();
+			if ((moredata.getInt(2)+datas.getInt(7)+datas.getInt(8)+ Integer.parseInt(numberOfToodlers)) > moredata.getInt(1))
+				return this.breakBooking();
+			QueryMax.close();
+			Querydata.close();
 			String InsertDB = "Update " + this.customerBelonging.getID() + " SET Toodlers = " + numberOfToodlers;
 			PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
 			stmt1.executeUpdate();
@@ -260,9 +280,11 @@ public class Booking {
 		int NumC = tour.getInt(8);
 		int NumT = tour.getInt(9);
 		double finalcost = NumA*price + NumC*0.8*price;
-		String s = String.format("%.2f", finalcost);
+		
+	    BigDecimal b = new BigDecimal(finalcost); 
+		float f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();  
 		PreparedStatement insertp = connection.prepareStatement("Update " + this.customerBelonging.getID()
-		+ " Set fee = " + s);
+		+ " Set fee = " + f1);
 		insertp.executeUpdate();
 		String DoubleCheckList =
 				"Please check the booking status: \n"
@@ -275,7 +297,7 @@ public class Booking {
 				+ "Number of Adults: " + tour.getInt(7) + "\n"
 				+ "Number of Children: " + tour.getInt(8) + "\n"
 				+ "Number of Toodlers: " + tour.getInt(9) + "\n"
-				+ "Total Price: " + finalcost + "(HKD)\n"
+				+ "Total Price: " + f1 + "(HKD)\n"
 				+ "Special Request: " + tour.getString(10) + "\n"
 				+ "Please check if they are correct.If correct, please reply 'confirm'.";
 		queryTour.close();
