@@ -31,7 +31,7 @@ public class TimeManager extends Observable {
     private final ScheduledExecutorService scheduler;
     private String time;
     private ZonedDateTime dateTime;
-	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
+	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm");
 	
 	private static TimeManager uniqueTimer = new TimeManager();
 	
