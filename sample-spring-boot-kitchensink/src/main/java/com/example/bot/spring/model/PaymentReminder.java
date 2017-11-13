@@ -45,7 +45,7 @@ public class PaymentReminder implements Observer {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement pst = connection.prepareStatement("select userid, tourjoined, tourfee, amountpaid"
-				+ "from customertable where tourjoined like concat('%', ?, '%') and status like concat('%', ?, '%')");
+				+ " from customertable where tourjoined like concat('%', ?, '%') and status like concat('%', ?, '%')");
 		pst.setString(1, this.targetdate);
 		pst.setString(2, "booked");
 		ResultSet rs = pst.executeQuery();
