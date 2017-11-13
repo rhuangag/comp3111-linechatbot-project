@@ -106,6 +106,9 @@ public class TimeManager extends Observable {
 		notifyObservers(this);
 	}catch (Exception e){
 		log.info("Exception while reading database: {}", e.toString());
+		TextMessage textMessage = new TextMessage(e.toString());
+		PushMessage pushMessage = new PushMessage("U7602b36236a0bc9ea3871c89f4e834dd", textMessage);
+		KitchenSinkController.pushMessageController(pushMessage);
 	}
 		
 	}
