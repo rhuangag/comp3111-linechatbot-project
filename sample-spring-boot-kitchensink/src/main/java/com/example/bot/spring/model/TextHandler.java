@@ -59,8 +59,9 @@ public class TextHandler {
     //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
-    	text=text.replaceAll("\\p{P}[\n]" , "");
+    	text=text.replaceAll("[\\p{P}\n]" , "");
     	reply=discount(customer);
+    	String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
     	//reply=checkBooking(customer);
     /*	checkFiltering();
     	
@@ -467,44 +468,21 @@ public class TextHandler {
 	   return result;
     }
    
-    private String newHitory(Customer customer) {
-    	try {
-    	   Connection connection = KitchenSinkController.getConnection();
- 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 7 and keyword like concat('%',concat(',',?,','),'%')");
- 		   ResultSet key=null;
- 		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
- 		   int count=0;
- 		   for (int i=0;i<parts.length;i++) {
- 		   trigger.setString(1, parts[i]);
- 		   key=trigger.executeQuery();
- 		   if (key.next())
- 			   break;
- 		   count++;
- 		   }
- 		   key.close();
- 		   trigger.close();
-    		if (count!=parts.length) {
-    			if (customer.getHistory()==null) {
-    				connection.close();
-    				return unknown(customer);
-    			}
-    			
-    			else {
-    				type=HISTORY;
-    				record(customer);
-    				connection.close();
-    				return customer.getHistory();
-    			}
-    		
-    			}
-    		else {
-    			connection.close();
-    			return newRecommendation(customer);}
-    	}catch(Exception e) {
-    		log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();
-    	}
-    }
+   private String newHitory(Customer customer) {
+   		String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+   		if (functionMatch(HISTORY,parts)) {
+   			if (customer.getHistory()==null)  				
+   				return unknown(customer);   			
+   			else {
+   				type=HISTORY;
+   				record(customer);   				
+   				return customer.getHistory();
+   			}   		
+   			}
+   		else   			
+   			return newRecommendation(customer);
+}
+
     
     private String newRecommendation(Customer customer) {
     	try {
@@ -774,5 +752,29 @@ public class TextHandler {
 		}
     
     }
-
+    private boolean functionMatch(int type,String[] parts){
+    	try {
+    			   Connection connection = KitchenSinkController.getConnection();
+    	 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = ? and keyword like concat('%',concat(',',?,','),'%')");
+    	 		   trigger.setInt(1,type);
+    			   ResultSet key=null;   	 		   
+    	 		   int count=0;
+    	 		   for (int i=0;i<parts.length;i++) {
+    	 		   trigger.setString(2, parts[i]);
+    	 		   key=trigger.executeQuery();
+    	 		   if (key.next())
+    	 			   break;
+    	 		   count++;
+    	 		   }
+    	 		   key.close();
+    	 		   trigger.close();
+    			   connection.close();
+    			   if (count!=parts.length)
+    				return true;
+    			   else 
+    				return false;
+    }catch (Exception e) {
+		log.info("Exception while reading file: {}", e.toString());
+		return false;}
+	}
 }
