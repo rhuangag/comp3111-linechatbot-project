@@ -45,7 +45,7 @@ public class PaymentReminder implements Observer {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement pst = connection.prepareStatement("select userid, tourjoined, tourfee, amountpaid"
-				+ "from customertable where tourjoined like concat('%', ?, '%') and status like concat('%', ?, '%')");
+				+ " from customertable where tourjoined like concat('%', ?, '%') and status like concat('%', ?, '%')");
 		pst.setString(1, this.targetdate);
 		pst.setString(2, "booked");
 		ResultSet rs = pst.executeQuery();
@@ -65,6 +65,7 @@ public class PaymentReminder implements Observer {
 				// push message to users here
 				TextMessage textMessage = new TextMessage(message);
 				PushMessage pushMessage = new PushMessage(rs.getString("userid"), textMessage);
+				KitchenSinkController.pushMessageController(pushMessage);
 			}
 		}
 		rs.close();
@@ -73,6 +74,9 @@ public class PaymentReminder implements Observer {
 		
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			TextMessage textMessage = new TextMessage(e.toString());
+			PushMessage pushMessage = new PushMessage("U7602b36236a0bc9ea3871c89f4e834dd", textMessage);
+			KitchenSinkController.pushMessageController(pushMessage);
 		}
 			
 		

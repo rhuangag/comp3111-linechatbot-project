@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.PushMessage;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -28,7 +31,7 @@ public class TimeManager extends Observable {
     private final ScheduledExecutorService scheduler;
     private String time;
     private ZonedDateTime dateTime;
-	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
+	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm");
 	
 	private static TimeManager uniqueTimer = new TimeManager();
 	
@@ -90,12 +93,26 @@ public class TimeManager extends Observable {
 		}catch (Exception e) {
 			log.info("Exception while reading file: {}", e.toString());
 		}*/
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
+		try{
+			ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
 		time = FORMAT.format(zonedNow);
 		dateTime=zonedNow;
+		Connection connection = KitchenSinkController.getConnection();
+		PreparedStatement ps = connection.prepareStatement("insert into timer values ('"+time+"')");
+		ps.executeUpdate();
+		
+		ps.close();
+		connection.close();
+		
 		setChanged();
 		notifyObservers(this);
+	}catch (Exception e){
+		log.info("Exception while reading database: {}", e.toString());
+		TextMessage textMessage = new TextMessage(e.toString());
+		PushMessage pushMessage = new PushMessage("U7602b36236a0bc9ea3871c89f4e834dd", textMessage);
+		KitchenSinkController.pushMessageController(pushMessage);
+	}
 		
 	}
 
