@@ -105,6 +105,7 @@ public class TextHandler {
  		if (count!=parts.length&& tourid!=null) {
  			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
  			ResultSet number=counting.executeQuery();
+ 			number.next();
  			if (number.getInt(1)>=4) {
  				number.close();
  				counting.close();
