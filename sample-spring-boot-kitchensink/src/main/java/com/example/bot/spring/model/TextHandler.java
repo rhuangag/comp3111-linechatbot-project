@@ -14,7 +14,7 @@ public class TextHandler {
 	int type;
 	String[] parts;
 	
-	//define different types for question
+	//define different types for questions
 	public  final int FAQ=1;
     public  final int MEANINGLESS=2;
     public  final int UNKNOWN=3;
@@ -44,14 +44,10 @@ public class TextHandler {
     	    text=t;
     	   // keyword=null;
     	    type = UNKNOWN;
-    	    parts = t.replaceAll("[\\p{P}\n]" , "").toLowerCase().split(" ");
+    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , "").toLowerCase().split(" ");
     }
     
     //Methods
-    
-  //  public String getKeyword() {
-   // 	    return keyword;
-  //  }
     
     public int getType() {
 	    return type;
@@ -61,24 +57,8 @@ public class TextHandler {
     //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
-    	//text=text.replaceAll("[\\p{P}\n]" , "");
-    	reply=discount(customer);
-    	//String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-    	//reply=checkBooking(customer);
-    /*	checkFiltering();
-    	
-    	newCancel();
-    	newHistory();
-    	newRecommendation();
-    	newFAQ(customer);
-    	
-    	newFiltering();
-    	newBooking();
-    	otherReply();*/
-    	
-    	return reply;
-    	
-		    
+    	reply=discount(customer);   	
+    	return reply;		    
 }
    private String discount(Customer customer) {
    	try {
@@ -300,106 +280,37 @@ public class TextHandler {
 			rs.close();
 			stmt1.close();
 			connection.close();
-			
 			return reply;}
-		
-    	// if not found, firstly get words from text
-    	String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-    	
-    	//TODO
-    	//search every word in db
-    	int countloop=0;
-    	
-    	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
-    	for (int i=0; i<parts.length;i++) {
-    		stmt2.setString(1, parts[i]);
-    		rs =stmt2.executeQuery();
-    		if (rs.next()) {
-    			
-    			break;}
-    		countloop++;
-    		
-    	}
-    	//the first keyword not found
-    	
-    	if (countloop==parts.length) {
-    		rs.close();
-			stmt2.close();
-			connection.close();
-			
-    		return newCancel(customer);
-			
-    	}
-
-    	//now we find out the first keyword, check whether we need the second keyword
-    	 //we do not need the second record, return 
-
-    		
-    	    rs.close();
-		    stmt2.close();
-    		//check whether the sentence contains the second keyword
-    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword2 LIKE concat('%',concat(',',?,','),'%')");
-    		countloop=0;
-    		for (int i=0; i<parts.length;i++) {
-    			
-    			//stmt3.setString(1, keyword1);
-    			stmt3.setString(1, parts[i]);
-        		rs =stmt3.executeQuery();
-        		if (rs.next())
-        			break;
-        		//if (rs.getString(1)==keyword1 && rs.getString(2)==null)
-        			//break;
-        		countloop++;
+		rs.close();
+		stmt1.close();   	
+    	if (keywordMatch(parts,"keywordListForFAQ","keyword1")) {
+    		if (keywordMatch(parts,"keywordListForFAQ","keyword2")) {
+    			PreparedStatement findkey = connection.prepareStatement("SELECT reply FROM keywordListForFAQ WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
+    			ResultSet key=null;
+    			int countloop=0;
+        		for (int i=0; i<parts.length;i++) {
+        			findkey.setString(1, parts[i]);
+        			key =findkey.executeQuery();
+        			if (key.next()) { 
+        				reply=key.getString(1);
+        				break;}
+        			countloop++;}
+        		key.close();
+    			findkey.close();
+    			connection.close();
+        		if (countloop!=parts.length) {
+        			type=FAQ;
+            		record(customer);
+            		return reply;
+    				}
     		}
-    		//second keyword not found
-    		if (countloop==parts.length) {
-    			rs.close();
-				stmt3.close();
-				connection.close();
-			
-				return newCancel(customer);}
-				//second keyword found 
-    		PreparedStatement stmt4 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword3 LIKE concat('%',concat(',',?,','),'%')");
-    		countloop=0;
-    		for (int i=0; i<parts.length;i++) {
-    			
-    			//stmt3.setString(1, keyword1);
-    			stmt4.setString(1, parts[i]);
-        		rs =stmt4.executeQuery();
-        		if (rs.next())
-        			break;
-        		//if (rs.getString(1)==keyword1 && rs.getString(2)==null)
-        			//break;
-        		countloop++;
-    		}
-    		//second keyword not found
-    		if (countloop==parts.length) {
-    			rs.close();
-				stmt3.close();
-				
-    			
-				stmt4.close();
-				connection.close();
-			
-				return newCancel(customer);}
-    		
-    		else {
-    			type=FAQ;
-        		record(customer);
-        		reply=rs.getString(4);
-        		rs.close();
-				stmt3.close();
-				stmt4.close();
-				connection.close();
-        		return reply;}  
-    //	}
-    		
+    	}  		
+    		connection.close();
+    		return newCancel(customer);  		
     	}catch (Exception e){
-    		log.info("Exception while reading database: {}", e.toString());
-    		
-    		return (e.toString()+"newFAQ");}
-        
-        
+    		log.info("Exception while reading database: {}", e.toString());   		
+    		return (e.toString()+"newFAQ");
+    		}       
     }
     
    private String newCancel(Customer customer){
@@ -483,8 +394,7 @@ public class TextHandler {
     	    		if (onekey.next()) {
     	    			reply=onekey.getString(1);
     	    			break;}
-    	    		countloop++;
-    	    		
+    	    		countloop++;    	    		
     	    	}
     			onekey.close();
     			findonekey.close();
@@ -495,26 +405,10 @@ public class TextHandler {
     	    		type=FILTER_I;
     	    		record(customer);
     	    		connection.close();
-    	    		return filter.filterSearch(reply);	
-    	    		
-    				
+    	    		return filter.filterSearch(reply);	  				
     	    	}
     		//now check two keywords
-    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
-    	    	ResultSet twokey1=null;
-    	    	countloop=0;
-    	    	for (int i=0; i<parts.length;i++) {
-    	    		findtwokey1.setString(1, parts[i]);
-    	    		twokey1 =findtwokey1.executeQuery();
-    	    		if (twokey1.next()) {
-    	    			reply=twokey1.getString(1);
-    	    			break;}
-    	    		countloop++;
-    	    		
-    	    	}
-    			twokey1.close();
-    			findtwokey1.close();
-    			if (countloop!=parts.length) {
+    			if (keywordMatch(parts,"twokeyword","keyword1")) {
 	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
 	    			ResultSet twokey2=null;
 	    			countloop=0;
@@ -537,36 +431,8 @@ public class TextHandler {
     			}
     		}
     		//now find three keyword
-    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
-    	    	ResultSet threekey1=null;
-    	    	countloop=0;
-    	    	for (int i=0; i<parts.length;i++) {
-    	    		findthreekey1.setString(1, parts[i]);
-    	    		threekey1 =findthreekey1.executeQuery();
-    	    		if (threekey1.next()) {
-    	    			reply=threekey1.getString(1);
-    	    			break;}
-    	    		countloop++;
-    	    		
-    	    	}
-    			threekey1.close();
-    			findthreekey1.close();
-    			if (countloop!=parts.length) {
-    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
-        	    	ResultSet threekey2=null;
-        	    	countloop=0;
-        	    	for (int i=0; i<parts.length;i++) {
-        	    		findthreekey2.setString(1, parts[i]);
-        	    		threekey2 =findthreekey2.executeQuery();
-        	    		if (threekey2.next()) {
-        	    			reply=threekey2.getString(1);
-        	    			break;}
-        	    		countloop++;
-        	    		
-        	    	}
-        			threekey2.close();
-        			findthreekey2.close();
-        			if (countloop!=parts.length) {
+    			if (keywordMatch(parts,"threekeyword","keyword1")) {
+        			if (keywordMatch(parts,"threekeyword","keyword2")) {
         				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
             	    	ResultSet threekey3=null;
             	    	countloop=0;
@@ -703,4 +569,27 @@ public class TextHandler {
 		log.info("Exception while reading file: {}", e.toString());
 		return false;}
 	}
+    private boolean keywordMatch(String[] parts,String table,String colomn) {
+    	try {
+    		Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement findkey = connection.prepareStatement("SELECT reply FROM "+table+" WHERE lower("+colomn+") LIKE concat('%',concat(',',?,','),'%')");
+			ResultSet key=null;
+			int countloop=0;
+    		for (int i=0; i<parts.length;i++) {
+    			findkey.setString(1, parts[i]);
+    			key =findkey.executeQuery();
+    			if (key.next()) 
+    				break;
+    			countloop++;}
+    		key.close();
+			findkey.close();
+			connection.close();
+    		if (countloop!=parts.length)
+    			return true;
+    		else
+    			return false;
+    	}catch (Exception e) {
+    		log.info("Exception while reading file: {}", e.toString());
+    		return false;}
+    }
 }
