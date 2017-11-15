@@ -58,12 +58,12 @@ public class TimeManager extends Observable {
 
 	//Timer
 	public void timing() {
-		long delay = computeNextDelay(44,0);
+		long delay = computeNextDelay(00,0);
 		scheduler.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				passTime();
 			}
-		}, delay, 5*60, TimeUnit.SECONDS);
+		}, delay, 60*60, TimeUnit.SECONDS);
 	}
 	
 	

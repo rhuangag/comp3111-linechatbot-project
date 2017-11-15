@@ -24,9 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Discount implements Observer{
 	//Dclaration of data members
-	String targetdate;
-	String tourID;
-	String targettime;
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 	
 	public void update(Observable o, Object arg) {
