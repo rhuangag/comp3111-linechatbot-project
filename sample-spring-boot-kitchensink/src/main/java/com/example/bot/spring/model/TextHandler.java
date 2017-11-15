@@ -44,7 +44,7 @@ public class TextHandler {
     	    text=t;
     	   // keyword=null;
     	    type = UNKNOWN;
-    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , "").toLowerCase().split(" ");
+    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , "").replaceAll("[\n]" , "").toLowerCase().split(" ");
     }
     
     //Methods
