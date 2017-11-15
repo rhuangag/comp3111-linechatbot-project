@@ -12,6 +12,7 @@ public class TextHandler {
 	String text;
 	//String keyword;
 	int type;
+	String[] parts;
 	
 	//define different types for question
 	public  final int FAQ=1;
@@ -43,6 +44,7 @@ public class TextHandler {
     	    text=t;
     	   // keyword=null;
     	    type = UNKNOWN;
+    	    parts = t.replaceAll("[\\p{P}\n]" , "").toLowerCase().split(" ");
     }
     
     //Methods
@@ -59,9 +61,9 @@ public class TextHandler {
     //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
-    	text=text.replaceAll("[\\p{P}\n]" , "");
+    	//text=text.replaceAll("[\\p{P}\n]" , "");
     	reply=discount(customer);
-    	String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+    	//String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
     	//reply=checkBooking(customer);
     /*	checkFiltering();
     	
@@ -80,20 +82,8 @@ public class TextHandler {
 }
    private String discount(Customer customer) {
    	try {
-   		   Connection connection = KitchenSinkController.getConnection();
-		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 100 and keyword like concat('%',concat(',',?,','),'%')");
-		   ResultSet key=null;
-		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-		   int count=0;
-		   for (int i=0;i<parts.length;i++) {
-		   trigger.setString(1, parts[i]);
-		   key=trigger.executeQuery();
-		   if (key.next())
-			   break;
-		   count++;
-		   }
-		   key.close();
-		   trigger.close();
+   		   Connection connection = KitchenSinkController.getConnection();	
+   		//String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
 		   PreparedStatement event = connection.prepareStatement("SELECT tourid FROM discounttourlist");
 		   ResultSet exist=event.executeQuery();
 		   String tourid=null;
@@ -102,9 +92,11 @@ public class TextHandler {
 		   }
 		   event.close();
 		   exist.close();
- 		if (count!=parts.length&& tourid!=null) {
+ 		if (functionMatch(DISCOUNT,parts)&& tourid!=null) {
  			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
  			ResultSet number=counting.executeQuery();
+ 			number.next();
+ 			//bug here
  			if (number.getInt(1)>=4) {
  				number.close();
  				counting.close();
@@ -119,9 +111,7 @@ public class TextHandler {
  				record(customer);
  				number.close();
  				counting.close();
- 				
- 				
-			
+ 							
  				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
  				
  				insertdiscount.setString(1, customer.getID()); 
@@ -416,26 +406,11 @@ public class TextHandler {
 	   String result=null;
 	   try {
 		   Connection connection = KitchenSinkController.getConnection();
-		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 4 and keyword like concat('%',concat(',',?,','),'%')");
-		   ResultSet key=null;
-		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-		   int count=0;
-		   for (int i=0;i<parts.length;i++) {
-		   trigger.setString(1, parts[i]);
-		   key=trigger.executeQuery();
-		   if (key.next())
-			   break;
-		   count++;
-		   }
-		   key.close();
-		   trigger.close();
-		   if (count!=parts.length) {
+		   if (functionMatch(CANCEL,parts)) {
     		type=CANCEL;
-    		record(customer);
-    		
+    		record(customer);   		
     		String reply="noRecord";
-    		PreparedStatement stmt = connection.prepareStatement("SELECT Tourid FROM Customerrecord WHERE lower(Tourid) =?");
-    		
+    		PreparedStatement stmt = connection.prepareStatement("SELECT Tourid FROM Customerrecord WHERE lower(Tourid) =?");   		
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
     		stmt.setString(1, parts[i]);
@@ -444,16 +419,11 @@ public class TextHandler {
     			reply=rs.getString(1);
     			break;
     			}
-    		}
-    		
+    		}    		
     		stmt.close();
     		rs.close();
-
     		connection.close();
-    		
-
     		result=customer.cancelBooking(reply);
-
     		}
     	 else 
     		{
@@ -462,22 +432,17 @@ public class TextHandler {
 		 
 	  }
 	   catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());
-			
+			log.info("Exception while reading database: {}", e.toString());			
 			return (e.toString()+"newcancel");}
 	   return result;
     }
    
    private String newHitory(Customer customer) {
    		String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-   		if (functionMatch(HISTORY,parts)) {
-   			if (customer.getHistory()==null)  				
-   				return unknown(customer);   			
-   			else {
+   		if (functionMatch(HISTORY,parts)) { 			
    				type=HISTORY;
    				record(customer);   				
-   				return customer.getHistory();
-   			}   		
+   				return customer.getHistory(); 		
    			}
    		else   			
    			return newRecommendation(customer);
@@ -486,35 +451,13 @@ public class TextHandler {
     
     private String newRecommendation(Customer customer) {
     	try {
-    	   Connection connection = KitchenSinkController.getConnection();
-  		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=6 and keyword like concat('%',concat(',',?,','),'%')");
-  		   ResultSet key=null;
-  		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-  		   int count=0;
-  		   for (int i=0;i<parts.length;i++) {
-  		   trigger.setString(1, parts[i]);
-  		   key=trigger.executeQuery();
-  		   if (key.next())
-  			   break;
-  		   count++;
-  		   }
-  		   key.close();
-  		   trigger.close();
-    	if (count!=parts.length) {
-    		if (customer.getRecommendation()==null) {
-    			connection.close();
-    			return unknown(customer);
-    			
-    		}
-    		else {
+    	if (functionMatch(RECOMMENDATION,parts)) {
     			type=RECOMMENDATION;
     			record(customer);
-    			connection.close();
     			return customer.getRecommendation();
-    			}}
-    	else {
-    		connection.close();
-    		return newFiltering(customer);}
+    		}
+    	else 
+    		return newFiltering(customer);
     	}catch(Exception e) {
     		log.info("Exception while reading database: {}", e.toString());
 	   		return e.toString();
@@ -677,34 +620,17 @@ public class TextHandler {
     }
     
     
-    
+    //enrich db
     private String newBooking(Customer customer) {
        	try {
-       	   Connection connection = KitchenSinkController.getConnection();
-   		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=5 and keyword like concat('%',concat(',',?,','),'%')");
-   		   ResultSet key=null;
-   		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-   		   int count=0;
-   		   for (int i=0;i<parts.length;i++) {
-   		   trigger.setString(1, parts[i]);
-   		   key=trigger.executeQuery();
-   		   if (key.next())
-   			   break;
-   		   count++;
-   		   }
-   		   key.close();
-   		   trigger.close();
-    	if (count!=parts.length) {
+    	if (functionMatch(FILTER_I,parts)) {
        		type=FILTER_I;
        		record(customer);
-       		connection.close();
        		Filter filter=new Filter(customer.getID());
        		return filter.filterSearch("book");
        		}
-       	else {
-       		connection.close();
-       		return unknown(customer);}
-       	
+       	else 
+       		return unknown(customer);
        	}catch(Exception e) {
        		log.info("Exception while reading database: {}", e.toString());
 	   		return (e.toString()+"newbooking");
