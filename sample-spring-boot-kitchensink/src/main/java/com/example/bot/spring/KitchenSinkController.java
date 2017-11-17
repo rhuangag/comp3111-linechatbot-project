@@ -252,9 +252,6 @@ public class KitchenSinkController {
        	TextHandler handler=new TextHandler(text);
        	reply=handler.messageHandler(customer);
        	this.replyText(replyToken, reply);
-       	
-       	
-      
     }
     
 

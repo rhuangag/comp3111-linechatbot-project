@@ -17,16 +17,18 @@ import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.PushMessage;
 import com.example.bot.spring.KitchenSinkController;
 
+import com.linecorp.bot.model.message.TextMessage;
+
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-public class Notification implements Observer{
+public class NotifyingCustomer implements Observer{
 	private final String[] cancelMessage= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
 	private final String[] confirmMessage= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
 	private String currentDate;
 
-	public Notification(){
+	public NotifyingCustomer(){
 		currentDate=null;
 	}
 
@@ -37,12 +39,14 @@ public class Notification implements Observer{
 		if(time[3]=="10") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
-			promotionStatus(time[0],time[1],time[2]);
+			//promotionStatus(time[0],time[1],time[2]);
+			pushPromotion();
 
 		}
 
 	}
 
+	//functional function in this class
 	private void pushPromotion() {		
 		String imageUrl1 = KitchenSinkController.createUri("beach3.jpg");
 		String imageUrl2 = KitchenSinkController.createUri("gd1.jpg");
@@ -126,7 +130,9 @@ public class Notification implements Observer{
 		}
 
 		if (day < 10) {targetDate+="0";}
-		targetDate+=Integer.toString(day)+"/"+Integer.toString(month)+"/"+Integer.toString(year);
+		targetDate+=Integer.toString(day)+"/";
+		if (month < 10) {targetDate+="0";}
+		targetDate+=Integer.toString(month)+"/"+Integer.toString(year);
 		return targetDate;
 	}
 
@@ -199,14 +205,27 @@ public class Notification implements Observer{
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
 	private String pushConfirmMessage(String userID, String tour, String guideInformation){
 		String message=confirmMessage[0]+tour+confirmMessage[1]+guideInformation;
+		TextMessage textMessage = new TextMessage(message);
+		PushMessage pushMessage = new PushMessage(
+		        userID,
+		        textMessage
+		        );
+		KitchenSinkController.pushMessageController(pushMessage);
+		
 		return message;
 
 	}
 	private String pushCancelMessage(String userID, String tour) {
 		String message=cancelMessage[0]+tour+ cancelMessage[1];
+		TextMessage textMessage = new TextMessage(message);
+		PushMessage pushMessage = new PushMessage(
+		        userID,
+		        textMessage
+		        );
+		KitchenSinkController.pushMessageController(pushMessage);
+		
 		return message;
 	}
 
-	//functional function in this class
 
 }
