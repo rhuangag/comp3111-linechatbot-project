@@ -549,15 +549,16 @@ public class TextHandler {
     				temp="<"+temp;
     		if (text.contains("higher than")|text.contains("more than"))
     				temp=">"+temp;
-    		type=FILTER_I;
-			record(customer);
-			connection.close();
+
 			if (filter.filterSearch(temp)=="Sorry, we cannot find any match answer for your question :( We already record your question and will forward it to the tour company.") {
 				type=UNKNOWN;
 				record(customer);
 				connection.close();
 				return filter.filterSearch(temp);
 			}
+    		type=FILTER_I;
+			record(customer);
+			connection.close();
 			return filter.filterSearch(temp);
     	   /* */
     		}catch(Exception e) {
