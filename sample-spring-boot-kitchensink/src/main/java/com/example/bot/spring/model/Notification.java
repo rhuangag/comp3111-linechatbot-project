@@ -37,7 +37,8 @@ public class Notification implements Observer{
 		if(time[3]=="10") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
-			promotionStatus(time[0],time[1],time[2]);
+			//promotionStatus(time[0],time[1],time[2]);
+			pushPromotion();
 
 		}
 
