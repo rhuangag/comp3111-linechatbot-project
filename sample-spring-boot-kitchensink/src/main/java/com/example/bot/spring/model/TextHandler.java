@@ -64,144 +64,7 @@ public class TextHandler {
     	reply=checkStatus(customer);   	
     	return reply;		    
 }
-    private String PasswordMatch(Customer customer) {
-    	if (functionMatch(PassWord,parts))
-    	{
-    		type=PassWord;
-    		record(customer);
-    		try {
-    			Connection connection = KitchenSinkController.getConnection();
-    			PreparedStatement whitelist = connection.prepareStatement("insert into whitelist values (?)");
-    			whitelist.setString(1, customer.getID());
-    			whitelist.executeUpdate();
-    			whitelist.close();
-    			connection.close();
-    		}catch(Exception e) {
-    	 		log.info("Exception while reading database: {}", e.toString());}
-    		return "Want to get the record, please reply GiveMeFile;\nWant to update the payment, please reply UpdatePayment;\nWant to add a new discount event, please reply DiscountEvent.";
-    	}
-    	else
-    		return GiveFile(customer);
-    }
-    private String GiveFile(Customer customer) {
-    	try {
-			Connection connection = KitchenSinkController.getConnection();
-			PreparedStatement clientlist = connection.prepareStatement("select * from whitelist where clientid=?");
-			clientlist.setString(1, customer.getID());
-			ResultSet client=clientlist.executeQuery();
-			boolean a=client.next();
-			clientlist.close();
-			client.close();
-			connection.close();
-      	if (functionMatch(GiveMeFile,parts)&& a)
-    	{
-    		type=GiveMeFile;
-    		record(customer);   		
-    		return "a file";
-    	}
-    	else
-    		return UpdateRecord(customer);
-		}catch(Exception e) {
-	 		log.info("Exception while reading database: {}", e.toString());
-	 		return e.toString();}
-    }
-    private String UpdateRecord(Customer customer) {
-    	try {
-			Connection connection = KitchenSinkController.getConnection();
-			PreparedStatement clientlist = connection.prepareStatement("select * from whitelist where clientid=?");
-			clientlist.setString(1, customer.getID());
-			ResultSet client=clientlist.executeQuery();
-			boolean a=client.next();
-			clientlist.close();
-			client.close();
-			connection.close();
-      	if (functionMatch(UpdatePayment,parts)&& a)
-    	{
-    		type=UpdatePayment;
-    		record(customer);   		
-    		return "Please input the information in this format: username-tourid-payment, eg. LI Hua-2D0031112-199.6";
-    	}
-    	else if (functionMatch(DiscountEvent,parts)&& a) {
-    		type=UpdatePayment;
-    		record(customer);   		
-    		return "Please input the information in this format: tourid-discountrate(percentage)-discountrate(float number)-capacity-seats-date-time, eg. 2D0031112-50%-0.5-2-3-20171112-0900";
-    	}
-    	else
-    		return Discount(customer);
-		}catch(Exception e) {
-	 		log.info("Exception while reading database: {}", e.toString());
-	 		return e.toString();}
-    }
-    private String Discount(Customer customer) {
-   	try {
-   		   Connection connection = KitchenSinkController.getConnection();	
-   		//String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-		   PreparedStatement event = connection.prepareStatement("SELECT tourid FROM discounttourlist");
-		   ResultSet exist=event.executeQuery();
-		   String tourid=null;
-		   while (exist.next()) {
-			   tourid= exist.getString(1);
-		   }
-		   event.close();
-		   exist.close();
- 		if (functionMatch(DISCOUNT,parts)&& tourid!=null) {
- 			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
- 			ResultSet number=counting.executeQuery();
- 			number.next();
- 			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
- 			ResultSet rs=counting.executeQuery();
- 			rs.next();
- 			if (number.getInt(1)>=rs.getInt(1)) {
- 				rs.close();
- 				capacity.close();
- 				number.close();
- 				counting.close();
- 				connection.close();
- 				type= MEANINGLESS;
- 				record(customer);
- 				return "Sorry, ticket sold out.";
- 			}
- 			
- 			else {
- 				rs.close();
- 				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
- 	 			ResultSet discount=checkdiscount.executeQuery();
- 				if (!discount.next()) {
- 				type=DISCOUNT;
- 				record(customer);
- 				number.close();
- 				counting.close();
- 				discount.close();
- 							
- 				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
- 				
- 				insertdiscount.setString(1, customer.getID()); 
- 				insertdiscount.setString(2, tourid);
- 				insertdiscount.executeUpdate();
- 				
- 				insertdiscount.close();
- 				connection.close();
- 				return "Congratulations! You get the discount.";}
- 				else
- 				{
- 					type= MEANINGLESS;
- 	 				record(customer);
- 	 				discount.close();
- 	 				connection.close();
- 	 				return "You have already got the discount.";
- 				}
- 			}
- 		
- 			}
- 		else {
- 			connection.close();
- 			return newFAQ(customer);}
- 	}catch(Exception e) {
- 		log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();
- 	}
-   }
-   private String checkStatus(Customer customer) {
+    private String checkStatus(Customer customer) {
     	//check whether the customer is in booking process
     	try {
     		//find the last quetion type for the specific customer who is sending text now
@@ -330,6 +193,144 @@ public class TextHandler {
 			log.info("Exception while reading database: {}", e.toString());
 			return e.toString();}
     }
+    private String PasswordMatch(Customer customer) {
+    	if (functionMatch(PassWord,parts))
+    	{
+    		type=PassWord;
+    		record(customer);
+    		try {
+    			Connection connection = KitchenSinkController.getConnection();
+    			PreparedStatement whitelist = connection.prepareStatement("insert into whitelist values (?)");
+    			whitelist.setString(1, customer.getID());
+    			whitelist.executeUpdate();
+    			whitelist.close();
+    			connection.close();
+    		}catch(Exception e) {
+    	 		log.info("Exception while reading database: {}", e.toString());}
+    		return "Want to get the record, please reply givemefile;\nWant to update the payment, please reply updatepayment;\nWant to add a new discount event, please reply discountevent.";
+    	}
+    	else
+    		return GiveFile(customer);
+    }
+    private String GiveFile(Customer customer) {
+    	try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement clientlist = connection.prepareStatement("select * from whitelist where clientid=?");
+			clientlist.setString(1, customer.getID());
+			ResultSet client=clientlist.executeQuery();
+			boolean a=client.next();
+			clientlist.close();
+			client.close();
+			connection.close();
+      	if (functionMatch(GiveMeFile,parts)&& a)
+    	{
+    		type=GiveMeFile;
+    		record(customer);   		
+    		return "a file";
+    	}
+    	else
+    		return UpdateRecord(customer);
+		}catch(Exception e) {
+	 		log.info("Exception while reading database: {}", e.toString());
+	 		return e.toString();}
+    }
+    private String UpdateRecord(Customer customer) {
+    	try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement clientlist = connection.prepareStatement("select * from whitelist where clientid=?");
+			clientlist.setString(1, customer.getID());
+			ResultSet client=clientlist.executeQuery();
+			boolean a=client.next();
+			clientlist.close();
+			client.close();
+			connection.close();
+      	if (functionMatch(UpdatePayment,parts)&& a)
+    	{
+    		type=UpdatePayment;
+    		record(customer);   		
+    		return "Please input the information in this format: username-tourid-payment, eg. LI Hua-2D0031112-199.6";
+    	}
+    	else if (functionMatch(DiscountEvent,parts)&& a) {
+    		type=DiscountEvent;
+    		record(customer);   		
+    		return "Please input the information in this format: tourid-discountrate(percentage)-discountrate(float number)-capacity-seats-date-time, eg. 2D0031112-50%-0.5-2-3-20171112-0900";
+    	}
+    	else
+    		return Discount(customer);
+		}catch(Exception e) {
+	 		log.info("Exception while reading database: {}", e.toString());
+	 		return e.toString();}
+    }
+    private String Discount(Customer customer) {
+   	try {
+   		   Connection connection = KitchenSinkController.getConnection();	
+   		//String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+		   PreparedStatement event = connection.prepareStatement("SELECT tourid FROM discounttourlist");
+		   ResultSet exist=event.executeQuery();
+		   String tourid=null;
+		   while (exist.next()) {
+			   tourid= exist.getString(1);
+		   }
+		   event.close();
+		   exist.close();
+ 		if (functionMatch(DISCOUNT,parts)&& tourid!=null) {
+ 			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
+ 			ResultSet number=counting.executeQuery();
+ 			number.next();
+ 			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
+ 			ResultSet rs=counting.executeQuery();
+ 			rs.next();
+ 			if (number.getInt(1)>=rs.getInt(1)) {
+ 				rs.close();
+ 				capacity.close();
+ 				number.close();
+ 				counting.close();
+ 				connection.close();
+ 				type= MEANINGLESS;
+ 				record(customer);
+ 				return "Sorry, ticket sold out.";
+ 			}
+ 			
+ 			else {
+ 				rs.close();
+ 				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
+ 	 			ResultSet discount=checkdiscount.executeQuery();
+ 				if (!discount.next()) {
+ 				type=DISCOUNT;
+ 				record(customer);
+ 				number.close();
+ 				counting.close();
+ 				discount.close();
+ 							
+ 				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
+ 				
+ 				insertdiscount.setString(1, customer.getID()); 
+ 				insertdiscount.setString(2, tourid);
+ 				insertdiscount.executeUpdate();
+ 				
+ 				insertdiscount.close();
+ 				connection.close();
+ 				return "Congratulations! You get the discount.";}
+ 				else
+ 				{
+ 					type= MEANINGLESS;
+ 	 				record(customer);
+ 	 				discount.close();
+ 	 				connection.close();
+ 	 				return "You have already got the discount.";
+ 				}
+ 			}
+ 		
+ 			}
+ 		else {
+ 			connection.close();
+ 			return newFAQ(customer);}
+ 	}catch(Exception e) {
+ 		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
+ 	}
+   }
+
    
    private String newFAQ(Customer customer){
         try {	
