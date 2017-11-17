@@ -332,7 +332,7 @@ public class Customer{
 	/**
 	 * This method cancels one booking with the input tour id and user id by marking the booking in the database as "cancelled by customer".
 	 * It also reply the customer to inform that whether the cancel is successful.
-	 * @param keyword this is the tour id of the tour that is going to be cancelled
+	 * @param keyword This is the tour id of the tour that is going to be cancelled
 	 * @return java.lang.String This is the reply message to indicate whether the cancellation is successful.
 	 */
 	public String cancelBooking(String keyword) {
