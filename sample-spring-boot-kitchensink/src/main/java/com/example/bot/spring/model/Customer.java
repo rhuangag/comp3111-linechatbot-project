@@ -8,13 +8,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 
-
+/**
+ * The class Cutomer models a the customer behavior and stores the information(user ID and customer history) of a customer.
+ * 
+ * 
+ * 
+ *
+ */
 @Slf4j
 public class Customer{
 	//Declaration of data members and private class "CustomerHistory"
     private String userID;
     CustomerHistory history;
     
+    /**
+     * The private class CustomerHistory models the history of the customer. It can search the customer records from the database and output the 
+     * record to class Customer.
+     * 
+     *
+     */
 	private class CustomerHistory{
 		Vector<String> history;
 		
@@ -25,6 +37,12 @@ public class Customer{
 		
 		//TODO
 		//Find the customer history in the database and put each row as a string in the vector "history"
+		/**
+		 * This method can search the database and get the customer record of the customer whose user ID is provided. 
+		 * If the customer record exists, it will be added to the Vector history for temporary storage.
+		 * @param userID This is the user ID of the customer whose record is searched
+		 * 
+		 */
 		public void findHistory(String userID) {
 			if (!history.isEmpty())
 				history.clear();
@@ -51,6 +69,10 @@ public class Customer{
 		
 		//TODO
 		//Read the vector and return all the content in the text output format
+		/**
+		 * This method will read the Vector which temporarily stores the customer record. If customer record is found, it outputs the record as String.
+		 * @return String If the record is found, this returns a String which combines all the records. If record is not found, return "There is no record".
+		 */
 		public String getHistory() {
 			if(history.isEmpty())
 			    return "There is no record.";
@@ -72,11 +94,19 @@ public class Customer{
 	}
 	
 	//Methods
+	/**
+	 * This method is used to get the user ID of the customer.
+	 * @return String This returns the user ID.
+	 */
 	public String getID() {
 		return userID;
 	}
 	
 	//Return the customer history from instance history
+	/**
+	 * This method is used to get the history of the customer.
+	 * @return String This returns a String containing the result of the search of customer history
+	 */
 	public String getHistory() {
 		history.findHistory(userID);
 		return history.getHistory();
