@@ -86,7 +86,7 @@ public class Customer{
 	//Methods
 	/**
 	 * This method is used to get the user ID of the customer.
-	 * @return String This returns the user ID.
+	 * @return java.lang.String This returns the user ID.
 	 */
 	public String getID() {
 		return userID;
@@ -95,7 +95,7 @@ public class Customer{
 	//Return the customer history from instance history
 	/**
 	 * This method is used to get the history of the customer.
-	 * @return String This returns a String containing the result of the search of customer history
+	 * @return java.lang.String This returns a String containing the result of the search of customer history
 	 */
 	public String getHistory() {
 		history.findHistory(userID);
@@ -106,7 +106,7 @@ public class Customer{
 	//Analyse the customer history and return the recommendation
 	/**
 	 * This method analyse the previous customer records and give a recommendation 
-	 * @return Sting This returns the reply message containing the recommended tour.
+	 * @return java.lang.Sting This returns the reply message containing the recommended tour.
 	 */
 	public String getRecommendation() {
 		
@@ -333,7 +333,7 @@ public class Customer{
 	 * This method cancels one booking with the input tour id and user id by marking the booking in the database as "cancelled by customer".
 	 * It also reply the customer to inform that whether the cancel is successful.
 	 * @param keyword this is the tour id of the tour that is going to be cancelled
-	 * @return String This is the reply message to indicate whether the cancellation is successful.
+	 * @return java.lang.String This is the reply message to indicate whether the cancellation is successful.
 	 */
 	public String cancelBooking(String keyword) {
 		String result =null;
