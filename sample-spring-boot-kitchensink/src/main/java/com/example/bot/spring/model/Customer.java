@@ -21,12 +21,7 @@ public class Customer{
     private String userID;
     CustomerHistory history;
     
-    /**
-     * The private class CustomerHistory models the history of the customer. It can search the customer records from the database and output the 
-     * record to class Customer.
-     * 
-     *
-     */
+ 
 	private class CustomerHistory{
 		Vector<String> history;
 		
@@ -37,12 +32,6 @@ public class Customer{
 		
 		//TODO
 		//Find the customer history in the database and put each row as a string in the vector "history"
-		/**
-		 * This method can search the database and get the customer record of the customer whose user ID is provided. 
-		 * If the customer record exists, it will be added to the Vector history for temporary storage.
-		 * @param userID This is the user ID of the customer whose record is searched
-		 * 
-		 */
 		public void findHistory(String userID) {
 			if (!history.isEmpty())
 				history.clear();
@@ -69,10 +58,7 @@ public class Customer{
 		
 		//TODO
 		//Read the vector and return all the content in the text output format
-		/**
-		 * This method will read the Vector which temporarily stores the customer record. If customer record is found, it outputs the record as String.
-		 * @return String If the record is found, this returns a String which combines all the records. If record is not found, return "There is no record".
-		 */
+
 		public String getHistory() {
 			if(history.isEmpty())
 			    return "There is no record.";
@@ -88,6 +74,10 @@ public class Customer{
 	}
 	
 	//Constructor
+	/**
+	 * Constructor of the class Customer. It will make the input as the user id of the customer.
+	 * @param ID This is the user ID of the customer generated
+	 */
 	public Customer(String ID) {
 		userID=ID;
 		history=new CustomerHistory();
@@ -114,6 +104,10 @@ public class Customer{
 	
 	//TODO
 	//Analyse the customer history and return the recommendation
+	/**
+	 * This method analyse the previous customer records and give a recommendation 
+	 * @return Sting This returns the reply message containing the recommended tour.
+	 */
 	public String getRecommendation() {
 		
 		Vector<String> historyID = new Vector<String>();
@@ -335,7 +329,12 @@ public class Customer{
 	
 	//delete date in customer table and update status in customer record
 	//currently assume customer only provide tourID to cancel the booking
-	
+	/**
+	 * This method cancels one booking with the input tour id and user id by marking the booking in the database as "cancelled by customer".
+	 * It also reply the customer to inform that whether the cancel is successful.
+	 * @param keyword this is the tour id of the tour that is going to be cancelled
+	 * @return String This is the reply message to indicate whether the cancellation is successful.
+	 */
 	public String cancelBooking(String keyword) {
 		String result =null;
 		try {
