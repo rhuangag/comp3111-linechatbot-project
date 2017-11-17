@@ -39,10 +39,11 @@ public  class  UpdateRecord{
 	public String Payment(String information) {
 		try {		
 		String[] parts=information.split("-");
+
+		if (parts.length==3) {
 		String customername=parts[0];
 		String tourid=parts[1];
 		Double payment=Double.parseDouble(parts[2]);
-		if (parts.length==3) {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement stmt = connection.prepareStatement("update customertable set amountpaid=? where name=? and tourjoined=?");
 		stmt.setDouble(1, payment); 
@@ -61,16 +62,17 @@ public  class  UpdateRecord{
 	public String Discount(String information) {
 		try {		
 		String[] parts=information.split("-");
-		String tourid=parts[0];
-		String ratestring=parts[1];
-		Double ratenumber=Double.parseDouble(parts[2]);
-		int capacity=Integer.parseInt(parts[3]);
-		int seat=Integer.parseInt(parts[4]);
-		String date=parts[5];
-		String time=parts[6];
+
 		
 		
 		if (parts.length==7) {
+			String tourid=parts[0];
+			String ratestring=parts[1];
+			Double ratenumber=Double.parseDouble(parts[2]);
+			int capacity=Integer.parseInt(parts[3]);
+			int seat=Integer.parseInt(parts[4]);
+			String date=parts[5];
+			String time=parts[6];
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement stmt = connection.prepareStatement("insert into discounttourlist values (?,?,?,?,?,?,?)");
 		
