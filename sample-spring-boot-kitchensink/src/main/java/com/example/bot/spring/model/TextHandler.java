@@ -169,6 +169,8 @@ public class TextHandler {
     					return "Do you have any other questions?";}
     			}
     			else if (temp==UpdatePayment||temp==DiscountEvent) {
+    				rs.close();
+					stmt.close();
     				type=MEANINGLESS;
 					record(customer);
 					UpdateRecord update=new UpdateRecord(customer);
@@ -200,11 +202,17 @@ public class TextHandler {
     		record(customer);
     		try {
     			Connection connection = KitchenSinkController.getConnection();
+    			PreparedStatement hhh = connection.prepareStatement("select * from whitelist where clientid=?");
+    			hhh.setString(1, customer.getID());
+    			ResultSet aa=hhh.executeQuery();
+    			if (!aa.next()) {
     			PreparedStatement whitelist = connection.prepareStatement("insert into whitelist values (?)");
     			whitelist.setString(1, customer.getID());
     			whitelist.executeUpdate();
     			whitelist.close();
-    			connection.close();
+    			hhh.close();
+    			aa.close();
+    			connection.close();}
     		}catch(Exception e) {
     	 		log.info("Exception while reading database: {}", e.toString());}
     		return "Want to get the record, please reply givemefile;\nWant to update the payment, please reply updatepayment;\nWant to add a new discount event, please reply discountevent.";
@@ -450,7 +458,6 @@ public class TextHandler {
     			String ID=customer.getID();
         		Filter filter=new Filter(ID);
         		
-    			String[] parts = text.replaceAll("[^a-zA-Z0-9-\\s]" , "").toLowerCase().split(" ");
     	    	String reply=null;
     	    	int countloop=0;
     	    	Connection connection = KitchenSinkController.getConnection();
@@ -545,6 +552,12 @@ public class TextHandler {
     		type=FILTER_I;
 			record(customer);
 			connection.close();
+			if (filter.filterSearch(temp)=="Sorry, we cannot find any match answer for your question :( We already record your question and will forward it to the tour company.") {
+				type=UNKNOWN;
+				record(customer);
+				connection.close();
+				return filter.filterSearch(temp);
+			}
 			return filter.filterSearch(temp);
     	   /* */
     		}catch(Exception e) {
@@ -574,7 +587,7 @@ public class TextHandler {
     private String unknown(Customer customer) {
     	type = UNKNOWN;
     	record(customer);
-    	return "Sorry, we can not find matched result.";
+    	return "Sorry, we cannot understand or find any match answer for your question :( We already record your question and will forward it to the tour company.";
     }
     
     //TODO
