@@ -32,10 +32,10 @@ public class KitchenSinkApplication {
         TimeManager tm = TimeManager.getTimer();
         Discount discount = new Discount();
         PaymentReminder pr = new PaymentReminder();
-        Notification notification = new Notification();
+        NotifyingCustomer notifying = new NotifyingCustomer();
         tm.addObserver(discount);
         tm.addObserver(pr);
-        tm.addObserver(notification);
+        tm.addObserver(notifying);
         tm.timing();
         SpringApplication.run(KitchenSinkApplication.class, args);
         
