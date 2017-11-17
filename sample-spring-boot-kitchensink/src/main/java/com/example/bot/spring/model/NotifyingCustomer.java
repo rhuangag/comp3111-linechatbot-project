@@ -21,18 +21,31 @@ import com.linecorp.bot.model.message.TextMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
-
+/**
+ * The class NotifyingCustomer is an observer in the observer pattern.
+ * It can push promotion messages to all the LINE friends of the chatbot.
+ * In addition, when a date reaches 3 days before the departure of the tour, this class can inform the customers booked this tour whether this tour is confirmed and cancelled.
+ * 
+ *
+ */
 @Slf4j
 public class NotifyingCustomer implements Observer{
 	private final String[] cancelMessage= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
 	private final String[] confirmMessage= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
 	private String currentDate;
-
+	
+    /**
+     * Constructor of class NotifyingCustomer. It initializes the data members of the object.
+     */
 	public NotifyingCustomer(){
 		currentDate=null;
 	}
 
 	//update the time and check if fulfill the requirement to go to Notify()
+	/**
+	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager.
+	 * It can check whether the current time reaches the time for pushing promotion messages or informing the customer. If so, it executes the two events.
+	 */
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");

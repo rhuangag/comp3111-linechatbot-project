@@ -8,13 +8,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 
-
+/**
+ * The class Cutomer models a the customer behavior and stores the information(user ID and customer history) of a customer.
+ * 
+ * 
+ * 
+ *
+ */
 @Slf4j
 public class Customer{
 	//Declaration of data members and private class "CustomerHistory"
     private String userID;
     CustomerHistory history;
     
+ 
 	private class CustomerHistory{
 		Vector<String> history;
 		
@@ -51,6 +58,7 @@ public class Customer{
 		
 		//TODO
 		//Read the vector and return all the content in the text output format
+
 		public String getHistory() {
 			if(history.isEmpty())
 			    return "There is no record.";
@@ -66,17 +74,29 @@ public class Customer{
 	}
 	
 	//Constructor
+	/**
+	 * Constructor of the class Customer. It will make the input as the user id of the customer.
+	 * @param ID This is the user ID of the customer generated
+	 */
 	public Customer(String ID) {
 		userID=ID;
 		history=new CustomerHistory();
 	}
 	
 	//Methods
+	/**
+	 * This method is used to get the user ID of the customer.
+	 * @return java.lang.String This returns the user ID.
+	 */
 	public String getID() {
 		return userID;
 	}
 	
 	//Return the customer history from instance history
+	/**
+	 * This method is used to get the history of the customer.
+	 * @return java.lang.String This returns a String containing the result of the search of customer history
+	 */
 	public String getHistory() {
 		history.findHistory(userID);
 		return history.getHistory();
@@ -84,6 +104,10 @@ public class Customer{
 	
 	//TODO
 	//Analyse the customer history and return the recommendation
+	/**
+	 * This method analyse the previous customer records and give a recommendation 
+	 * @return java.lang.Sting This returns the reply message containing the recommended tour.
+	 */
 	public String getRecommendation() {
 		
 		Vector<String> historyID = new Vector<String>();
@@ -305,7 +329,12 @@ public class Customer{
 	
 	//delete date in customer table and update status in customer record
 	//currently assume customer only provide tourID to cancel the booking
-	
+	/**
+	 * This method cancels one booking with the input tour id and user id by marking the booking in the database as "cancelled by customer".
+	 * It also reply the customer to inform that whether the cancel is successful.
+	 * @param keyword This is the tour id of the tour that is going to be cancelled
+	 * @return java.lang.String This is the reply message to indicate whether the cancellation is successful.
+	 */
 	public String cancelBooking(String keyword) {
 		String result =null;
 		try {
