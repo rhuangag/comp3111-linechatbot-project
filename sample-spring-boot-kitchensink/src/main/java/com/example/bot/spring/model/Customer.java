@@ -136,7 +136,7 @@ public class Customer{
 			
 			if(((duration_number[0]==0) && (duration_number[1]==0)) || (duration_number[0] == duration_number[1]))
 				prefer_duration = "0";
-			if(duration_number[0]>duration_number[1])
+			else if(duration_number[0]>duration_number[1])
 				prefer_duration = "2";
 			else
 				prefer_duration = "3";
@@ -240,7 +240,7 @@ public class Customer{
 			
 			while(rs.next()) {
 				result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nTour Description: "+rs.getString("TourDescription")+ 
-						"\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice")+"\n";
+						"\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice");
 				
 			}
 			
