@@ -63,7 +63,7 @@ public class TimeManager extends Observable {
 			public void run() {
 				passTime();
 			}
-		}, delay, 60*60, TimeUnit.SECONDS);
+		}, delay, 2*60, TimeUnit.SECONDS);
 	}
 	
 	

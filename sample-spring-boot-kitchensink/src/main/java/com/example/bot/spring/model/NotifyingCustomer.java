@@ -36,7 +36,7 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
-		if(time[3]=="10") {
+		if(time[3]=="14"&&time[4]=="37") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
 			promotionStatus(time[0],time[1],time[2]);
