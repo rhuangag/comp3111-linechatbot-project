@@ -21,25 +21,39 @@ import com.linecorp.bot.model.message.TextMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
-
+/**
+ * The class NotifyingCustomer is an observer in the observer pattern.
+ * It can push promotion messages to all the LINE friends of the chatbot.
+ * In addition, when a date reaches 3 days before the departure of the tour, this class can inform the customers booked this tour whether this tour is confirmed and cancelled.
+ * 
+ *
+ */
 @Slf4j
 public class NotifyingCustomer implements Observer{
-	private final String[] cancelMessage= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
-	private final String[] confirmMessage= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
+	private final String[] CANCELMESSAGE= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
+	private final String[] CONFIRMMESSAGE= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
 	private String currentDate;
-
+	
+    /**
+     * Constructor of class NotifyingCustomer. It initializes the data members of the object.
+     */
 	public NotifyingCustomer(){
 		currentDate=null;
 	}
 
 	//update the time and check if fulfill the requirement to go to Notify()
+	/**
+	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager.
+	 * It can check whether the current time reaches the time for pushing promotion messages or informing the customer. If so, it executes the two events.
+	 */
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
 		if(time[3]=="10") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
-			promotionStatus(time[0],time[1],time[2]);
+			//promotionStatus(time[0],time[1],time[2]);
+			pushPromotion();
 
 		}
 
@@ -203,7 +217,7 @@ public class NotifyingCustomer implements Observer{
 
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
 	private String pushConfirmMessage(String userID, String tour, String guideInformation){
-		String message=confirmMessage[0]+tour+confirmMessage[1]+guideInformation;
+		String message=CONFIRMMESSAGE[0]+tour+CONFIRMMESSAGE[1]+guideInformation;
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
 		        userID,
@@ -215,7 +229,7 @@ public class NotifyingCustomer implements Observer{
 
 	}
 	private String pushCancelMessage(String userID, String tour) {
-		String message=cancelMessage[0]+tour+ cancelMessage[1];
+		String message=CANCELMESSAGE[0]+tour+ CANCELMESSAGE[1];
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
 		        userID,
