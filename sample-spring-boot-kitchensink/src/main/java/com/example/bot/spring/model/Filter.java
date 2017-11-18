@@ -239,12 +239,13 @@ public class Filter {
 		}
 		else {
 			
-			connection.close();
+			
 			filterFromTemTable.close();
 			rsForOrder.close();
 			clearTempTable.setString(1, userID);
 			clearTempTable.executeUpdate();
 			clearTempTable.close();
+			connection.close();
 			return "Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)";
 		}
 		//SELECT detials of the trip
