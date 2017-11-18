@@ -49,19 +49,8 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
-	
-		String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
-		if(time[3].equals("01")) {
+		if(time[3].equals("10")) {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
-			String message2="testing to see if you can pop up";
-			
-			TextMessage textMessage2 = new TextMessage(message2);
-			
-			PushMessage pushMessage2 = new PushMessage(
-			        userID,
-			        textMessage2
-			        );
-			KitchenSinkController.pushMessageController(pushMessage2);
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
 			//testing case here
