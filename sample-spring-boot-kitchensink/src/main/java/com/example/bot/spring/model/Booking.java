@@ -175,7 +175,8 @@ public class Booking {
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
 					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
 					+ datas.getString(3));
-			ResultSet moredata = QueryMax.executeQuery();    		
+			ResultSet moredata = QueryMax.executeQuery();   
+			moredata.next();
 			PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us the number of adults? \n"
     				+ "The capacity of the trip is " + moredata.getInt(1) + "\n"
