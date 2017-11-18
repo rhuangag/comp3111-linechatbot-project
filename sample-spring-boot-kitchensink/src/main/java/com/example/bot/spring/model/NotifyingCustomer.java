@@ -50,7 +50,7 @@ public class NotifyingCustomer implements Observer{
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
 		
-		String message="testing to see if you can pop up";
+		String message=time[3];
 		TextMessage textMessage = new TextMessage(message);
 		String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
 		PushMessage pushMessage = new PushMessage(
@@ -63,6 +63,16 @@ public class NotifyingCustomer implements Observer{
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
 			//testing case here
+			String message2="testing to see if you can pop up";
+			
+			TextMessage textMessage2 = new TextMessage(message2);
+			
+			PushMessage pushMessage2 = new PushMessage(
+			        userID,
+			        textMessage2
+			        );
+			KitchenSinkController.pushMessageController(pushMessage2);
+			
 			
 			pushPromotion();
 
