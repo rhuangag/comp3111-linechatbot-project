@@ -30,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class NotifyingCustomer implements Observer{
-	private final String[] cancelMessage= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
-	private final String[] confirmMessage= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
+	private final String[] CANCELMESSAGE= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
+	private final String[] CONFIRMMESSAGE= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
 	private String currentDate;
 	
     /**
@@ -217,7 +217,7 @@ public class NotifyingCustomer implements Observer{
 
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
 	private String pushConfirmMessage(String userID, String tour, String guideInformation){
-		String message=confirmMessage[0]+tour+confirmMessage[1]+guideInformation;
+		String message=CONFIRMMESSAGE[0]+tour+CONFIRMMESSAGE[1]+guideInformation;
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
 		        userID,
@@ -229,7 +229,7 @@ public class NotifyingCustomer implements Observer{
 
 	}
 	private String pushCancelMessage(String userID, String tour) {
-		String message=cancelMessage[0]+tour+ cancelMessage[1];
+		String message=CANCELMESSAGE[0]+tour+ CANCELMESSAGE[1];
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
 		        userID,
