@@ -21,11 +21,20 @@ import java.util.Observable;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The class Discount is an observer in the observer pattern. When the time of the dicount events come, it pushes the event message.
+ * 
+ *
+ */
 @Slf4j
 public class Discount implements Observer{
 	//Dclaration of data members
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 	
+	/**
+	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager. 
+	 * When the current time reaches the event time, it pushes to event messages to all LINE friends of the chatbot.
+	 */
 	public void update(Observable o, Object arg) {
 		TimeManager temp = (TimeManager)o;
 		String dateTime = FORMAT.format(temp.getDateTime());
