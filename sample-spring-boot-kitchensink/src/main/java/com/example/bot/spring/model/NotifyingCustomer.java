@@ -170,8 +170,8 @@ public class NotifyingCustomer implements Observer{
 		String CancelMessage="";
 		try {
 			Connection connection = KitchenSinkController.getConnection();
-			PreparedStatement notifyCancelled =connection.prepareStatement("Select booktableid from BookingTable where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-			PreparedStatement notifyConfirmed =connection.prepareStatement("Select booktableid, tourguide, tourguideaccount from BookingTable where status='availiable' and cast(confirmedCustomer as int)>=cast(minimumcustomer as int)");
+			PreparedStatement notifyCancelled =connection.prepareStatement("Select booktableid from BookingTable where departureDate=? and status='availiable' and cast(currentCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement notifyConfirmed =connection.prepareStatement("Select booktableid, tourguide, tourguideaccount from BookingTable where status='availiable' and cast(currentCustomer as int)>=cast(minimumcustomer as int)");
 
 			notifyCancelled.setString(1, targetDate);
 			ResultSet cancelRs=notifyCancelled.executeQuery();
