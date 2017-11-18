@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TimeManager extends Observable {
 	//Data member declaration
-    private final ScheduledExecutorService scheduler;
+    private final ScheduledExecutorService SCHEDULER;
     private String time;
     private ZonedDateTime dateTime;
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm");
@@ -44,7 +44,7 @@ public class TimeManager extends Observable {
 	
 	//Constructor
 	private TimeManager() {
-        this.scheduler = Executors.newScheduledThreadPool(1);
+        this.SCHEDULER = Executors.newScheduledThreadPool(1);
 
 	}
 	
@@ -80,7 +80,7 @@ public class TimeManager extends Observable {
 	 */
 	public void timing() {
 		long delay = computeNextDelay(0,0);
-		scheduler.scheduleAtFixedRate(new Runnable() {
+		SCHEDULER.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				passTime();
 			}
