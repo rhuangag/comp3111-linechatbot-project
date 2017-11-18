@@ -49,10 +49,20 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
-		if(time[3]=="10") {
+		if(time[3]=="01") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
+			//testing case here
+			String message="testing to see if you can pop up";
+			TextMessage textMessage = new TextMessage(message);
+			String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
+			PushMessage pushMessage = new PushMessage(
+			        userID,
+			        textMessage
+			        );
+			KitchenSinkController.pushMessageController(pushMessage);
+			
 			pushPromotion();
 
 		}
@@ -216,7 +226,7 @@ public class NotifyingCustomer implements Observer{
 
 
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
-	private String pushConfirmMessage(String userID, String tour, String guideInformation){
+	private void pushConfirmMessage(String userID, String tour, String guideInformation){
 		String message=CONFIRMMESSAGE[0]+tour+CONFIRMMESSAGE[1]+guideInformation;
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
@@ -225,10 +235,9 @@ public class NotifyingCustomer implements Observer{
 		        );
 		KitchenSinkController.pushMessageController(pushMessage);
 		
-		return message;
 
 	}
-	private String pushCancelMessage(String userID, String tour) {
+	private void pushCancelMessage(String userID, String tour) {
 		String message=CANCELMESSAGE[0]+tour+ CANCELMESSAGE[1];
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
@@ -237,7 +246,7 @@ public class NotifyingCustomer implements Observer{
 		        );
 		KitchenSinkController.pushMessageController(pushMessage);
 		
-		return message;
+		
 	}
 
 
