@@ -49,20 +49,10 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
-		
-		String message=time[3];
-		TextMessage textMessage = new TextMessage(message);
+	
 		String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
-		PushMessage pushMessage = new PushMessage(
-		        userID,
-		        textMessage);
-		
-		KitchenSinkController.pushMessageController(pushMessage);
 		if(time[3]=="01") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
-			NotifyStatus();
-			//promotionStatus(time[0],time[1],time[2]);
-			//testing case here
 			String message2="testing to see if you can pop up";
 			
 			TextMessage textMessage2 = new TextMessage(message2);
@@ -72,9 +62,10 @@ public class NotifyingCustomer implements Observer{
 			        textMessage2
 			        );
 			KitchenSinkController.pushMessageController(pushMessage2);
-			
-			
-			pushPromotion();
+			NotifyStatus();
+			//promotionStatus(time[0],time[1],time[2]);
+			//testing case here
+			//pushPromotion();
 
 		}
 
@@ -232,6 +223,14 @@ public class NotifyingCustomer implements Observer{
 
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			String message2=e.toString();
+			String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
+			TextMessage textMessage2 = new TextMessage(message2);
+			PushMessage pushMessage2 = new PushMessage(
+			        userID,
+			        textMessage2
+			        );
+			KitchenSinkController.pushMessageController(pushMessage2);
 		}
 	}
 
