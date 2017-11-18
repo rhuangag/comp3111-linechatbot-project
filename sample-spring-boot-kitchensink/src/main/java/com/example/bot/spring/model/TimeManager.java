@@ -41,6 +41,10 @@ public class TimeManager extends Observable {
 	
 	private static TimeManager uniqueTimer = new TimeManager();
 	
+	//For Test ONLY
+	public int incomputeNextDelay1 = 0;
+	public int incomputeNextDelay2 = 0;
+	
 	
 	//Constructor
 	private TimeManager() {
@@ -63,6 +67,8 @@ public class TimeManager extends Observable {
 	 * @return java.lang.String This returns the time in "yyyy/MM/dd/HH/mm" format.
 	 */
 	public String getTime() {
+		long temp1 = computeNextDelay(50,0);
+		long temp2 = computeNextDelay(1,0);
 		return time;
 	}
 	
@@ -93,9 +99,11 @@ public class TimeManager extends Observable {
         ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
         ZonedDateTime zonedNextTarget = zonedNow.withMinute(targetMin).withSecond(targetSec);
-        if(zonedNow.compareTo(zonedNextTarget) > 0)
+        if(zonedNow.compareTo(zonedNextTarget) > 0) {
             zonedNextTarget = zonedNextTarget.plusHours(1);
-        
+            incomputeNextDelay1 =1;
+        }
+        incomputeNextDelay2 = 1;
 
         Duration duration = Duration.between(zonedNow, zonedNextTarget);
         return duration.getSeconds();
@@ -115,7 +123,7 @@ public class TimeManager extends Observable {
 			log.info("Exception while reading file: {}", e.toString());
 		}*/
 		try{
-			ZoneId currentZone = ZoneId.of("Asia/Shanghai");
+		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
 		time = FORMAT.format(zonedNow);
 		dateTime=zonedNow;
