@@ -79,7 +79,7 @@ public class TimeManager extends Observable {
 	 * This method starts the timer at 0 minute in the next hour and notify the observers every hour. When the observers are notified, the time is recorded in the database.
 	 */
 	public void timing() {
-		long delay = computeNextDelay(12,0);
+		long delay = computeNextDelay(16,0);
 		SCHEDULER.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				passTime();

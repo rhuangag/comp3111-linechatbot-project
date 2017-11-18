@@ -49,19 +49,20 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
+		
+		String message="testing to see if you can pop up";
+		TextMessage textMessage = new TextMessage(message);
+		String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
+		PushMessage pushMessage = new PushMessage(
+		        userID,
+		        textMessage);
+		
+		KitchenSinkController.pushMessageController(pushMessage);
 		if(time[3]=="01") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
 			//testing case here
-			String message="testing to see if you can pop up";
-			TextMessage textMessage = new TextMessage(message);
-			String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
-			PushMessage pushMessage = new PushMessage(
-			        userID,
-			        textMessage
-			        );
-			KitchenSinkController.pushMessageController(pushMessage);
 			
 			pushPromotion();
 
