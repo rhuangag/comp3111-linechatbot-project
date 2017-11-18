@@ -22,6 +22,13 @@ import java.util.Observable;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The class PaymentReminder is an observer in the observer pattern.
+ * When the date reaches 5 days before the departure date of a tour, the payment reminder messages are generated and pushed to the customers 
+ * who booked this tour but haven't pay all the tour fee.
+ * 
+ *
+ */
 @Slf4j
 public class PaymentReminder implements Observer {
 	//Dclaration of data members
@@ -29,6 +36,10 @@ public class PaymentReminder implements Observer {
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
 	
 	//Implement Observer
+	/**
+	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager.
+	 * It check whether the current date is 5 days before the departure day. If so, it pushes the reminder message to customers.
+	 */
 	public void update(Observable o, Object arg) {
 		TimeManager temp = (TimeManager)o;
 		String currentTime = FORMAT.format(temp.getDateTime().plusDays(5));
@@ -41,11 +52,11 @@ public class PaymentReminder implements Observer {
 	}
 	
 	//Methods
-	public void reminder() {
+	private void reminder() {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement pst = connection.prepareStatement("select userid, tourjoined, tourfee, amountpaid"
-				+ "from customertable where tourjoined like concat('%', ?, '%') and status like concat('%', ?, '%')");
+				+ " from customertable where tourjoined like concat('%', ?, '%') and status like concat('%', ?, '%')");
 		pst.setString(1, this.targetdate);
 		pst.setString(2, "booked");
 		ResultSet rs = pst.executeQuery();
@@ -65,6 +76,7 @@ public class PaymentReminder implements Observer {
 				// push message to users here
 				TextMessage textMessage = new TextMessage(message);
 				PushMessage pushMessage = new PushMessage(rs.getString("userid"), textMessage);
+				KitchenSinkController.pushMessageController(pushMessage);
 			}
 		}
 		rs.close();
@@ -73,6 +85,9 @@ public class PaymentReminder implements Observer {
 		
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			TextMessage textMessage = new TextMessage(e.toString());
+			PushMessage pushMessage = new PushMessage("U7602b36236a0bc9ea3871c89f4e834dd", textMessage);
+			KitchenSinkController.pushMessageController(pushMessage);
 		}
 			
 		

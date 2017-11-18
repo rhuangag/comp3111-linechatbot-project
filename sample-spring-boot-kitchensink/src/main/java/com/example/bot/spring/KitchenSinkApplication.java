@@ -30,6 +30,12 @@ public class KitchenSinkApplication {
     public static void main(String[] args) throws IOException {
         downloadedContentDir = Files.createTempDirectory("line-bot");
         TimeManager tm = TimeManager.getTimer();
+        Discount discount = new Discount();
+        PaymentReminder pr = new PaymentReminder();
+        NotifyingCustomer notifying = new NotifyingCustomer();
+        tm.addObserver(discount);
+        tm.addObserver(pr);
+        tm.addObserver(notifying);
         tm.timing();
         SpringApplication.run(KitchenSinkApplication.class, args);
         

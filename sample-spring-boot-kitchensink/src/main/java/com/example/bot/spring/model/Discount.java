@@ -21,20 +21,26 @@ import java.util.Observable;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The class Discount is an observer in the observer pattern. When the time of the dicount events come, it pushes the event message.
+ * 
+ *
+ */
 @Slf4j
 public class Discount implements Observer{
 	//Dclaration of data members
-	String targetdate;
-	String tourID;
-	String targettime;
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 	
+	/**
+	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager. 
+	 * When the current time reaches the event time, it pushes to event messages to all LINE friends of the chatbot.
+	 */
 	public void update(Observable o, Object arg) {
 		TimeManager temp = (TimeManager)o;
 		String dateTime = FORMAT.format(temp.getDateTime());
 		String date = dateTime.substring(0, 8);
 		String time = dateTime.substring(8, 12);
-		if((date == getTargetDate()) && (time.substring(0, 3) == getTargetTime().substring(0,3))) {
+		if((date.equals(getTargetDate())) && (time.substring(0, 3).equals(getTargetTime().substring(0,3)))) {
 			discountNews();
 		}
 	}
@@ -51,12 +57,12 @@ public class Discount implements Observer{
 		all.close();
 		findid.close();
 		connection.close();
-		this.tourID=tempid;
+		return tempid;
 		
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();
 	}
-		return tourID;
 	}
 	
 	private String getTargetDate() {
@@ -71,12 +77,12 @@ public class Discount implements Observer{
 		all.close();
 		finddate.close();
 		connection.close();
-		this.targetdate=tempdate;
+		return tempdate;
 		
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();
 	}
-		return targetdate;
 	}
 	private String getTargetTime() {
 		try {
@@ -90,13 +96,13 @@ public class Discount implements Observer{
 		all.close();
 		findtime.close();
 		connection.close();
-		this.targettime=temptime;
+		return temptime;
 		
 		
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			return e.toString();
 	}
-		return targettime;
 	}
 	
 	//Methods
@@ -106,6 +112,7 @@ public class Discount implements Observer{
 		PreparedStatement info = connection.prepareStatement("select * from discounttourlist where tourid=?");
 		info.setString(1, getTourID());
 		ResultSet news = info.executeQuery();
+		news.next();
 		String message;
 		message="We have a discount event now. For tour "+news.getString(1)+", the first "+news.getInt(4)+" customers reply can have a discount rate ("+news.getString(2)+" off) for that tour. Each customer can reserve "+news.getInt(5)+" seats at most. If you want to get discount, reply Double11";
 		

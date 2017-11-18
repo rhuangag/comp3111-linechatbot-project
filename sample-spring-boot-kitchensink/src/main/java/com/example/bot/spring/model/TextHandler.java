@@ -12,8 +12,9 @@ public class TextHandler {
 	String text;
 	//String keyword;
 	int type;
+	String[] parts;
 	
-	//define different types for question
+	//define different types for questions
 	public  final int FAQ=1;
     public  final int MEANINGLESS=2;
     public  final int UNKNOWN=3;
@@ -35,7 +36,11 @@ public class TextHandler {
     public  final int BOOK_XI=19;
     public  final int BOOK_XII=20;
     public  final int DISCOUNT=100;
-    
+    public  final int PassWord=101;
+    public  final int GiveMeFile=102;
+    public  final int UpdatePayment=103;
+    public  final int DiscountEvent=104;
+
     
     
     //Constructor
@@ -43,13 +48,10 @@ public class TextHandler {
     	    text=t;
     	   // keyword=null;
     	    type = UNKNOWN;
+    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , "").replaceAll("[\n]" , "").toLowerCase().split(" ");
     }
     
     //Methods
-    
-  //  public String getKeyword() {
-   // 	    return keyword;
-  //  }
     
     public int getType() {
 	    return type;
@@ -59,89 +61,10 @@ public class TextHandler {
     //Analyse the text input and initialize the data member  type 
     public String messageHandler(Customer customer) {
     	String reply=null;
-    	text=text.replaceAll("[\\p{P}\n]" , "");
-    	reply=discount(customer);
-    	//reply=checkBooking(customer);
-    /*	checkFiltering();
-    	
-    	newCancel();
-    	newHistory();
-    	newRecommendation();
-    	newFAQ(customer);
-    	
-    	newFiltering();
-    	newBooking();
-    	otherReply();*/
-    	
-    	return reply;
-    	
-		    
+    	reply=checkStatus(customer);   	
+    	return reply;		    
 }
-   private String discount(Customer customer) {
-   	try {
-   		   Connection connection = KitchenSinkController.getConnection();
-		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 100 and keyword like concat('%',concat(',',?,','),'%')");
-		   ResultSet key=null;
-		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-		   int count=0;
-		   for (int i=0;i<parts.length;i++) {
-		   trigger.setString(1, parts[i]);
-		   key=trigger.executeQuery();
-		   if (key.next())
-			   break;
-		   count++;
-		   }
-		   key.close();
-		   trigger.close();
-		   PreparedStatement event = connection.prepareStatement("SELECT tourid FROM discounttourlist");
-		   ResultSet exist=event.executeQuery();
-		   String tourid=null;
-		   while (exist.next()) {
-			   tourid= exist.getString(1);
-		   }
-		   event.close();
-		   exist.close();
- 		if (count!=parts.length&& tourid!=null) {
- 			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
- 			ResultSet number=counting.executeQuery();
- 			if (number.getInt(1)>=4) {
- 				number.close();
- 				counting.close();
- 				connection.close();
- 				type= MEANINGLESS;
- 				record(customer);
- 				return "Sorry ticket sold out.";
- 			}
- 			
- 			else {
- 				type=DISCOUNT;
- 				record(customer);
- 				number.close();
- 				counting.close();
- 				
- 				
-			
- 				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
- 				
- 				insertdiscount.setString(1, customer.getID()); 
- 				insertdiscount.setString(2, tourid);
- 				insertdiscount.executeUpdate();
- 				
- 				insertdiscount.close();
- 				connection.close();
- 				return "Congratulations! You get the discount.";
- 			}
- 		
- 			}
- 		else {
- 			connection.close();
- 			return checkBooking(customer);}
- 	}catch(Exception e) {
- 		log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();
- 	}
-   }
-   private String checkBooking(Customer customer) {
+    private String checkStatus(Customer customer) {
     	//check whether the customer is in booking process
     	try {
     		//find the last quetion type for the specific customer who is sending text now
@@ -168,130 +91,254 @@ public class TextHandler {
     				
     				Booking booking=new Booking(customer);
     				//now just assume the customer will perfectly reply the correct information in the prototype
+    				if (booking.askForInformation(type ,text)== "Booking Cancled, thanks for coming!") {
+    				type=MEANINGLESS;
+    				record(customer);
+    				return "Your booking is interrupted. Please book again.";}
     				return booking.askForInformation(type ,text);
     				}
+    			else if(temp==FILTER_I) {
+    					//the customer just do the filter searching and we have returned a list of tour
+    					Filter filter =new Filter(customer.getID());
+
+    					String number_text=text.replaceAll("[^0-9]" , "");
+    					if (number_text.isEmpty()) {
+    						rs.close();
+    						stmt.close();
+    						
+    						PreparedStatement clearTempFilterTable = connection.prepareStatement
+    								("Delete from TemporaryFilterTable where userId =?");
+    						clearTempFilterTable.setString(1, customer.getID());
+    						clearTempFilterTable.executeUpdate();
+    						clearTempFilterTable.close();
+    						connection.close();
+    						return PasswordMatch(customer);
+    					}
+    						
+    					//answer is a reply that confirming the information
+    					type=FILTER_II;
+    					record(customer);
+    					String answer=filter.viewDetails(number_text);
+    					String answer_reply=answer;
+    					String[] parts = answer.split(" ");
+    					String tourID=parts[0];
+    					PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
+    					stmt2.setString(1,customer.getID());
+    					stmt2.setString(2,tourID);
+    					stmt2.executeUpdate();
+    					rs.close();
+    					stmt.close();
+    					stmt2.close();
+    					connection.close();
+    					return answer_reply;}
+    			else if (temp==FILTER_II) {
+    				if (text.toLowerCase().contains("yes")) {
+    					type=BOOK_I;
+    					PreparedStatement stmt3 = 
+    							connection.prepareStatement("SELECT temptourid from tempfortourid where customerid=?");
+    					stmt3.setString(1,customer.getID());
+    					rs =stmt3.executeQuery();
+    					rs.next();
+    					String tourID=rs.getString(1);
+    					record(customer);
+    					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
+    					stmt4.setString(1,customer.getID());
+    					stmt4.executeUpdate();
+    					
+    					
+    					rs.close();
+    					stmt.close();
+    					stmt3.close();
+    					stmt3.close();
+    					connection.close();
+    					Booking booking=new Booking(customer);
+    					//keyword is depending on the current type
+    					return booking.askForInformation(type ,tourID);
+    					}
+    				else    {
+    					PreparedStatement stmt5 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
+    					stmt5.setString(1,customer.getID());
+    					stmt5.executeUpdate();
+    					rs.close();
+    					stmt.close();
+    					stmt5.close();
+    					
+    					connection.close();
+    					type=MEANINGLESS;
+    					record(customer);
+    					return "Do you have any other questions?";}
+    			}
+    			else if (temp==UpdatePayment||temp==DiscountEvent) {
+    				rs.close();
+					stmt.close();
+    				type=MEANINGLESS;
+					record(customer);
+					UpdateRecord update=new UpdateRecord(customer);
+					return update.askForInformation(temp,text);
+    			}
     			else {
     				//the customer is not in the booking process
     				rs.close();
 					stmt.close();
 					connection.close();
-    				return checkFiltering(customer);}
+    				return PasswordMatch(customer);}
     				}
     		else {
     			//the customer did not ask question before. 
     			rs.close();
 				stmt.close();
 				connection.close();
-    			return checkFiltering(customer);}
+    			return PasswordMatch(customer);}
     	//TODO stop booking 
     		//now the chatbot did not support the interrupt of the booking process
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 			return e.toString();}
     }
-   
-   private String checkFiltering(Customer customer) {
-	   	try {
-			Connection connection = KitchenSinkController.getConnection();	
-			String query = "SELECT type FROM questionRecord where customerid=?";
-			PreparedStatement stmt = connection.prepareStatement(query);
-			stmt.setString(1, customer.getID());
-			ResultSet rs =stmt.executeQuery();
-			//if the table is empty, the question must be the first question
-			if (!rs.next()) {
-				rs.close();
-				stmt.close();
-				connection.close();
-				return newFAQ(customer);}
-			int temp=rs.getInt(1);
-			while (rs.next()) {
-				temp=rs.getInt(1);
-			}
-			//now temp is the type of the last question 	
-			if (temp==FILTER_I ) {
-				//the customer just do the filter searching and we have returned a list of tour
-				Filter filter =new Filter(customer.getID());
+    private String PasswordMatch(Customer customer) {
+    	if (functionMatch(PassWord,parts))
+    	{
+    		type=PassWord;
+    		record(customer);
+    		try {
+    			Connection connection = KitchenSinkController.getConnection();
+    			PreparedStatement hhh = connection.prepareStatement("select * from whitelist where clientid=?");
+    			hhh.setString(1, customer.getID());
+    			ResultSet aa=hhh.executeQuery();
+    			if (!aa.next()) {
+    			PreparedStatement whitelist = connection.prepareStatement("insert into whitelist values (?)");
+    			whitelist.setString(1, customer.getID());
+    			whitelist.executeUpdate();
+    			whitelist.close();
+    			hhh.close();
+    			aa.close();
+    			connection.close();}
+    		}catch(Exception e) {
+    	 		log.info("Exception while reading database: {}", e.toString());}
+    		return "Want to get the record, please reply givemefile;\nWant to update the payment, please reply updatepayment;\nWant to add a new discount event, please reply discountevent.";
+    	}
+    	else
+    		return GiveFile(customer);
+    }
+    private String GiveFile(Customer customer) {
+    	try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement clientlist = connection.prepareStatement("select * from whitelist where clientid=?");
+			clientlist.setString(1, customer.getID());
+			ResultSet client=clientlist.executeQuery();
+			boolean a=client.next();
+			clientlist.close();
+			client.close();
+			connection.close();
+      	if (functionMatch(GiveMeFile,parts)&& a)
+    	{
+    		type=GiveMeFile;
+    		record(customer);   		
+    		return "a file";
+    	}
+    	else
+    		return UpdateRecord(customer);
+		}catch(Exception e) {
+	 		log.info("Exception while reading database: {}", e.toString());
+	 		return e.toString();}
+    }
+    private String UpdateRecord(Customer customer) {
+    	try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement clientlist = connection.prepareStatement("select * from whitelist where clientid=?");
+			clientlist.setString(1, customer.getID());
+			ResultSet client=clientlist.executeQuery();
+			boolean a=client.next();
+			clientlist.close();
+			client.close();
+			connection.close();
+      	if (functionMatch(UpdatePayment,parts)&& a)
+    	{
+    		type=UpdatePayment;
+    		record(customer);   		
+    		return "Please input the information in this format: username-tourid-payment, eg. LI Hua-2D0031112-199.6";
+    	}
+    	else if (functionMatch(DiscountEvent,parts)&& a) {
+    		type=DiscountEvent;
+    		record(customer);   		
+    		return "Please input the information in this format: tourid-discountrate(percentage)-discountrate(float number)-capacity-seats-date-time, eg. 2D0031112-50%-0.5-2-3-20171112-0900";
+    	}
+    	else
+    		return Discount(customer);
+		}catch(Exception e) {
+	 		log.info("Exception while reading database: {}", e.toString());
+	 		return e.toString();}
+    }
+    private String Discount(Customer customer) {
+   	try {
+   		   Connection connection = KitchenSinkController.getConnection();	
+   		//String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+		   PreparedStatement event = connection.prepareStatement("SELECT tourid FROM discounttourlist");
+		   ResultSet exist=event.executeQuery();
+		   String tourid=null;
+		   while (exist.next()) {
+			   tourid= exist.getString(1);
+		   }
+		   event.close();
+		   exist.close();
+ 		if (functionMatch(DISCOUNT,parts)&& tourid!=null) {
+ 			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
+ 			ResultSet number=counting.executeQuery();
+ 			number.next();
+ 			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
+ 			ResultSet rs=counting.executeQuery();
+ 			rs.next();
+ 			if (number.getInt(1)>=rs.getInt(1)) {
+ 				rs.close();
+ 				capacity.close();
+ 				number.close();
+ 				counting.close();
+ 				connection.close();
+ 				type= MEANINGLESS;
+ 				record(customer);
+ 				return "Sorry, ticket sold out.";
+ 			}
+ 			
+ 			else {
+ 				rs.close();
+ 				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
+ 	 			ResultSet discount=checkdiscount.executeQuery();
+ 				if (!discount.next()) {
+ 				type=DISCOUNT;
+ 				record(customer);
+ 				number.close();
+ 				counting.close();
+ 				discount.close();
+ 							
+ 				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
+ 				
+ 				insertdiscount.setString(1, customer.getID()); 
+ 				insertdiscount.setString(2, tourid);
+ 				insertdiscount.executeUpdate();
+ 				
+ 				insertdiscount.close();
+ 				connection.close();
+ 				return "Congratulations! You get the discount.";}
+ 				else
+ 				{
+ 					type= MEANINGLESS;
+ 	 				record(customer);
+ 	 				discount.close();
+ 	 				connection.close();
+ 	 				return "You have already got the discount.";
+ 				}
+ 			}
+ 		
+ 			}
+ 		else {
+ 			connection.close();
+ 			return newFAQ(customer);}
+ 	}catch(Exception e) {
+ 		log.info("Exception while reading database: {}", e.toString());
+	   		return e.toString();
+ 	}
+   }
 
-				String number_text=text.replaceAll("[^0-9]" , "");
-				if (number_text.isEmpty()) {
-					rs.close();
-					stmt.close();
-					
-					PreparedStatement clearTempFilterTable = connection.prepareStatement
-							("Delete from TemporaryFilterTable where userId =?");
-					clearTempFilterTable.setString(1, customer.getID());
-					clearTempFilterTable.executeUpdate();
-					clearTempFilterTable.close();
-					connection.close();
-					return newFAQ(customer);
-				}
-					
-				//answer is a reply that confirming the information
-				type=FILTER_II;
-				record(customer);
-				String answer=filter.viewDetails(number_text);
-				String answer_reply=answer;
-				String[] parts = answer.split(" ");
-				String tourID=parts[0];
-				PreparedStatement stmt2 = connection.prepareStatement("insert into tempfortourID values (?,?)");
-				stmt2.setString(1,customer.getID());
-				stmt2.setString(2,tourID);
-				stmt2.executeUpdate();
-				rs.close();
-				stmt.close();
-				stmt2.close();
-				connection.close();
-				return answer_reply;}
-			else if (temp==FILTER_II) {
-				if (text.toLowerCase().contains("yes")) {
-					type=BOOK_I;
-					PreparedStatement stmt3 = 
-							connection.prepareStatement("SELECT temptourid from tempfortourid where customerid=?");
-					stmt3.setString(1,customer.getID());
-					rs =stmt3.executeQuery();
-					rs.next();
-					String tourID=rs.getString(1);
-					record(customer);
-					PreparedStatement stmt4 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
-					stmt4.setString(1,customer.getID());
-					stmt4.executeUpdate();
-					
-					
-					rs.close();
-					stmt.close();
-					stmt3.close();
-					stmt3.close();
-					connection.close();
-					Booking booking=new Booking(customer);
-					//keyword is depending on the current type
-					return booking.askForInformation(type ,tourID);
-					}
-				else    {
-					PreparedStatement stmt5 = connection.prepareStatement("Delete from TempfortourID where customerID=?");
-					stmt5.setString(1,customer.getID());
-					stmt5.executeUpdate();
-					rs.close();
-					stmt.close();
-					stmt5.close();
-					
-					connection.close();
-					type=MEANINGLESS;
-					record(customer);
-					return "Do you have any other questions?";}
-
-			}
-					
-					
-			else {
-				rs.close();
-				stmt.close();
-				connection.close();
-				return newFAQ(customer);}
-			//TODO stop booking
-		}catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());   
-	   	 	return e.toString();}
-	   }
    
    private String newFAQ(Customer customer){
         try {	
@@ -309,132 +356,48 @@ public class TextHandler {
 			rs.close();
 			stmt1.close();
 			connection.close();
-			
 			return reply;}
-		
-    	// if not found, firstly get words from text
-    	String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-    	
-    	//TODO
-    	//search every word in db
-    	int countloop=0;
-    	
-    	PreparedStatement stmt2 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE keyword1 LIKE concat('%',concat(',',?,','),'%')");
-    	for (int i=0; i<parts.length;i++) {
-    		stmt2.setString(1, parts[i]);
-    		rs =stmt2.executeQuery();
-    		if (rs.next()) {
-    			
-    			break;}
-    		countloop++;
-    		
-    	}
-    	//the first keyword not found
-    	
-    	if (countloop==parts.length) {
-    		rs.close();
-			stmt2.close();
-			connection.close();
-			
-    		return newCancel(customer);
-			
-    	}
-
-    	//now we find out the first keyword, check whether we need the second keyword
-    	 //we do not need the second record, return 
-
-    		
-    	    rs.close();
-		    stmt2.close();
-    		//check whether the sentence contains the second keyword
-    		PreparedStatement stmt3 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword2 LIKE concat('%',concat(',',?,','),'%')");
-    		countloop=0;
-    		for (int i=0; i<parts.length;i++) {
-    			
-    			//stmt3.setString(1, keyword1);
-    			stmt3.setString(1, parts[i]);
-        		rs =stmt3.executeQuery();
-        		if (rs.next())
-        			break;
-        		//if (rs.getString(1)==keyword1 && rs.getString(2)==null)
-        			//break;
-        		countloop++;
+		rs.close();
+		stmt1.close();   	
+    	if (keywordMatch(parts,"keywordListForFAQ","keyword1")) {
+    		if (keywordMatch(parts,"keywordListForFAQ","keyword2")) {
+    			PreparedStatement findkey = connection.prepareStatement("SELECT reply FROM keywordListForFAQ WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
+    			ResultSet key=null;
+    			int countloop=0;
+        		for (int i=0; i<parts.length;i++) {
+        			findkey.setString(1, parts[i]);
+        			key =findkey.executeQuery();
+        			if (key.next()) { 
+        				reply=key.getString(1);
+        				break;}
+        			countloop++;}
+        		key.close();
+    			findkey.close();
+    			connection.close();
+        		if (countloop!=parts.length) {
+        			type=FAQ;
+            		record(customer);
+            		return reply;
+    				}
     		}
-    		//second keyword not found
-    		if (countloop==parts.length) {
-    			rs.close();
-				stmt3.close();
-				connection.close();
-			
-				return newCancel(customer);}
-				//second keyword found 
-    		PreparedStatement stmt4 = connection.prepareStatement("SELECT keyword1, keyword2, type, reply FROM keywordListForFAQ WHERE  keyword3 LIKE concat('%',concat(',',?,','),'%')");
-    		countloop=0;
-    		for (int i=0; i<parts.length;i++) {
-    			
-    			//stmt3.setString(1, keyword1);
-    			stmt4.setString(1, parts[i]);
-        		rs =stmt4.executeQuery();
-        		if (rs.next())
-        			break;
-        		//if (rs.getString(1)==keyword1 && rs.getString(2)==null)
-        			//break;
-        		countloop++;
-    		}
-    		//second keyword not found
-    		if (countloop==parts.length) {
-    			rs.close();
-				stmt3.close();
-				
-    			
-				stmt4.close();
-				connection.close();
-			
-				return newCancel(customer);}
-    		
-    		else {
-    			type=FAQ;
-        		record(customer);
-        		reply=rs.getString(4);
-        		rs.close();
-				stmt3.close();
-				stmt4.close();
-				connection.close();
-        		return reply;}  
-    //	}
-    		
+    	}  		
+    		connection.close();
+    		return newCancel(customer);  		
     	}catch (Exception e){
-    		log.info("Exception while reading database: {}", e.toString());
-    		
-    		return (e.toString()+"newFAQ");}
-        
-        
+    		log.info("Exception while reading database: {}", e.toString());   		
+    		return (e.toString()+"newFAQ");
+    		}       
     }
     
    private String newCancel(Customer customer){
 	   String result=null;
 	   try {
 		   Connection connection = KitchenSinkController.getConnection();
-		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = 4 and keyword like concat('%',concat(',',?,','),'%')");
-		   ResultSet key=null;
-		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-		   int count=0;
-		   for (int i=0;i<parts.length;i++) {
-		   trigger.setString(1, parts[i]);
-		   key=trigger.executeQuery();
-		   if (key.next())
-			   break;
-		   count++;
-		   }
-		   key.close();
-		   trigger.close();
-		   if (count!=parts.length) {
+		   if (functionMatch(CANCEL,parts)) {
     		type=CANCEL;
-    		record(customer);
-    		
+    		record(customer);   		
     		String reply="noRecord";
-    		PreparedStatement stmt = connection.prepareStatement("SELECT Tourid FROM Customerrecord WHERE lower(Tourid) =?");
-    		
+    		PreparedStatement stmt = connection.prepareStatement("SELECT Tourid FROM Customerrecord WHERE lower(Tourid) =?");   		
     		ResultSet rs=null;
     		for (int i=0;i<parts.length;i++) {
     		stmt.setString(1, parts[i]);
@@ -443,16 +406,11 @@ public class TextHandler {
     			reply=rs.getString(1);
     			break;
     			}
-    		}
-    		
+    		}    		
     		stmt.close();
     		rs.close();
-
     		connection.close();
-    		
-
     		result=customer.cancelBooking(reply);
-
     		}
     	 else 
     		{
@@ -461,69 +419,32 @@ public class TextHandler {
 		 
 	  }
 	   catch (Exception e){
-			log.info("Exception while reading database: {}", e.toString());
-			
+			log.info("Exception while reading database: {}", e.toString());			
 			return (e.toString()+"newcancel");}
 	   return result;
     }
    
-   private String newHitory(Customer customer,int type,String[] parts) {
-   	try {
-   
-   		if (functionMatch(HISTORY,parts)) {
-   			if (customer.getHistory()==null) {
-   				
-   				return unknown(customer);
-   			}
-   			
-   			else {
+   private String newHitory(Customer customer) {
+   		String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+   		if (functionMatch(HISTORY,parts)) { 			
    				type=HISTORY;
-   				record(customer);
-   				
-   				return customer.getHistory();
+   				record(customer);   				
+   				return customer.getHistory(); 		
    			}
-   		
-   			}
-   		else {
-   			
-   			return newRecommendation(customer);}
-   	}catch(Exception e) {
-   		log.info("Exception while reading database: {}", e.toString());
-	   		return e.toString();
-   	}
-   }
+   		else   			
+   			return newRecommendation(customer);
+}
+
     
     private String newRecommendation(Customer customer) {
     	try {
-    	   Connection connection = KitchenSinkController.getConnection();
-  		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=6 and keyword like concat('%',concat(',',?,','),'%')");
-  		   ResultSet key=null;
-  		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-  		   int count=0;
-  		   for (int i=0;i<parts.length;i++) {
-  		   trigger.setString(1, parts[i]);
-  		   key=trigger.executeQuery();
-  		   if (key.next())
-  			   break;
-  		   count++;
-  		   }
-  		   key.close();
-  		   trigger.close();
-    	if (count!=parts.length) {
-    		if (customer.getRecommendation()==null) {
-    			connection.close();
-    			return unknown(customer);
-    			
-    		}
-    		else {
+    	if (functionMatch(RECOMMENDATION,parts)) {
     			type=RECOMMENDATION;
     			record(customer);
-    			connection.close();
     			return customer.getRecommendation();
-    			}}
-    	else {
-    		connection.close();
-    		return newFiltering(customer);}
+    		}
+    	else 
+    		return newFiltering(customer);
     	}catch(Exception e) {
     		log.info("Exception while reading database: {}", e.toString());
 	   		return e.toString();
@@ -537,7 +458,6 @@ public class TextHandler {
     			String ID=customer.getID();
         		Filter filter=new Filter(ID);
         		
-    			String[] parts = text.replaceAll("[^a-zA-Z0-9-\\s]" , "").toLowerCase().split(" ");
     	    	String reply=null;
     	    	int countloop=0;
     	    	Connection connection = KitchenSinkController.getConnection();
@@ -549,8 +469,7 @@ public class TextHandler {
     	    		if (onekey.next()) {
     	    			reply=onekey.getString(1);
     	    			break;}
-    	    		countloop++;
-    	    		
+    	    		countloop++;    	    		
     	    	}
     			onekey.close();
     			findonekey.close();
@@ -561,26 +480,10 @@ public class TextHandler {
     	    		type=FILTER_I;
     	    		record(customer);
     	    		connection.close();
-    	    		return filter.filterSearch(reply);	
-    	    		
-    				
+    	    		return filter.filterSearch(reply);	  				
     	    	}
     		//now check two keywords
-    	    	PreparedStatement findtwokey1 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
-    	    	ResultSet twokey1=null;
-    	    	countloop=0;
-    	    	for (int i=0; i<parts.length;i++) {
-    	    		findtwokey1.setString(1, parts[i]);
-    	    		twokey1 =findtwokey1.executeQuery();
-    	    		if (twokey1.next()) {
-    	    			reply=twokey1.getString(1);
-    	    			break;}
-    	    		countloop++;
-    	    		
-    	    	}
-    			twokey1.close();
-    			findtwokey1.close();
-    			if (countloop!=parts.length) {
+    			if (keywordMatch(parts,"twokeyword","keyword1")) {
 	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
 	    			ResultSet twokey2=null;
 	    			countloop=0;
@@ -603,36 +506,8 @@ public class TextHandler {
     			}
     		}
     		//now find three keyword
-    			PreparedStatement findthreekey1 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')");
-    	    	ResultSet threekey1=null;
-    	    	countloop=0;
-    	    	for (int i=0; i<parts.length;i++) {
-    	    		findthreekey1.setString(1, parts[i]);
-    	    		threekey1 =findthreekey1.executeQuery();
-    	    		if (threekey1.next()) {
-    	    			reply=threekey1.getString(1);
-    	    			break;}
-    	    		countloop++;
-    	    		
-    	    	}
-    			threekey1.close();
-    			findthreekey1.close();
-    			if (countloop!=parts.length) {
-    				PreparedStatement findthreekey2 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
-        	    	ResultSet threekey2=null;
-        	    	countloop=0;
-        	    	for (int i=0; i<parts.length;i++) {
-        	    		findthreekey2.setString(1, parts[i]);
-        	    		threekey2 =findthreekey2.executeQuery();
-        	    		if (threekey2.next()) {
-        	    			reply=threekey2.getString(1);
-        	    			break;}
-        	    		countloop++;
-        	    		
-        	    	}
-        			threekey2.close();
-        			findthreekey2.close();
-        			if (countloop!=parts.length) {
+    			if (keywordMatch(parts,"threekeyword","keyword1")) {
+        			if (keywordMatch(parts,"threekeyword","keyword2")) {
         				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
             	    	ResultSet threekey3=null;
             	    	countloop=0;
@@ -674,6 +549,13 @@ public class TextHandler {
     				temp="<"+temp;
     		if (text.contains("higher than")|text.contains("more than"))
     				temp=">"+temp;
+
+			if (filter.filterSearch(temp)=="Sorry, we cannot find any match answer for your question :( We already record your question and will forward it to the tour company.") {
+				type=UNKNOWN;
+				record(customer);
+				connection.close();
+				return filter.filterSearch(temp);
+			}
     		type=FILTER_I;
 			record(customer);
 			connection.close();
@@ -686,34 +568,17 @@ public class TextHandler {
     }
     
     
-    
+    //enrich db
     private String newBooking(Customer customer) {
        	try {
-       	   Connection connection = KitchenSinkController.getConnection();
-   		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type=5 and keyword like concat('%',concat(',',?,','),'%')");
-   		   ResultSet key=null;
-   		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
-   		   int count=0;
-   		   for (int i=0;i<parts.length;i++) {
-   		   trigger.setString(1, parts[i]);
-   		   key=trigger.executeQuery();
-   		   if (key.next())
-   			   break;
-   		   count++;
-   		   }
-   		   key.close();
-   		   trigger.close();
-    	if (count!=parts.length) {
+    	if (functionMatch(FILTER_I,parts)) {
        		type=FILTER_I;
        		record(customer);
-       		connection.close();
        		Filter filter=new Filter(customer.getID());
        		return filter.filterSearch("book");
        		}
-       	else {
-       		connection.close();
-       		return unknown(customer);}
-       	
+       	else 
+       		return unknown(customer);
        	}catch(Exception e) {
        		log.info("Exception while reading database: {}", e.toString());
 	   		return (e.toString()+"newbooking");
@@ -723,12 +588,12 @@ public class TextHandler {
     private String unknown(Customer customer) {
     	type = UNKNOWN;
     	record(customer);
-    	return "Sorry, we can not find matched result.";
+    	return "Sorry, we cannot understand or find any match answer for your question :( We already record your question and will forward it to the tour company.";
     }
     
     //TODO
     //After analysing the text, record the type of input in a temporary database(log) and record the question to the question-recording database
-    public void record(Customer customer) {
+    private void record(Customer customer) {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
@@ -742,7 +607,7 @@ public class TextHandler {
 			stmt.setInt(2, type);
 			stmt.setString(3, customer.getID());
 			stmt.executeUpdate();
-			if (type<8)
+			if (type<8&&type!=2)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
 			PreparedStatement stmt2 = connection.prepareStatement(query2);
@@ -761,13 +626,12 @@ public class TextHandler {
 		}
     
     }
-    private viod functionMatch(int type,String[] parts){
-    	Connection connection = KitchenSinkController.getConnection();
+    private boolean functionMatch(int type,String[] parts){
+    	try {
+    			   Connection connection = KitchenSinkController.getConnection();
     	 		   PreparedStatement trigger = connection.prepareStatement("SELECT keyword FROM keywordlistforfunction WHERE type = ? and keyword like concat('%',concat(',',?,','),'%')");
-    	 		   trigger.setString(1,type);
-    			   ResultSet key=null;
-    			   //change
-    	 		   String[] parts = text.replaceAll("\\p{P}" , "").toLowerCase().split(" ");
+    	 		   trigger.setInt(1,type);
+    			   ResultSet key=null;   	 		   
     	 		   int count=0;
     	 		   for (int i=0;i<parts.length;i++) {
     	 		   trigger.setString(2, parts[i]);
@@ -783,5 +647,31 @@ public class TextHandler {
     				return true;
     			   else 
     				return false;
-    	}
+    }catch (Exception e) {
+		log.info("Exception while reading file: {}", e.toString());
+		return false;}
+	}
+    private boolean keywordMatch(String[] parts,String table,String colomn) {
+    	try {
+    		Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement findkey = connection.prepareStatement("SELECT reply FROM "+table+" WHERE lower("+colomn+") LIKE concat('%',concat(',',?,','),'%')");
+			ResultSet key=null;
+			int countloop=0;
+    		for (int i=0; i<parts.length;i++) {
+    			findkey.setString(1, parts[i]);
+    			key =findkey.executeQuery();
+    			if (key.next()) 
+    				break;
+    			countloop++;}
+    		key.close();
+			findkey.close();
+			connection.close();
+    		if (countloop!=parts.length)
+    			return true;
+    		else
+    			return false;
+    	}catch (Exception e) {
+    		log.info("Exception while reading file: {}", e.toString());
+    		return false;}
+    }
 }
