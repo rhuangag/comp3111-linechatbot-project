@@ -14,22 +14,6 @@ import java.util.concurrent.ScheduledFuture;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
-package com.example.bot.spring;
-
-import java.awt.List;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.bot.model.PushMessage;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.TimeZone;
 import java.time.LocalDateTime;
 import java.time.*;
