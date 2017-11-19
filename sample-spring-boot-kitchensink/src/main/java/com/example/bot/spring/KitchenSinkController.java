@@ -151,11 +151,17 @@ public class KitchenSinkController {
 	public void handleFollowEvent(FollowEvent event) {
 		try{
 		Connection connection = KitchenSinkController.getConnection();
-		
+		PreparedStatement search = connection.prepareStatement("select * from friends where userid=?");
+		search.setString(1, event.getSource().getUserId());
+		ResultSet rs=search.executeQuery();
+		if (rs.next()) {
 		PreparedStatement add = connection.prepareStatement("insert into friends values (?)");
 		add.setString(1, event.getSource().getUserId());
 		add.executeUpdate();
 		add.close();
+		}
+		rs.close();
+		search.close();
 		connection.close();
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
