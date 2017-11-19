@@ -54,7 +54,7 @@ public class Customer{
 					stmtGetPaid.setString(2, targettour);
 					ResultSet rsForGetPaid=stmtGetPaid.executeQuery();
 					
-					PreparedStatement stmtGetStatus=connection.prepareStatement("SELECT status from customertable where where userID=? and tourjoined like concat('%', ?, '%')");
+					PreparedStatement stmtGetStatus=connection.prepareStatement("SELECT status from customertable where userID=? and tourjoined like concat('%', ?, '%')");
 					stmtGetStatus.setString(1, userID);
 					stmtGetStatus.setString(2, targettour);
 					ResultSet rsForGetStatus=stmtGetStatus.executeQuery();
