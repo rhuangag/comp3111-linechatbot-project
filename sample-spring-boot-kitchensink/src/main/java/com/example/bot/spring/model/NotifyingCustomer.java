@@ -69,24 +69,6 @@ public class NotifyingCustomer implements Observer{
 		String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
 		String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
 		ImageMessage imageMessage = new ImageMessage (imageUrl1,imageUrl2);
-
-		//String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
-        //CarouselTemplate carouselTemplate = new CarouselTemplate(
-        //        Arrays.asList(
-        //        		new CarouselColumn(imageUrl, "promotion", "come and join us", Arrays.asList(
-        //                        new URIAction("Go to line.me",
-        //                                      "https://line.me"),
-        //                        new PostbackAction("Say hello1",
-         //                                          "promotion")
-          //                      )),
-           //             new CarouselColumn(imageUrl, "promotion", "emmmm", Arrays.asList(
-            //                    new URIAction("Go to line.me",
-             //                           "https://line.me"),
-              //            new PostbackAction("Say hello1",
-               //                              "promotion")
-                //          ))
-               // ));
-        //TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
 		
 		Vector<String> userID = new Vector<String>();
 
