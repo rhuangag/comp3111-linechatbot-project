@@ -66,8 +66,8 @@ public class NotifyingCustomer implements Observer{
 
 	//functional function in this class
 	private void pushPromotion() {		
-		//String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
-		//ImageMessage imageMessage = new ImageMessage (imageUrl,"u");
+		String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		ImageMessage imageMessage = new ImageMessage (imageUrl,imageUrl);
 
 		//String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
         //CarouselTemplate carouselTemplate = new CarouselTemplate(
@@ -106,13 +106,13 @@ public class NotifyingCustomer implements Observer{
 		} catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 		}	
-		//for(String userid : userID) {
-		//	PushMessage pushMessage = new PushMessage(
-		//			userid,
-		//			templateMessage
-		//			);
-		//	KitchenSinkController.pushMessageController(pushMessage);
-		//}
+		for(String userid : userID) {
+			PushMessage pushMessage = new PushMessage(
+					userid,
+					imageMessage
+					);
+			KitchenSinkController.pushMessageController(pushMessage);
+		}
 		//test
 		String message = "Promotion testing";
 		TextMessage textMessage = new TextMessage(message);
