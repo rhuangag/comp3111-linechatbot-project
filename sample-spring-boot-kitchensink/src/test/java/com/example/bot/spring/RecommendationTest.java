@@ -1,4 +1,4 @@
-/*
+
 package com.example.bot.spring;
 
 
@@ -46,31 +46,74 @@ import lombok.extern.slf4j.Slf4j;
 import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { RecommendationTest.class, Customer.class })
+@SpringBootTest(classes = { RecommendationTest.class })
 public class RecommendationTest {
 	
 	
 	//format: result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nTour Description: "+rs.getString("TourDescription")+ "\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice");
 	@Test
-	public void testRecommend() throws Exception{
+	//Weekend 2 T/F
+	public void testRecommend_prefer1() throws Exception{
 		Customer customer = new Customer ("U7602b36236a0bc9ea3871c89f4e834dd");
-		//boolean thrown = false;
+		boolean thrown = false;
 		String result = null;
 		
 		try {
 			result = customer.getRecommendation();
 		}catch (Exception e) {
-			//thrown = true;
+			thrown = true;
 		}
 		
-		//assertThat(thrown).isEqualTo(false);
-		assertThat(result).isEqualTo("Tour ID: 2D001\r\n" + 
-				"Tour Name: Shimen National Forest Tour\r\n" + 
-				"Tour Description: Shimen colorful pond * stunning red maple * Staying at \"Yihua Hot Spring Hotel\"\r\n" + 
-				"Duration: 2\r\n" + 
-				"Date: Mon / Wed / Sat\r\n" + 
-				"Weekend Price: 599\r\n" + 
-				"Weekday Price: 499");
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("Tour ID:");
 	}
+	
+	@Test
+	//Weekday 3 F/F
+	public void testRecommend_prefer2() throws Exception{
+		Customer customer = new Customer ("U7a9aaa014c1b67bcd0a50f8597b11562");
+		boolean thrown = false;
+		String result = null;
+		
+		try {
+			result = customer.getRecommendation();
+		}catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("Tour ID:");
+	}
+	
+	@Test
+	public void testRecommend_original() throws Exception{
+		Customer customer = new Customer ("test_empty");
+		boolean thrown = false;
+		String result = null;
+		
+		try {
+			result = customer.getRecommendation();
+		}catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("Tour ID:");
+	}
+	
+	//@Test
+	//public void testRecommend_full() throws Exception{
+	//	Customer customer = new Customer ("test_full");
+	//	boolean thrown = false;
+	//	String result = null;
+	//	
+	//	try {
+	//		result = customer.getRecommendation();
+	//	}catch (Exception e) {
+	//		thrown = true;
+	//	}
+	//	
+	//	assertThat(thrown).isEqualTo(false);
+	//	assertThat(result).isEqualTo("Sorry, I have no more recommendation to you. Thanks for your support very much.");
+	//}
 }
-*/

@@ -52,8 +52,7 @@ public class NotifyingCustomer implements Observer{
 		if(time[3].equals("10")) {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
-			//promotionStatus(time[0],time[1],time[2]);
-			pushPromotion();
+			promotionStatus(time[0],time[1],time[2]);		
 
 		}
 
