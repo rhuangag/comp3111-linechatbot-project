@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {  Customer.class })
+@SpringBootTest(classes = { RecommendationTest.class, Customer.class })
 public class RecommendationTest {
 	
 	

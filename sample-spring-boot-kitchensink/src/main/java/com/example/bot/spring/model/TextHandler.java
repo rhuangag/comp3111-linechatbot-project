@@ -82,8 +82,7 @@ public class TextHandler {
     		//we find the customer did ask question before, temp is the type of last question	
     			if (temp>=BOOK_I && temp<BOOK_XII) {
     			    //the customer is in the booking process
-    				type=temp+1;
-    				record(customer);
+    				
     				
     				rs.close();
     				stmt.close();
@@ -95,6 +94,8 @@ public class TextHandler {
     				type=MEANINGLESS;
     				record(customer);
     				return "Your booking is interrupted. Please book again.";}
+    				type=temp+1;
+    				record(customer);
     				return booking.askForInformation(type ,text);
     				}
     			else if(temp==FILTER_I) {
@@ -114,7 +115,11 @@ public class TextHandler {
     						connection.close();
     						return PasswordMatch(customer);
     					}
-    						
+    					if (filter.viewDetails(number_text)=="Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)") {
+    						type=MEANINGLESS;
+    						record(customer);
+    						return filter.viewDetails(number_text);
+    					}
     					//answer is a reply that confirming the information
     					type=FILTER_II;
     					record(customer);
@@ -486,28 +491,29 @@ public class TextHandler {
         			}
     			}
     		//now check two keywords
-    			if (keywordMatch(parts,"twokeyword","keyword1")) {
-	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
-	    			ResultSet twokey2=null;
-	    			countloop=0;
-    	    		for (int i=0; i<parts.length;i++) {
-    	    			findtwokey2.setString(1, parts[i]);
-    	    			twokey2 =findtwokey2.executeQuery();
-    	    			if (twokey2.next()) {
-    	    				reply=twokey2.getString(1);
-    	    				break;}
-    	    			countloop++;
-    	    			
-    	    	}
-    	    		twokey2.close();
-	    			findtwokey2.close();
-    			if (countloop!=parts.length){
-    				type=FILTER_I;
-    				record(customer);
-    				connection.close();
-    				return filter.filterSearch(reply);
-    			}
-    		}
+        		String query="SELECT keyword2,reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
+    			PreparedStatement findkey = connection.prepareStatement(query);
+    			ResultSet key=null;
+    			String keyword2=null;
+        		for (int i=0; i<parts.length-1;i++) {
+        			findkey.setString(1, parts[i]);
+        			key =findkey.executeQuery();
+        			if (key.next()){ 
+        				keyword2=key.getString(1);
+        				if (keyword2.contains(parts[i+1])) {
+        					reply=key.getString(2);
+        					type=FILTER_I;
+            				record(customer);
+            				key.close();
+            				findkey.close();
+            				connection.close();
+            				return filter.filterSearch(reply);
+        					}
+        				}
+        		}
+        		key.close();       			
+    			findkey.close();
+    		
     		//now find three keyword
 
     	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
@@ -655,7 +661,8 @@ public class TextHandler {
     private boolean keywordMatch(String[] parts,String table,String colomn) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-			PreparedStatement findkey = connection.prepareStatement("SELECT reply FROM "+table+" WHERE lower("+colomn+") LIKE concat('%',concat(',',?,','),'%')");
+    		String query="SELECT reply FROM "+table+" WHERE lower("+colomn+") LIKE concat('%',concat(',',?,','),'%')";
+			PreparedStatement findkey = connection.prepareStatement(query);
 			ResultSet key=null;
 			int countloop=0;
     		for (int i=0; i<parts.length;i++) {
