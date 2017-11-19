@@ -50,20 +50,49 @@ public  class  UpdateRecord{
 		searchStmt.setString(2, tourid);
 		ResultSet rsForSearch=searchStmt.executeQuery();
 		if(rsForSearch.next()) {
-		PreparedStatement stmt = connection.prepareStatement("update customertable set amountpaid=? where name=? and tourjoined=?");
+		PreparedStatement stmt = connection.prepareStatement("update customertable set amountpaid=(amountpaid+?) where name=? and tourjoined=?");
 		stmt.setDouble(1, payment); 
 		stmt.setString(2, customername); 
 		stmt.setString(3, tourid); 
 		stmt.executeUpdate();
 		stmt.close();
+		
+		
+		
 		searchStmt.close();
 		rsForSearch.close();
+		
+		PreparedStatement searchStmtCheckIfPaid = connection.prepareStatement("select * from customertable where name=? and tourjoined=? and (amountPaid-tourfee)>-0.1 and (amountPaid-tourfee)<0.1");
+		searchStmtCheckIfPaid.setString(1, customername); 
+		searchStmtCheckIfPaid.setString(2, tourid);
+		ResultSet rsStmtCheckIfPaid=searchStmt.executeQuery();
+		if(rsStmtCheckIfPaid.next()) {
+			PreparedStatement updateStmtCheckIfPaid = connection.prepareStatement("update customertable set status='paid' where name=? and tourjoined=? and (amountPaid-tourfee)>-0.1 and (amountPaid-tourfee)<0.1");
+			updateStmtCheckIfPaid.setString(1, customername); 
+			updateStmtCheckIfPaid.setString(2, tourid);
+			updateStmtCheckIfPaid.executeUpdate();
+			updateStmtCheckIfPaid.close();
+			
+			PreparedStatement updateStmtStatusInBookingTable = connection.prepareStatement("update bookingtable set confirmedcustomer=(confirmedcustomer+1) where booktableid=?");
+			updateStmtStatusInBookingTable.setString(1, tourid);
+			updateStmtStatusInBookingTable.executeUpdate();
+			updateStmtStatusInBookingTable.close();
+			
+		}
+		
+		
+		searchStmtCheckIfPaid.close();
+		rsStmtCheckIfPaid.close();
+		
 		connection.close();
+		
+		
 		return "Update successfully.";}
 		else {
 		searchStmt.close();
 		rsForSearch.close();
-		connection.close();}}
+		connection.close();}
+		}
 		return "Invalid input. Maybe there are some error in the information provided";
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());

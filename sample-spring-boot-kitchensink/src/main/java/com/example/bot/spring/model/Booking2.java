@@ -11,11 +11,11 @@ import java.math.*;
 
 
 @Slf4j
-public class Booking {
+public class Booking2 {
 	//data member for this class
 	private Customer customerBelonging;
 	//Methods
-	public Booking(Customer customerBelong)
+	public Booking2(Customer customerBelong)
 	{
 		this.customerBelonging = customerBelong;
 	}
@@ -268,8 +268,6 @@ public class Booking {
 			if ((moredata.getInt(2)+datas.getInt(7)+datas.getInt(8)+ Integer.parseInt(numberOfToodlers)) > moredata.getInt(1))
 				return this.breakBooking();
 			QueryMax.close();
-			datas.close();
-			moredata.close();
 			Querydata.close();
 			String InsertDB = "Update " + this.customerBelonging.getID() + " SET Toodlers = " + numberOfToodlers;
 			PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
