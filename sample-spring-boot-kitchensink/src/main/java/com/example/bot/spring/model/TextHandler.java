@@ -266,11 +266,11 @@ public class TextHandler {
     		type=GiveMeFile;
     		record(customer);
     		//String t="";
-    		Report report1 = new Report("usefulquestionrecord");
-    		report1.writeReport();
+    		Report report1 = new Report("usefulquestionrecord",customer);
+    		String astring = report1.writeReport();
     		//t="usefulquestion \n " + report1.writeReport();
-    		Report report2 = new Report("feedbacktable");
-    		report2.writeReport();
+    		Report report2 = new Report("feedbacktable",customer);
+    		String bstring = report2.writeReport();
     		return "Above is the data collected so far.";
     		//t=t+"\n "+"feedbacktable"+"\n"+report2.writeReport();
     		//return t;
