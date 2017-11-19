@@ -35,6 +35,11 @@ public class PaymentReminder implements Observer {
 	String targetdate;
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
 	
+	//For test ONLY
+	public int inupdate1 = 0;
+	public int inupdate2 = 0;
+	public int inreminder = 0;
+	public int inreminder2 = 0;
 	//Implement Observer
 	/**
 	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager.
@@ -44,10 +49,12 @@ public class PaymentReminder implements Observer {
 		TimeManager temp = (TimeManager)o;
 		String currentTime = FORMAT.format(temp.getDateTime().plusDays(5));
 		String[] time = currentTime.split("/");
-		if(time[3].equals("08")) {
+		if(time[3].equals("12")) {
+			inupdate1 = 1;
 			this.targetdate=time[0]+time[1]+time[2];
 			reminder();
 		}
+		inupdate2=1;
 			
 	}
 	
@@ -63,6 +70,7 @@ public class PaymentReminder implements Observer {
 		while (rs.next()) {
 			double amountOwed = rs.getDouble("tourfee")-rs.getDouble("amountpaid");
 			if (amountOwed>0) {
+				inreminder = 1;
 				//Get 2D002 from 2D00220171112
 				String tourId = rs.getString("tourjoined").substring(0, 5);
 				//Get 12/11/2017 from 2D00220171112
@@ -78,6 +86,7 @@ public class PaymentReminder implements Observer {
 				PushMessage pushMessage = new PushMessage(rs.getString("userid"), textMessage);
 				KitchenSinkController.pushMessageController(pushMessage);
 			}
+			inreminder2 =1;
 		}
 		rs.close();
 		pst.close();
