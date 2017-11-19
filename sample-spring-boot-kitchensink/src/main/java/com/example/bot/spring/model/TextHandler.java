@@ -97,13 +97,14 @@ public class TextHandler {
     				connection.close();
     				
     				Booking booking=new Booking(customer);
+    				type=temp+1;
     				String reply=booking.askForInformation(type ,text);
     				//now just assume the customer will perfectly reply the correct information in the prototype
     				if (reply== "Booking Cancled, thanks for coming!") {
     				type=MEANINGLESS;
     				record(customer);
     				return "Your booking is interrupted. Please book again.";}
-    				type=temp+1;
+    				
     				record(customer);
     				return reply;
     				}
