@@ -42,117 +42,77 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import java.time.*;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.time.format.DateTimeFormatter;
-
-
-import com.example.bot.spring.PaymentReminder;
+import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { CustomerTester.class})
-public class PaymenetReminderTester {
-	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm");
+@SpringBootTest(classes = { RecommendationTest.class })
+public class RecommendationTest {
 	
-	//this also cover that no tour is found
+	
+	//format: result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nTour Description: "+rs.getString("TourDescription")+ "\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice");
 	@Test
-    public void testUpdate1() {
-    	    boolean thrown = false;
-		PaymentReminder tester = new PaymentReminder();
-		TimeManager tm = TimeManager.getTimer();
+	//Weekend 2 T/F
+	public void testRecommend_prefer1() throws Exception{
+		Customer customer = new Customer ("U7602b36236a0bc9ea3871c89f4e834dd");
+		boolean thrown = false;
+		String result = null;
 		
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
-        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withHour(12);
-        
-		tm.addObserver(tester);
-		
-        int result = 0;
 		try {
-			tm.setZonedDateTime(target);
-			tm.testNotify();
-			result = tester.inupdate1;
-    	 	}catch(Exception e) {
+			result = customer.getRecommendation();
+		}catch (Exception e) {
 			thrown = true;
 		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(1);
-    }
-
-    @Test
-    public void testUpdate2() {
-    	    boolean thrown = false;
-		PaymentReminder tester = new PaymentReminder();
-		TimeManager tm = TimeManager.getTimer();
 		
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
-        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withHour(20);
-        
-		tm.addObserver(tester);
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("Tour ID:");
+	}
+	
+	@Test
+	//Weekday 3 F/F
+	public void testRecommend_prefer2() throws Exception{
+		Customer customer = new Customer ("U7a9aaa014c1b67bcd0a50f8597b11562");
+		boolean thrown = false;
+		String result = null;
 		
-        int result = 0;
 		try {
-			tm.setZonedDateTime(target);
-			tm.testNotify();
-			result = tester.inupdate2;
-    	 	}catch(Exception e) {
+			result = customer.getRecommendation();
+		}catch (Exception e) {
 			thrown = true;
 		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(1);
-    }
-    
-    @Test
-    public void testReminder1() {
-    	    boolean thrown = false;
-		PaymentReminder tester = new PaymentReminder();
-		TimeManager tm = TimeManager.getTimer();
 		
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
-        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withDayOfMonth(6).withHour(12);
-        
-		tm.addObserver(tester);
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("Tour ID:");
+	}
+	
+	@Test
+	public void testRecommend_original() throws Exception{
+		Customer customer = new Customer ("test_empty");
+		boolean thrown = false;
+		String result = null;
 		
-        int result = 0;
 		try {
-			tm.setZonedDateTime(target);
-			tm.testNotify();
-			result = tester.inreminder;
-    	 	}catch(Exception e) {
+			result = customer.getRecommendation();
+		}catch (Exception e) {
 			thrown = true;
 		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(1);
-    }
-    
-    @Test
-    public void testReminder2() {
-    	    boolean thrown = false;
-		PaymentReminder tester = new PaymentReminder();
-		TimeManager tm = TimeManager.getTimer();
 		
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
-        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withDayOfMonth(6).withHour(12);
-        
-		tm.addObserver(tester);
-		
-        int result = 0;
-		try {
-			tm.setZonedDateTime(target);
-			tm.testNotify();
-			result = tester.inreminder2;
-    	 	}catch(Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(1);
-
-    }
-}
-*/
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("Tour ID:");
+	}
+	
+	//@Test
+	//public void testRecommend_full() throws Exception{
+	//	Customer customer = new Customer ("test_full");
+	//	boolean thrown = false;
+	//	String result = null;
+	//	
+	//	try {
+	//		result = customer.getRecommendation();
+	//	}catch (Exception e) {
+	//		thrown = true;
+	//	}
+	//	
+	//	assertThat(thrown).isEqualTo(false);
+	//	assertThat(result).isEqualTo("Sorry, I have no more recommendation to you. Thanks for your support very much.");
+	//}
+}*/
