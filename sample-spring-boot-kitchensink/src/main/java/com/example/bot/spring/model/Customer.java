@@ -54,12 +54,16 @@ public class Customer{
 					stmtGetPaid.setString(2, targettour);
 					ResultSet rsForGetPaid=stmtGetPaid.executeQuery();
 					
-					PreparedStatement stmtGetStatus=connection.prepareStatement("SELECT status from bookingtable where booktableid like concat('%', ?, '%')");
-					stmtGetStatus.setString(1, targettour);
+					PreparedStatement stmtGetStatus=connection.prepareStatement("SELECT status from customertable where where userID=? and tourjoined like concat('%', ?, '%')");
+					stmtGetStatus.setString(1, userID);
+					stmtGetStatus.setString(2, targettour);
 					ResultSet rsForGetStatus=stmtGetStatus.executeQuery();
 					
 					if(rsForGetStatus.next())
-					{status=rsForGetPaid.getString("status");}
+					{status=rsForGetStatus.getString("status");}
+					rsForGetStatus.close();
+					stmtGetStatus.close();
+					
 					
 					if(rsForGetPaid.next())
 					{paidAmount=rsForGetPaid.getDouble("amountPaid");}
