@@ -84,7 +84,7 @@ public class Filter {
 	/**
 	 * This method can take the searching keyword from customer, find tours fulfill the criteria and return the list of the tours.
 	 * @param keyword This is the searching keyword from the class TextHandler
-	 * @return java.lang.String This returns 
+	 * @return java.lang.String This returns all possible tours information that may fulfill the requirement from customer base on different type of keywords
 	 */
 	public String filterSearch(String keyword) {
 		String result=null;
@@ -239,7 +239,7 @@ public class Filter {
 	/**
 	 * This method is used to display the details of the tour which is selected by the customer.
 	 * @param keyword This is the customer's selection from the tour list 
-	 * @return java.lang.String This returns the details of the tour. If the keyword is not in the list provided previously, this returns null
+	 * @return java.lang.String This returns the details of the tour selected by customer and ask if customer want to book this tour. If the keyword is not in the list provided previously, this returns reminder information that customer make a wrong choice
 	 */
 	public String viewDetails(String keyword) {
 		String result=null;
