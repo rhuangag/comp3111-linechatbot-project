@@ -114,14 +114,14 @@ public class KitchenSinkController {
 
 	@EventMapping
 	public void handleStickerMessageEvent(MessageEvent<StickerMessageContent> event) {
-		handleSticker(event.getReplyToken(), event.getMessage());
+		String replyToken = event.getReplyToken();
+		this.replyText(replyToken, "Sorry we cannot understand this kind of input.");
 	}
 
 	@EventMapping
 	public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
-		LocationMessageContent locationMessage = event.getMessage();
-		reply(event.getReplyToken(), new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),
-				locationMessage.getLatitude(), locationMessage.getLongitude()));
+		String replyToken = event.getReplyToken();
+		this.replyText(replyToken, "Sorry we cannot understand this kind of input.");
 	}
 
 	@EventMapping
@@ -133,37 +133,13 @@ public class KitchenSinkController {
 	    
 		replyText(replyToken,"Sorry. The chatbot cannot check your payment proof. Please send the image to our financial "
 					+ "department via "+emailAddress);
-		
-			
-		
-		
-		/*final MessageContentResponse response;
-		String replyToken = event.getReplyToken();
-		String messageId = event.getMessage().getId();
-		try {
-			response = lineMessagingClient.getMessageContent(messageId).get();
-		} catch (InterruptedException | ExecutionException e) {
-			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
-			throw new RuntimeException(e);
-		}
-		DownloadedContent jpg = saveContent("jpg", response);
-		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));*/
 
 	}
 
 	@EventMapping
 	public void handleAudioMessageEvent(MessageEvent<AudioMessageContent> event) throws IOException {
-		final MessageContentResponse response;
 		String replyToken = event.getReplyToken();
-		String messageId = event.getMessage().getId();
-		try {
-			response = lineMessagingClient.getMessageContent(messageId).get();
-		} catch (InterruptedException | ExecutionException e) {
-			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
-			throw new RuntimeException(e);
-		}
-		DownloadedContent mp4 = saveContent("mp4", response);
-		reply(event.getReplyToken(), new AudioMessage(mp4.getUri(), 100));
+		this.replyText(replyToken, "Sorry we cannot understand this kind of input.");
 	}
 
 	@EventMapping
@@ -185,7 +161,7 @@ public class KitchenSinkController {
 			log.info("Exception while reading database: {}", e.toString());
 		}
 		String replyToken = event.getReplyToken();
-		this.replyText(replyToken, "Got followed event");
+		this.replyText(replyToken, "Welcome to the chatbot!");
 	}
 
 	@EventMapping
@@ -235,10 +211,6 @@ public class KitchenSinkController {
 	}
 
 
-	private void handleSticker(String replyToken, StickerMessageContent content) {
-		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
-	}
-
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
         String text = content.getText();
@@ -273,7 +245,7 @@ public class KitchenSinkController {
 		}
 	}
 
-	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
+	/*private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
 		log.info("Got content-type: {}", responseBody);
 
 		DownloadedContent tempFile = createTempFile(ext);
@@ -291,7 +263,7 @@ public class KitchenSinkController {
 		Path tempFile = KitchenSinkApplication.downloadedContentDir.resolve(fileName);
 		tempFile.toFile().deleteOnExit();
 		return new DownloadedContent(tempFile, createUri("/downloaded/" + tempFile.getFileName()));
-	}
+	}*/
 
 
 	
@@ -304,7 +276,7 @@ public class KitchenSinkController {
 
 	private String itscLOGIN;
 	
-
+    /*
 	//The annontation @Value is from the package lombok.Value
 	//Basically what it does is to generate constructor and getter for the class below
 	//See https://projectlombok.org/features/Value
@@ -313,8 +285,9 @@ public class KitchenSinkController {
 		Path path;
 		String uri;
 	}
-
-
+    */
+    
+	/*
 	//an inner class that gets the user profile and status message
 	class ProfileGetter implements BiConsumer<UserProfileResponse, Throwable> {
 		private KitchenSinkController ksc;
@@ -339,6 +312,7 @@ public class KitchenSinkController {
         	);
     	}
     }
+    */
 	
 	public static Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
