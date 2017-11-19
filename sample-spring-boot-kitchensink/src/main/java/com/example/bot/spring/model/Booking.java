@@ -60,20 +60,40 @@ public class Booking {
 	public String askForDate(String tourID) {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
+		boolean getdiscount = false;
 		String createdb = "CREATE table "+this.customerBelonging.getID() +"(customerID varchar(50), "
 				+ " tourID varchar(10), dateDeparture varchar(20), CustomerName varchar(20), ID varchar(20), "
 				+ " phone varchar(12), Adults Int, Children Int, Toodlers Int, SpecialRequest varchar(100)"
-				+ ", age varchar(3), fee float)";
+				+ ", age varchar(3), fee float, discount float, discountcapacity int)";
 		String insertdb = "Insert Into " + this.customerBelonging.getID() + "(customerID,tourID,dateDeparture,CustomerName,ID,phone,Adults,"
-				+ "Children,Toodlers,SpecialRequest,age,fee)VALUES ('"
+				+ "Children,Toodlers,SpecialRequest,age,fee, discount, discountcapacity)VALUES ('"
 				+ this.customerBelonging.getID()+"', '" + tourID + "', null, null, null, null, 0, 0, 0,"
-				+ " null, null, 0)";
+				+ " null, null, 0, 1, 0)";
 		
 		String asking = "When are you planning to go for the trip? (The dates available are: \n" + "(";
 		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%', ?,'%')";
+		
+		PreparedStatement discountcheck1 = connection.prepareStatement("Select * from discountuserlist where userid"
+				+ " like " + this.customerBelonging.getID() + " and tourID like " + tourID);
+		ResultSet dl = discountcheck1.executeQuery();
+		if (dl.next()) {
+			PreparedStatement discountapply1 = connection.prepareStatement("Select * from discounttourlist where"
+					+ " tourID like " + tourID);
+			ResultSet da = discountapply1.executeQuery();
+			da.next();
+			insertdb = "Insert Into " + this.customerBelonging.getID() + "(customerID,tourID,dateDeparture,CustomerName,ID,phone,Adults,"
+					+ "Children,Toodlers,SpecialRequest,age,fee, discount, discountcapacity)VALUES ('"
+					+ this.customerBelonging.getID()+"', '" + tourID + "', null, null, null, null, 0, 0, 0,"
+					+ " null, null, 0, " + da.getDouble(3) + ", " + da.getInt(4) + ")";
+			discountapply1.close();
+			getdiscount = true;
+		}
+		discountcheck1.close();
+		
 		PreparedStatement stmt1 = connection.prepareStatement(createdb);
 		PreparedStatement stmt2 = connection.prepareStatement(insertdb);
 		PreparedStatement stmt3 = connection.prepareStatement(queryDate);
+		
 		/*stmt1.setString(1, this.customerBelonging.getID());
 		stmt2.setString(1, this.customerBelonging.getID());
 		stmt2.setString(2, this.customerBelonging.getID());
@@ -87,6 +107,8 @@ public class Booking {
 			asking = asking + rs.getString(1) + "\n";
 		}
 		asking = asking + ".)";
+		if (getdiscount)
+			asking = asking + "\n note that you will get discount in this booking~!";
 		stmt1.close();
 		stmt2.close();
 		stmt3.close();
@@ -175,7 +197,8 @@ public class Booking {
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
 					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
 					+ datas.getString(3));
-			ResultSet moredata = QueryMax.executeQuery();    		
+			ResultSet moredata = QueryMax.executeQuery();   
+			moredata.next();
 			PreparedStatement stmt = connection.prepareStatement(InsertDB);
     		String asking = "Could you please tell us the number of adults? \n"
     				+ "The capacity of the trip is " + moredata.getInt(1) + "\n"
@@ -279,7 +302,18 @@ public class Booking {
 		int NumA = tour.getInt(7);
 		int NumC = tour.getInt(8);
 		int NumT = tour.getInt(9);
-		double finalcost = NumA*price + NumC*0.8*price;
+		int NumDiscount = tour.getInt(14);
+		double discount = tour.getDouble(13);
+		double finalcost = 0;
+		if (NumDiscount >= (NumA + NumC))
+			finalcost = (NumA*price + NumC*0.8*price)*discount;
+		else if (NumDiscount > NumA) {
+			finalcost = NumA*price*discount + (NumDiscount-NumA)*0.8*price*discount + 
+			(NumC-NumDiscount+NumA)*0.8*price;}
+		else {
+			finalcost = NumDiscount*discount*price + (NumA-NumDiscount)*price
+			+ NumC*0.8*price;}
+		
 		
 	    BigDecimal b = new BigDecimal(finalcost); 
 		float f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();  

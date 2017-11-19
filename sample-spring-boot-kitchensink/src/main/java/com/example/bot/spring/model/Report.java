@@ -22,15 +22,30 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.RandomAccessFile;
-
+/**
+ * 
+ * The class Report can create and write a txt file which includes the useful questions and feedback from the customers.
+ *
+ */
 public class Report {
 	private String currentdate;
 	private String dbname;
 	
+	/**
+	 * Constructor of Report. It initializes the object with the date of the report output and the database name(question or feedback) for output.
+	 * @param date This is the date when the file is created.
+	 * @param dbName This is the type of report that are going to be generated.
+	 */
 	public Report(String date, String dbName) {
 		this.currentdate = date + ".txt";
 		this.dbname = dbName;
 	}
+	/**
+	 * This method can create a file with the file name provided.
+	 * @param filename This is the name of the file that is going to be created.
+	 * @return Boolean This returns whether the file is succesfully created.
+	 * @throws Exception
+	 */
 	public boolean createFile(File filename)throws Exception{
 		boolean flag=false;
 		try{
@@ -64,6 +79,11 @@ public class Report {
 			}
 		return flag;
 		}
+	
+	/**
+	 * This method can read the database and write the output file with the data.
+	 * @return java.lang.String This returns a message "built!" when the report is written correctly, and returns the error message when an Exception is thrown.
+	 */
 	public String writeReport(){
 		try {
 			String name = this.currentdate + this.dbname;
