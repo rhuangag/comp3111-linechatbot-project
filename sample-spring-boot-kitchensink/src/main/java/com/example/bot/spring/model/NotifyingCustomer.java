@@ -60,7 +60,7 @@ public class NotifyingCustomer implements Observer{
 
 		}
 		
-		//pushPromotion();
+		pushPromotion();
 
 	}
 
