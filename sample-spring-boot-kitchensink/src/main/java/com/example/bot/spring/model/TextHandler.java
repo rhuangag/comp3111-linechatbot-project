@@ -479,7 +479,7 @@ public class TextHandler {
         				keyword1=threekey.getString(1);
         				threekey.close();
 						findthreekey.close();
-            			PreparedStatement findkeyword23 = connection.prepareStatement("SELECT keyword3,reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%') and keyword1=?");
+            			PreparedStatement findkeyword23 = connection.prepareStatement("SELECT keyword3,reply FROM threekeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%') and keyword1=?");
             			findkeyword23.setString(1, parts[i+1]);
             			findkeyword23.setString(2, keyword1);
             			ResultSet k=null;
