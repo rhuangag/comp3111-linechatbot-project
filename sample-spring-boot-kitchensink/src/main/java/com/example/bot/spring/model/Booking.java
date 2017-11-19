@@ -117,7 +117,7 @@ public class Booking {
 		return asking;
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (this.breakBooking()+ (e.toString()+ "asking1"));}
+			return ((e.toString()+ "asking1"));}
 	}
 	
 	//TODO
@@ -135,7 +135,7 @@ public class Booking {
     	    return asking;
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (this.breakBooking()+e.toString()+"asking2");}
+			return (e.toString()+"asking2");}
     }
     public String askage(String ID) {
     	try {
@@ -151,7 +151,7 @@ public class Booking {
     
     	}catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (this.breakBooking()+e.toString()+ "asking3");}
+    			return (e.toString()+ "asking3");}
     }
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
@@ -169,7 +169,7 @@ public class Booking {
     
     	}catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (this.breakBooking()+e.toString()+"asking4");}
+    			return (e.toString()+"asking4");}
     }
     public String askphone(String age){
     	try {
@@ -184,7 +184,7 @@ public class Booking {
         	    return asking;    	
     	    }catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (this.breakBooking()+e.toString()+"asking5");}
+    			return (e.toString()+"asking5");}
     }
 	
 	//TODO
@@ -197,8 +197,8 @@ public class Booking {
 			ResultSet datas = Querydata.executeQuery();
 			datas.next();
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
-					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
-					+ datas.getString(3));
+					+ " from bookingtable where tourid like '" + datas.getString(2) + "' and departuredate like '"
+					+ datas.getString(3) + "'");
 			ResultSet moredata = QueryMax.executeQuery();   
 			moredata.next();
 			PreparedStatement stmt = connection.prepareStatement(InsertDB);
@@ -215,7 +215,7 @@ public class Booking {
         	    return asking;    	
     	    }catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (breakBooking()+e.toString()+"asking6");}
+    			return (e.toString()+"asking6");}
     }
     
     //TODO
@@ -233,7 +233,7 @@ public class Booking {
         	    return asking;    
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (breakBooking()+e.toString()+"asking7");}
+			return (e.toString()+"asking7");}
 	}
 	
 	//TODO
@@ -251,7 +251,7 @@ public class Booking {
         	    return asking;    
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (breakBooking()+e.toString()+"asking8");}
+			return (e.toString()+"asking8");}
 	}
 	//TODO
 	//The 5th step of booking. Record the no. of Toodlers in the temporary database, use calculate() to calculate the fee,
@@ -261,10 +261,12 @@ public class Booking {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement Querydata = connection.prepareStatement("Select * from "+ this.customerBelonging.getID());
 			ResultSet datas = Querydata.executeQuery();
+			datas.next();
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
-					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
-					+ datas.getString(3));
+					+ " from bookingtable where tourid like '" + datas.getString(2) + "' and departuredate like '"
+					+ datas.getString(3) +"'");
 			ResultSet moredata = QueryMax.executeQuery();
+			moredata.next();
 			if ((moredata.getInt(2)+datas.getInt(7)+datas.getInt(8)+ Integer.parseInt(numberOfToodlers)) > moredata.getInt(1))
 				return this.breakBooking();
 			QueryMax.close();
@@ -281,7 +283,7 @@ public class Booking {
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (breakBooking()+e.toString()+"request");}
+			return (e.toString()+"request");}
 	}
 	public String doubleCheck(String request) {
 		try {
@@ -348,7 +350,7 @@ public class Booking {
 		return DoubleCheckList;
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (breakBooking()+e.toString()+"check");}
+			return (e.toString()+"check");}
 	}
 	
 	//TODO
@@ -397,7 +399,7 @@ public class Booking {
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (breakBooking()+e.toString()+"confirm");}
+			return (e.toString()+"confirm");}
 	}
 	//TODO
 	//Record the feedback, transter all the data in the log database to the feedback table, delete the log table,
@@ -423,7 +425,7 @@ public class Booking {
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (breakBooking()+e.toString()+ "feedback");}
+			return (e.toString()+ "feedback");}
 	}
 	
 	//TODO
