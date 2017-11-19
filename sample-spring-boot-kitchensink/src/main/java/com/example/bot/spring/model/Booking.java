@@ -268,6 +268,8 @@ public class Booking {
 			if ((moredata.getInt(2)+datas.getInt(7)+datas.getInt(8)+ Integer.parseInt(numberOfToodlers)) > moredata.getInt(1))
 				return this.breakBooking();
 			QueryMax.close();
+			datas.close();
+			moredata.close();
 			Querydata.close();
 			String InsertDB = "Update " + this.customerBelonging.getID() + " SET Toodlers = " + numberOfToodlers;
 			PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
