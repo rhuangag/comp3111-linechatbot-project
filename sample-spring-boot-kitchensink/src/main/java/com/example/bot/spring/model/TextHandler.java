@@ -125,7 +125,7 @@ public class TextHandler {
     					if (answer=="Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)") {
     						type=MEANINGLESS;
     						record(customer);
-    						return filter.viewDetails(number_text);
+    						return answer;
     					}
     					//answer is a reply that confirming the information
     					type=FILTER_II;
