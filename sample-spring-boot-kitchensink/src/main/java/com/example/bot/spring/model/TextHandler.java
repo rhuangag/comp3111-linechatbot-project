@@ -265,12 +265,15 @@ public class TextHandler {
     	{
     		type=GiveMeFile;
     		record(customer);
-    		String t="";
+    		//String t="";
     		Report report1 = new Report("usefulquestionrecord");
-    		t="usefulquestion \n " + report1.writeReport();
+    		report1.writeReport();
+    		//t="usefulquestion \n " + report1.writeReport();
     		Report report2 = new Report("feedbacktable");
-    		t=t+"\n "+"feedbacktable"+"\n"+report2.writeReport();
-    		return t;
+    		report2.writeReport();
+    		return "Above is the data collected so far.";
+    		//t=t+"\n "+"feedbacktable"+"\n"+report2.writeReport();
+    		//return t;
     	}
     	else
     		return UpdateRecord(customer);
