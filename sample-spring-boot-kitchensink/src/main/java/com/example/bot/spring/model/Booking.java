@@ -192,7 +192,7 @@ public class Booking {
     public String askForAdults(String phone) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = " + phone + "";
+    		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = '" + phone + "'";
     		PreparedStatement Querydata = connection.prepareStatement("Select * from "+ this.customerBelonging.getID());
 			ResultSet datas = Querydata.executeQuery();
 			datas.next();

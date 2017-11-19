@@ -325,7 +325,7 @@ public class TextHandler {
  			ResultSet number=counting.executeQuery();
  			number.next();
  			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
- 			ResultSet rs=counting.executeQuery();
+ 			ResultSet rs=capacity.executeQuery();
  			rs.next();
  			if (number.getInt(1)>=rs.getInt(1)) {
  				rs.close();
@@ -340,6 +340,7 @@ public class TextHandler {
  			
  			else {
  				rs.close();
+ 				capacity.close();
  				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
  	 			ResultSet discount=checkdiscount.executeQuery();
  				if (!discount.next()) {
@@ -348,6 +349,7 @@ public class TextHandler {
  				number.close();
  				counting.close();
  				discount.close();
+ 				checkdiscount.close();
  							
  				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
  				
@@ -359,10 +361,14 @@ public class TextHandler {
  				connection.close();
  				return "Congratulations! You get the discount.";}
  				else
- 				{
+ 				{   rs.close();
+ 					capacity.close();
+ 					number.close();
+ 	 				counting.close();
  					type= MEANINGLESS;
  	 				record(customer);
  	 				discount.close();
+ 	 				checkdiscount.close();
  	 				connection.close();
  	 				return "You have already got the discount.";
  				}
