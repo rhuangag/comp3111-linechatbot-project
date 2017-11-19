@@ -6,10 +6,20 @@ import java.sql.ResultSet;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The class Filter can search the tours which fulfill the criteria provided by the users. 
+ * It can also show the details of a tour to the user.
+ * 
+ *
+ */
 @Slf4j
 public class Filter {
 	private String userID;
 	
+	/**
+	 * Constructor of the class Filter. It requires the user id of the customer.
+	 * @param ID This is the user id of the customer
+	 */
 	public Filter(String ID){
 		userID=ID;
 	}
@@ -71,6 +81,11 @@ public class Filter {
 	//Search suitable tours in the database with the keyword and return an output in text format
 	//This also need a chasing state in the message class since after filter will directly changed to booking
 	//Current version we don't consider fail filting result
+	/**
+	 * This method can take the searching keyword from customer, find tours fulfill the criteria and return the list of the tours.
+	 * @param keyword This is the searching keyword from the class TextHandler
+	 * @return java.lang.String This returns 
+	 */
 	public String filterSearch(String keyword) {
 		String result=null;
 		try {
@@ -221,6 +236,11 @@ public class Filter {
 	//Return the details of a tour from the database with the keyword
 	//also need a tracing status for this step since will turn to start of booking
 	//current version not showing the confimed or those still accept booking trips
+	/**
+	 * This method is used to display the details of the tour which is selected by the customer.
+	 * @param keyword This is the customer's selection from the tour list 
+	 * @return java.lang.String This returns the details of the tour. If the keyword is not in the list provided previously, this returns null
+	 */
 	public String viewDetails(String keyword) {
 		String result=null;
 		String TourID=null;
@@ -239,12 +259,13 @@ public class Filter {
 		}
 		else {
 			
-			connection.close();
+			
 			filterFromTemTable.close();
 			rsForOrder.close();
 			clearTempTable.setString(1, userID);
 			clearTempTable.executeUpdate();
 			clearTempTable.close();
+			connection.close();
 			return "Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)";
 		}
 		//SELECT detials of the trip
