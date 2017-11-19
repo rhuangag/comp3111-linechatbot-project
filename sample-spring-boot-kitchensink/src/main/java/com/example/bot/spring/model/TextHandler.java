@@ -48,7 +48,7 @@ public class TextHandler {
     	    text=t;
     	   // keyword=null;
     	    type = UNKNOWN;
-    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , "").replaceAll("[\n]" , "").toLowerCase().split(" ");
+    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , " ").replaceAll("[\n]" , " ").toLowerCase().split(" ");
     }
     
     //Methods
@@ -196,7 +196,7 @@ public class TextHandler {
     					connection.close();
     					type=MEANINGLESS;
     					record(customer);
-    					return "Do you have any other questions?";}
+    					return "Stop searching.";}
     			}
     			else if (temp==UpdatePayment||temp==DiscountEvent) {
     				rs.close();
@@ -266,11 +266,11 @@ public class TextHandler {
     		type=GiveMeFile;
     		record(customer);
     		//String t="";
-    		Report report1 = new Report("usefulquestionrecord");
-    		report1.writeReport();
+    		Report report1 = new Report("usefulquestionrecord",customer);
+    		String astring = report1.writeReport();
     		//t="usefulquestion \n " + report1.writeReport();
-    		Report report2 = new Report("feedbacktable");
-    		report2.writeReport();
+    		Report report2 = new Report("feedbacktable",customer);
+    		String bstring = report2.writeReport();
     		return "Above is the data collected so far.";
     		//t=t+"\n "+"feedbacktable"+"\n"+report2.writeReport();
     		//return t;
@@ -325,7 +325,7 @@ public class TextHandler {
  			ResultSet number=counting.executeQuery();
  			number.next();
  			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
- 			ResultSet rs=counting.executeQuery();
+ 			ResultSet rs=capacity.executeQuery();
  			rs.next();
  			if (number.getInt(1)>=rs.getInt(1)) {
  				rs.close();
@@ -340,6 +340,7 @@ public class TextHandler {
  			
  			else {
  				rs.close();
+ 				capacity.close();
  				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
  	 			ResultSet discount=checkdiscount.executeQuery();
  				if (!discount.next()) {
@@ -348,6 +349,7 @@ public class TextHandler {
  				number.close();
  				counting.close();
  				discount.close();
+ 				checkdiscount.close();
  							
  				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
  				
@@ -359,10 +361,14 @@ public class TextHandler {
  				connection.close();
  				return "Congratulations! You get the discount.";}
  				else
- 				{
+ 				{   rs.close();
+ 					capacity.close();
+ 					number.close();
+ 	 				counting.close();
  					type= MEANINGLESS;
  	 				record(customer);
  	 				discount.close();
+ 	 				checkdiscount.close();
  	 				connection.close();
  	 				return "You have already got the discount.";
  				}
@@ -594,14 +600,14 @@ public class TextHandler {
     	    		connection.close();
     	    		return filter.filterSearch(reply);	  				
     	    	}
-    		//String[] number=text.replaceAll("[^0-9]", ",").split(",");
+    		String[] number=text.replaceAll("[^0-9]", ",").split(",");
     		String temp="";
     		
-    		for (int i=0;i<parts.length;i++) {
-    			if (isNumeric(parts[i])) {
+    		for (int i=0;i<number.length;i++) {
+    			if (isNumeric(number[i])) {
     				
-    				temp+=parts[i];
-    				if (i!=parts.length-1)
+    				temp+=number[i];
+    				if (i!=number.length-1)
     					temp+=",";
     				
     			}

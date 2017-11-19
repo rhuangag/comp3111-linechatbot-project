@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /*
 package com.example.bot.spring;
+=======
+/*package com.example.bot.spring;
+>>>>>>> 5ff24099a7986fdf36ce1c0c8fb75ed1474b7e21
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -117,5 +121,9 @@ public class RecommendationTest {
 	//	assertThat(thrown).isEqualTo(false);
 	//	assertThat(result).isEqualTo("Sorry, I have no more recommendation to you. Thanks for your support very much.");
 	//}
+<<<<<<< HEAD
 }
 */
+=======
+}*/
+>>>>>>> 5ff24099a7986fdf36ce1c0c8fb75ed1474b7e21

@@ -1,5 +1,7 @@
 package com.example.bot.spring;
 
+import static java.util.Collections.emptyList;
+
 import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +13,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+import com.linecorp.bot.model.message.ImagemapMessage;
+import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.action.URIAction;
@@ -60,15 +64,21 @@ public class NotifyingCustomer implements Observer{
 
 		}
 		
-		pushPromotion();
+		//pushPromotion();
 
 	}
 
 	//functional function in this class
-	private void pushPromotion() {		
-		String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
-		String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
-		ImageMessage imageMessage = new ImageMessage (imageUrl1,imageUrl2);
+	public void pushPromotion() {		
+		String imageUrl1 = KitchenSinkController.createUri("src/main/resources/static/promotion/join-now.jpg");
+		String imageUrl2 = KitchenSinkController.createUri("src/main/resources/static/promotion/join-now-low.jpg");
+		ImageMessage m = new ImageMessage (imageUrl1,imageUrl2);
+		
+		//ImagemapMessage m = new ImagemapMessage(imageUrl1, "altText", new ImagemapBaseSize(1040, 1040),
+        //        emptyList());
+		
+		//String message1 = "ooooo";
+		//TextMessage m = new TextMessage(message1);
 		
 		Vector<String> userID = new Vector<String>();
 
@@ -92,7 +102,7 @@ public class NotifyingCustomer implements Observer{
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(
 					userid,
-					imageMessage
+					m
 					);
 			KitchenSinkController.pushMessageController(pushMessage);
 		}
