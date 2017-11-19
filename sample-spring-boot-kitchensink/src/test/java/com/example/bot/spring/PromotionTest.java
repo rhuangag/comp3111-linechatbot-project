@@ -1,4 +1,4 @@
-
+/*
 package com.example.bot.spring;
 
 
@@ -48,9 +48,6 @@ import com.example.bot.spring.Customer;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { PromotionTest.class })
 public class PromotionTest {
-	NotifyingCustomer notify = new NotifyingCustomer();
-	TimeManager tm = TimeManager.getTimer();
-	
 	
 	@Test
 	public void testPromotion() throws Exception {
@@ -71,3 +68,4 @@ public class PromotionTest {
 	}
 	
 }
+*/
