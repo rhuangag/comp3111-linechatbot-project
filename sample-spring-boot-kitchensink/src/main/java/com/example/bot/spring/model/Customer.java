@@ -112,6 +112,7 @@ public class Customer{
 	 */
 	public String getRecommendation() {
 		
+		
 		Vector<String> historyID = new Vector<String>();
 		Vector<String> recommendationID = new Vector<String>();//store all tourID first and remove historyID then
 		Vector<String> prefer_recommendationID = new Vector<String>();//according to history
