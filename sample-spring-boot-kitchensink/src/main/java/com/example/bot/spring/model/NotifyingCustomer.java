@@ -99,6 +99,16 @@ public class NotifyingCustomer implements Observer{
 					);
 			KitchenSinkController.pushMessageController(pushMessage);
 		}
+		//test
+		message = "Promotion testing";
+		TextMessage textMessage = new TextMessage(message);
+		for(String userid : userID) {
+			PushMessage pushMessage = new PushMessage(
+					userid,
+					textMessage
+					);
+			KitchenSinkController.pushMessageController(pushMessage);
+		}
 	}
 
 	private void promotionStatus(String year, String month, String day) {
