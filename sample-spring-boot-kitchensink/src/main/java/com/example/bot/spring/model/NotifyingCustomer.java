@@ -32,13 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 public class NotifyingCustomer implements Observer{
 	private final String[] CANCELMESSAGE= {"Sorry to tell you that your tour for ", " is cancelled since not enough customer joined, hope to serve for you next time."};
 	private final String[] CONFIRMMESSAGE= {"Glad to tell you that your tour for ", " is confirmed. The information of the guide for this tour is the follwing: "};
-	private String currentDate;
+	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
     /**
      * Constructor of class NotifyingCustomer. It initializes the data members of the object.
      */
 	public NotifyingCustomer(){
-		currentDate=null;
+		
 	}
 
 	//update the time and check if fulfill the requirement to go to Notify()
@@ -49,7 +49,7 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
-		if(time[3]=="10") {
+		if(time[3].equals("10")) {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
@@ -115,7 +115,7 @@ public class NotifyingCustomer implements Observer{
 		if((c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)||(c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY))
 			pushPromotion();
 	}
-
+/*
 	private String TargetDate(int remindDays){
 		String targetDate="";
 		String[] parts = currentDate.split("/");
@@ -152,14 +152,11 @@ public class NotifyingCustomer implements Observer{
 		targetDate+=Integer.toString(month)+"/"+Integer.toString(year);
 		return targetDate;
 	}
-
+*/
 
 
 	//check the condition (3 days before a tour) and determine whether the tour is confirmed, full or cancelled. Update this status in database;
-	private void NotifyStatus(){
-		String targetDate=TargetDate(3);
-		String remindDate=TargetDate(2);
-		String CancelMessage="";
+	private void NotifyStatus(String targetDate){
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement notifyCancelled =connection.prepareStatement("Select booktableid from BookingTable where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
@@ -178,6 +175,12 @@ public class NotifyingCustomer implements Observer{
 					String cancelUser=rsNotifyCancel.getString(1);
 					pushCancelMessage(cancelUser,cancelTour);
 				}
+				
+				PreparedStatement UpdateCustomerTableCancelled =connection.prepareStatement("Update customertable set status='cancelled' where tourjoined=? and (status='paid' or status='booked') ");
+				UpdateCustomerTableCancelled.setString(1,cancelTour);
+				UpdateCustomerTableCancelled.executeUpdate();
+				UpdateCustomerTableCancelled.close();
+				
 				rsNotifyCancel.close();
 				notifyUserCancel.close();
 			}
@@ -185,8 +188,8 @@ public class NotifyingCustomer implements Observer{
 
 			while(confirmRs.next()) {
 				String confirmedTour=confirmRs.getString(1);
-				String guideInformation="Name: "+ confirmRs.getString(2) + " LINE account: "+ confirmRs.getString(3) ;
-				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=?");
+				String guideInformation="Name: "+ confirmRs.getString(2) +"\n"+"LINE account: "+ confirmRs.getString(3)+"\n" +"Enjoy your tour!" ;
+				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=? and status='paid'");
 				notifyUserConfirm.setString(1, confirmedTour);
 				ResultSet rsNotifyConfirm=notifyUserConfirm.executeQuery();
 				while(rsNotifyConfirm.next()) {
@@ -195,33 +198,45 @@ public class NotifyingCustomer implements Observer{
 				}
 				rsNotifyConfirm.close();
 				notifyUserConfirm.close();
+				
+				PreparedStatement UpdateCustomerTableConfirmed =connection.prepareStatement("Update customertable set status='confirmed' where tourjoined=? and status='paid'");
+				UpdateCustomerTableConfirmed.setString(1,confirmedTour);
+				UpdateCustomerTableConfirmed.executeUpdate();
+				UpdateCustomerTableConfirmed.close();
 			}
 			confirmRs.close();
 
 			PreparedStatement UpdateCancelled =connection.prepareStatement("Update BookingTable set status='cancelled' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-			PreparedStatement UpdateFull =connection.prepareStatement("Update BookingTable set status='full' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-			PreparedStatement UpdateConfirmed =connection.prepareStatement("Update BookingTable set status='confirmed' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement UpdateConfirmed =connection.prepareStatement("Update BookingTable set status='confirmed' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)>cast(minimumcustomer as int)");
+			UpdateCancelled.setString(1, targetDate);
+			UpdateConfirmed.setString(1, targetDate);
+		
 			UpdateCancelled.executeUpdate();
-			UpdateFull.executeUpdate();
 			UpdateConfirmed.executeUpdate();
-
 
 			notifyCancelled.close();
 			notifyConfirmed.close();
 			UpdateCancelled.close();
-			UpdateFull.close();
 			UpdateConfirmed.close();
 			connection.close();
 
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
+			String message2=e.toString();
+			String userID="U4e37da0ad17a38c22b3011d3d1b3644d";
+			TextMessage textMessage2 = new TextMessage(message2);
+			PushMessage pushMessage2 = new PushMessage(
+			        userID,
+			        textMessage2
+			        );
+			KitchenSinkController.pushMessageController(pushMessage2);
 		}
 	}
 
 
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
-	private String pushConfirmMessage(String userID, String tour, String guideInformation){
-		String message=CONFIRMMESSAGE[0]+tour+CONFIRMMESSAGE[1]+guideInformation;
+	private void pushConfirmMessage(String userID, String tour, String guideInformation){
+		String message=CONFIRMMESSAGE[0]+tour+CONFIRMMESSAGE[1]+"\n"+guideInformation;
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
 		        userID,
@@ -229,10 +244,9 @@ public class NotifyingCustomer implements Observer{
 		        );
 		KitchenSinkController.pushMessageController(pushMessage);
 		
-		return message;
 
 	}
-	private String pushCancelMessage(String userID, String tour) {
+	private void pushCancelMessage(String userID, String tour) {
 		String message=CANCELMESSAGE[0]+tour+ CANCELMESSAGE[1];
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
@@ -241,7 +255,7 @@ public class NotifyingCustomer implements Observer{
 		        );
 		KitchenSinkController.pushMessageController(pushMessage);
 		
-		return message;
+		
 	}
 
 
