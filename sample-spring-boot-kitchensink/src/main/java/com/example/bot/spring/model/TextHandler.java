@@ -102,7 +102,13 @@ public class TextHandler {
     					//the customer just do the filter searching and we have returned a list of tour
     					Filter filter =new Filter(customer.getID());
 
-    					String number_text=text.replaceAll("[^0-9]" , "");
+    					String number_text="";
+    					for (int i=0;i<parts.length;i++) {
+    						if (isNumeric(parts[i])) {
+    							number_text=parts[i];
+    							break;
+    						}
+    					}
     					if (number_text.isEmpty()) {
     						rs.close();
     						stmt.close();
@@ -560,14 +566,14 @@ public class TextHandler {
     	    		connection.close();
     	    		return filter.filterSearch(reply);	  				
     	    	}
-    		String[] number=text.replaceAll("[^0-9]", ",").split(",");
+    		//String[] number=text.replaceAll("[^0-9]", ",").split(",");
     		String temp="";
     		
-    		for (int i=0;i<number.length;i++) {
-    			if (!number[i].isEmpty()) {
+    		for (int i=0;i<parts.length;i++) {
+    			if (isNumeric(parts[i])) {
     				
-    				temp+=number[i];
-    				if (i!=number.length-1)
+    				temp+=parts[i];
+    				if (i!=parts.length-1)
     					temp+=",";
     				
     			}
@@ -575,9 +581,9 @@ public class TextHandler {
     		if (temp.isEmpty()) {
     			connection.close();
     			return newBooking(customer);}
-    		if (text.contains("cheaper than")|text.contains("less than"))
+    		if (text.contains("cheaper than")||text.contains("less than"))
     				temp="<"+temp;
-    		if (text.contains("higher than")|text.contains("more than"))
+    		if (text.contains("higher than")||text.contains("more than"))
     				temp=">"+temp;
 
 			if (filter.filterSearch(temp)=="Sorry, we cannot find any match answer for your question :( We already record your question and will forward it to the tour company.") {
@@ -705,4 +711,12 @@ public class TextHandler {
     		log.info("Exception while reading file: {}", e.toString());
     		return false;}
     }
+	private boolean isNumeric(String str){  
+		  for (int i = str.length();--i>=0;){    
+		   if (!Character.isDigit(str.charAt(i))){  
+		    return false;  
+		   }  
+		  }  
+		  return true;  
+		}  
 }
