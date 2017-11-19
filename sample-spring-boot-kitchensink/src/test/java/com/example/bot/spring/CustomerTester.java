@@ -40,6 +40,9 @@ import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 
+
+
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -105,7 +108,25 @@ public class CustomerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Tour ID: ");
 	}
-
+    
+	@Test
+	public void testCancelBooking() {
+		boolean thrown = false;
+		Customer tester = new Customer("U7602b36236a0bc9ea3871c89f4e834dd");
+		Customer tester2 = new Customer("test");
+        String result = null;
+        String result2 = null;
+		try {
+			result = tester.cancelBooking("2D001");
+			result2 = tester2.cancelBooking("2D001");
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("Your booking has been cancelled. Hope to serve for you next time!");
+		assertThat(result2).contains("Sorry but you provided invalid or incorrect tourID.");
+	}
+	
 	
 }
 */
