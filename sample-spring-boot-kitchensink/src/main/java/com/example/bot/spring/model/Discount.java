@@ -31,6 +31,10 @@ public class Discount implements Observer{
 	//Dclaration of data members
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 	
+	//for test ONLY
+	public int inupdate1 = 0;
+	public int inupdate2 = 0;
+	
 	/**
 	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager. 
 	 * When the current time reaches the event time, it pushes to event messages to all LINE friends of the chatbot.
@@ -41,8 +45,10 @@ public class Discount implements Observer{
 		String date = dateTime.substring(0, 8);
 		String time = dateTime.substring(8, 12);
 		if((date.equals(getTargetDate())) && (time.substring(0, 3).equals(getTargetTime().substring(0,3)))) {
+			inupdate1 = 1;
 			discountNews();
 		}
+		inupdate2 =1;
 	}
 	
 	private String getTourID() {

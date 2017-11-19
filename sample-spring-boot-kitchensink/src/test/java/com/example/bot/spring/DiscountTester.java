@@ -42,68 +42,64 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.Customer;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.time.*;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.time.format.DateTimeFormatter;
+
+
+import com.example.bot.spring.Discount;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { CustomerTester.class})
-public class CustomerTester {
-	@Test
-    public void testGetId(){
-		boolean thrown = false;
-		Customer tester = new Customer("test");
-        String result = null;
+public class DiscountTester {
+    @Test
+    public void testUpdate1() {
+    	boolean thrown = false;
+		Discount tester = new Discount();
+		TimeManager tm = TimeManager.getTimer();
+		
+		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
+        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
+        ZonedDateTime target = zonedNow.withYear(2017).withMonth(11).withDayOfMonth(19).withHour(14).withMinute(0);
+        
+		tm.addObserver(tester);
+		
+        int result = 0;
 		try {
-			result = tester.getID();
+			tm.setZonedDateTime(target);
+			tm.testNotify();
+			result = tester.inupdate1;
     	 	}catch(Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("test");	
+		assertThat(result).isEqualTo(1);
     }
-	
-	@Test
-	public void testGetHistory() {
-		boolean thrown = false;
-		Customer tester = new Customer("test");
-        String result = null;
+    
+    @Test
+    public void testUpdate2() {
+    	boolean thrown = false;
+		Discount tester = new Discount();
+		TimeManager tm = TimeManager.getTimer();
+		
+		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
+        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
+        ZonedDateTime target = zonedNow.withYear(2002).withMonth(1).withDayOfMonth(1).withHour(1).withMinute(0);
+        
+		tm.addObserver(tester);
+		
+        int result = 0;
 		try {
-			result = tester.getHistory();
+			tm.setZonedDateTime(target);
+			tm.testNotify();
+			result = tester.inupdate2;
     	 	}catch(Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("There is no record.");
-	}
-	
-	@Test
-	public void testFindHistory() {
-		boolean thrown = false;
-		Customer tester = new Customer("U4e37da0ad17a38c22b3011d3d1b3644d");
-        String result = null;
-		try {
-			result = tester.getHistory();
-    	 	}catch(Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("Tour ID: ");
-	}
-	
-	//test whether the vector is empty
-	@Test
-	public void testFindHistory2() {
-		boolean thrown = false;
-		Customer tester = new Customer("U4e37da0ad17a38c22b3011d3d1b3644d");
-        String result = null;
-		try {
-			result = tester.getHistory();
-			result = tester.getHistory();
-    	 	}catch(Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("Tour ID: ");
-	}
-
-	
+		assertThat(result).isEqualTo(1);
+    }
 }

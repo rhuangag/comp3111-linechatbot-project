@@ -21,6 +21,8 @@ public class Customer{
     private String userID;
     CustomerHistory history;
     
+    
+    
  
 	private class CustomerHistory{
 		Vector<String> history;
