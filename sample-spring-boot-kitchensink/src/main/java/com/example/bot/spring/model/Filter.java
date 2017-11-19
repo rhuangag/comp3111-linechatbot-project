@@ -101,17 +101,17 @@ public class Filter {
 			rsForAllList.close();
 		}
 		
-		//case 2: keyword is "tour", which is not count
-		else if (keyword.equals("tour")) {
-					connection.close();
-					return null;
-		}
-		
-		//case 3: filter for price range
+	
+		//case 2: filter for price range
 		else if(keyword.contains(",")){
 			String[] parts = keyword.split(",");
 			int lowerLimitation=Integer.parseInt(parts[0]);
 			int upperLimitation=Integer.parseInt(parts[1]);
+			if (lowerLimitation>upperLimitation) {
+				int temp=lowerLimitation;
+				lowerLimitation=upperLimitation;
+				upperLimitation=temp;
+			}
 			PreparedStatement filterStmtForPriceRange = connection.prepareStatement
 						("SELECT TourID, TourName from TourList where ?<cast(weekdayprice as int) and ?>cast(weekdayprice as int)");
 			filterStmtForPriceRange.setInt(1,lowerLimitation);
@@ -123,7 +123,7 @@ public class Filter {
 			rsForPriceRange.close();
 		}
 		
-		//case 4: filter for a price, +-100 for "around" type, >50 to distinguish from duration, current version only filt for weekday price
+		//case 3: filter for a price, +-100 for "around" type, >50 to distinguish from duration, current version only filt for weekday price
 		// or filter for a duration, for "around" type, <=50, need perfectly match
 		else if(isNumeric(keyword)) {
 			int number = Integer.parseInt(keyword);
@@ -155,7 +155,7 @@ public class Filter {
 			}
 		}
 		
-		//case 5:filter for higher price or longer duration
+		//case 4:filter for higher price or longer duration
 		else if (keyword.contains(">")) {
 			String[] parts = keyword.split(">");
 			int lowerLimitation=Integer.parseInt(parts[1]);
@@ -182,7 +182,7 @@ public class Filter {
 			rsForLongerDuration.close();
 		}
 		}
-		//case 6:filter for cheaper price or shorter duration
+		//case 5:filter for cheaper price or shorter duration
 		else if (keyword.contains("<")) {
 			String[] parts = keyword.split("<");
 			int lowerLimitation=Integer.parseInt(parts[1]);
@@ -266,7 +266,7 @@ public class Filter {
 			clearTempTable.executeUpdate();
 			clearTempTable.close();
 			connection.close();
-			return "Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)";
+			return "Sorry that there is no such a choice. You may ask for specific tours again and please show me the correct choice :)";
 		}
 		//SELECT detials of the trip
 		PreparedStatement findAvailiable = connection.prepareStatement
@@ -296,7 +296,7 @@ public class Filter {
 		ResultSet detialRs=detailStmt.executeQuery();
 		while(detialRs.next()){
 			result=detialRs.getString("TourID")+ " "+detialRs.getString("TourName")+"* "+detialRs.getString("TourDescription")+". " + "\nWe have confirmed tour on：\n"+confirmedButAcceptBook+
-					"We have tour on these days still accept application:\n"+availiable+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? \n";
+					"We have tour on these days still accept application:\n"+availiable+"\nFee: Weekend HKD"+detialRs.getInt("WeekendPrice")+" Weekday HKD "+ detialRs.getInt("WeekdayPrice")+".\nDo you want to book this one? If you want to book this tour, please reply YES. \n";
 		}
 		
 		//clear Temporary Filter Table after used
