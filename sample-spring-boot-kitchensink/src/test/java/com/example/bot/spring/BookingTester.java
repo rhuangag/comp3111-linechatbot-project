@@ -1,3 +1,4 @@
+
 package com.example.bot.spring;
 
 
@@ -42,78 +43,70 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.Customer;
-
+import com.example.bot.spring.Booking;
+/*
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { RecommendationTest.class })
-public class RecommendationTest {
-	
-	
-	//format: result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nTour Description: "+rs.getString("TourDescription")+ "\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice");
+@SpringBootTest(classes = { BookingTester.class})
+public class BookingTester {
 	@Test
-	
-	//Weekend 2 T/F
-	public void testRecommend_prefer1() throws Exception{
-		Customer customer = new Customer ("U7602b36236a0bc9ea3871c89f4e834dd");
+    public void testSuccessfulBooking(){
 		boolean thrown = false;
-		String result = null;
-		
+		Customer customer =new Customer("u7a9aaa014c1b67bcd0a50f8597b11562");
+		Booking tester = new Booking(customer);
+        String result = null;
 		try {
-			result = customer.getRecommendation();
-		}catch (Exception e) {
+			result = tester.getID();
+    	 	}catch(Exception e) {
 			thrown = true;
 		}
-		
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Tour ID:");
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("test");	
+    }
+    */
+	/*
+	@Test
+	public void testGetHistory() {
+		boolean thrown = false;
+		Booking tester = new Booking("test");
+        String result = null;
+		try {
+			result = tester.getHistory();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("There is no record.");
 	}
 	
 	@Test
-	//Weekday 3 F/F
-	public void testRecommend_prefer2() throws Exception{
-		Customer customer = new Customer ("U7a9aaa014c1b67bcd0a50f8597b11562");
+	public void testFindHistory() {
 		boolean thrown = false;
-		String result = null;
-		
+		Booking tester = new Booking("U4e37da0ad17a38c22b3011d3d1b3644d");
+        String result = null;
 		try {
-			result = customer.getRecommendation();
-		}catch (Exception e) {
+			result = tester.getHistory();
+    	 	}catch(Exception e) {
 			thrown = true;
 		}
-		
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Tour ID:");
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Tour ID: ");
 	}
 	
+	//test whether the vector is empty
 	@Test
-	public void testRecommend_original() throws Exception{
-		Customer customer = new Customer ("test_empty");
+	public void testFindHistory2() {
 		boolean thrown = false;
-		String result = null;
-		
+		Booking tester = new Booking("U4e37da0ad17a38c22b3011d3d1b3644d");
+        String result = null;
 		try {
-			result = customer.getRecommendation();
-		}catch (Exception e) {
+			result = tester.getHistory();
+			result = tester.getHistory();
+    	 	}catch(Exception e) {
 			thrown = true;
 		}
-		
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Tour ID:");
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Tour ID: ");
 	}
-	
-	//@Test
-	//public void testRecommend_full() throws Exception{
-	//	Customer customer = new Customer ("test_full");
-	//	boolean thrown = false;
-	//	String result = null;
-	//	
-	//	try {
-	//		result = customer.getRecommendation();
-	//	}catch (Exception e) {
-	//		thrown = true;
-	//	}
-	//	
-	//	assertThat(thrown).isEqualTo(false);
-	//	assertThat(result).isEqualTo("Sorry, I have no more recommendation to you. Thanks for your support very much.");
-	//}
 }
+	*/
+
