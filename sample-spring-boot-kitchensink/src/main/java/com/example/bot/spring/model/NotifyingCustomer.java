@@ -60,10 +60,10 @@ public class NotifyingCustomer implements Observer{
 
 	//functional function in this class
 	private void pushPromotion() {		
-		String imageUrl1 = KitchenSinkController.createUri("beach3.jpg");
-		String imageUrl2 = KitchenSinkController.createUri("gd1.jpg");
-		String imageUrl3 = KitchenSinkController.createUri("cellphone.jpg");
-		String imageUrl4 = KitchenSinkController.createUri("join-now.jpg");
+		String imageUrl1 = KitchenSinkController.createUri("/static/promotion/beach3.jpg");
+		String imageUrl2 = KitchenSinkController.createUri("/static/promotion/gd1.jpg");
+		String imageUrl3 = KitchenSinkController.createUri("/static/promotion/cellphone.jpg");
+		String imageUrl4 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
 		CarouselTemplate carouselTemplate = new CarouselTemplate(
 				Arrays.asList(
 						new CarouselColumn(imageUrl1, "beach","",null),
