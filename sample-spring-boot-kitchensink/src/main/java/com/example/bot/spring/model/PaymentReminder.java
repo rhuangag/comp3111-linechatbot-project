@@ -22,26 +22,44 @@ import java.util.Observable;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The class PaymentReminder is an observer in the observer pattern.
+ * When the date reaches 5 days before the departure date of a tour, the payment reminder messages are generated and pushed to the customers 
+ * who booked this tour but haven't pay all the tour fee.
+ * 
+ *
+ */
 @Slf4j
 public class PaymentReminder implements Observer {
 	//Dclaration of data members
 	String targetdate;
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
 	
+	//For test ONLY
+	public int inupdate1 = 0;
+	public int inupdate2 = 0;
+	public int inreminder = 0;
+	public int inreminder2 = 0;
 	//Implement Observer
+	/**
+	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager.
+	 * It check whether the current date is 5 days before the departure day. If so, it pushes the reminder message to customers.
+	 */
 	public void update(Observable o, Object arg) {
 		TimeManager temp = (TimeManager)o;
 		String currentTime = FORMAT.format(temp.getDateTime().plusDays(5));
 		String[] time = currentTime.split("/");
-		if(time[3].equals("08")) {
+		if(time[3].equals("12")) {
+			inupdate1 = 1;
 			this.targetdate=time[0]+time[1]+time[2];
 			reminder();
 		}
+		inupdate2=1;
 			
 	}
 	
 	//Methods
-	public void reminder() {
+	private void reminder() {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		PreparedStatement pst = connection.prepareStatement("select userid, tourjoined, tourfee, amountpaid"
@@ -52,6 +70,7 @@ public class PaymentReminder implements Observer {
 		while (rs.next()) {
 			double amountOwed = rs.getDouble("tourfee")-rs.getDouble("amountpaid");
 			if (amountOwed>0) {
+				inreminder = 1;
 				//Get 2D002 from 2D00220171112
 				String tourId = rs.getString("tourjoined").substring(0, 5);
 				//Get 12/11/2017 from 2D00220171112
@@ -67,6 +86,7 @@ public class PaymentReminder implements Observer {
 				PushMessage pushMessage = new PushMessage(rs.getString("userid"), textMessage);
 				KitchenSinkController.pushMessageController(pushMessage);
 			}
+			inreminder2 =1;
 		}
 		rs.close();
 		pst.close();
