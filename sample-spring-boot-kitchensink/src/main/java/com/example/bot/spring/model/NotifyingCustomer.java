@@ -185,7 +185,7 @@ public class NotifyingCustomer implements Observer{
 
 			while(confirmRs.next()) {
 				String confirmedTour=confirmRs.getString(1);
-				String guideInformation="Name: "+ confirmRs.getString(2) +"\n"+" LINE account: "+ confirmRs.getString(3)+"\n" +"Enjoy your tour!" ;
+				String guideInformation="Name: "+ confirmRs.getString(2) +"\n"+"LINE account: "+ confirmRs.getString(3)+"\n" +"Enjoy your tour!" ;
 				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=? and status='paid'");
 				notifyUserConfirm.setString(1, confirmedTour);
 				ResultSet rsNotifyConfirm=notifyUserConfirm.executeQuery();
@@ -203,8 +203,8 @@ public class NotifyingCustomer implements Observer{
 			}
 			confirmRs.close();
 
-			PreparedStatement UpdateCancelled =connection.prepareStatement("Update BookingTable set status='cancelled' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)>cast(minimumcustomer as int)");
-			PreparedStatement UpdateConfirmed =connection.prepareStatement("Update BookingTable set status='confirmed' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement UpdateCancelled =connection.prepareStatement("Update BookingTable set status='cancelled' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement UpdateConfirmed =connection.prepareStatement("Update BookingTable set status='confirmed' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)>cast(minimumcustomer as int)");
 			UpdateCancelled.setString(1, targetDate);
 			UpdateConfirmed.setString(1, targetDate);
 		
