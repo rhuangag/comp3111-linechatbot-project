@@ -100,11 +100,11 @@ public class TextHandler {
     				type=temp+1;
     				String reply=booking.askForInformation(type ,text);
     				//now just assume the customer will perfectly reply the correct information in the prototype
-    				if (reply== "Booking Cancled, thanks for coming!") {
-    				type=MEANINGLESS;
-    				record(customer);
-    				return "Your booking is interrupted. Please book again.";}
-    				
+    				if (reply== "Booking Cancled, thanks for coming!" || reply.contains("ERROR")) {
+    					type=MEANINGLESS;
+    					record(customer);
+    					return "Your booking is interrupted. Please book again.";
+    					}
     				record(customer);
     				return reply;
     				}
@@ -265,12 +265,15 @@ public class TextHandler {
     	{
     		type=GiveMeFile;
     		record(customer);
-    		String t="";
+    		//String t="";
     		Report report1 = new Report("usefulquestionrecord");
-    		t="usefulquestion \n \n" + report1.writeReport();
+    		report1.writeReport();
+    		//t="usefulquestion \n " + report1.writeReport();
     		Report report2 = new Report("feedbacktable");
-    		t=t+"\n \n \n"+"feedbacktable"+"\n"+report2.writeReport();
-    		return t;
+    		report2.writeReport();
+    		return "Above is the data collected so far.";
+    		//t=t+"\n "+"feedbacktable"+"\n"+report2.writeReport();
+    		//return t;
     	}
     	else
     		return UpdateRecord(customer);

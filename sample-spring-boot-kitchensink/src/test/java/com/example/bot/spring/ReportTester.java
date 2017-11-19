@@ -72,7 +72,7 @@ public class ReportTester {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("tourID  userID ");
+		assertThat(result).contains("tourID   userID ");
     }
 	
 	
