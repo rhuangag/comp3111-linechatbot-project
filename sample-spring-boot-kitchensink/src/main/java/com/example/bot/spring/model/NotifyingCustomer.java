@@ -66,8 +66,9 @@ public class NotifyingCustomer implements Observer{
 
 	//functional function in this class
 	private void pushPromotion() {		
-		String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
-		ImageMessage imageMessage = new ImageMessage (imageUrl,imageUrl);
+		String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
+		ImageMessage imageMessage = new ImageMessage (imageUrl1,imageUrl2);
 
 		//String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
         //CarouselTemplate carouselTemplate = new CarouselTemplate(
