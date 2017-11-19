@@ -69,7 +69,6 @@ public class PaymentReminder implements Observer {
 		ResultSet rs = pst.executeQuery();
 		while (rs.next()) {
 			double amountOwed = rs.getDouble("tourfee")-rs.getDouble("amountpaid");
-			if (amountOwed>0) {
 				inreminder = 1;
 				//Get 2D002 from 2D00220171112
 				String tourId = rs.getString("tourjoined").substring(0, 5);
@@ -85,7 +84,7 @@ public class PaymentReminder implements Observer {
 				TextMessage textMessage = new TextMessage(message);
 				PushMessage pushMessage = new PushMessage(rs.getString("userid"), textMessage);
 				KitchenSinkController.pushMessageController(pushMessage);
-			}
+			
 			inreminder2 =1;
 		}
 		rs.close();
