@@ -72,6 +72,7 @@ public class TextHandler {
 			PreparedStatement count = connection.prepareStatement("select count(index) from questionrecord where customerid=?");
 			count.setString(1, customer.getID());
 			ResultSet index=count.executeQuery();
+			index.next();
 			int number=index.getInt(1);
 			count.close();
 			index.close();
@@ -660,6 +661,7 @@ public class TextHandler {
 			PreparedStatement count = connection.prepareStatement("select count(index) from questionrecord where customerid=?");
 			count.setString(1, customer.getID());
 			ResultSet index=count.executeQuery();
+			index.next();
 			int number=index.getInt(1)+1;
 			count.close();
 			index.close();
