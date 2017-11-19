@@ -48,10 +48,10 @@ public class NotifyingCustomer implements Observer{
 	 */
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
+		String targetDay=FORMAT.format(temp.getDateTime().plusDays(3));
 		String[] time = temp.getTime().split("/");
 		if(time[3].equals("10")) {
-			currentDate = time[2]+"/"+time[1]+"/"+time[0];
-			NotifyStatus();
+			NotifyStatus(targetDay);
 			//promotionStatus(time[0],time[1],time[2]);
 			pushPromotion();
 

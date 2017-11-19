@@ -45,20 +45,30 @@ public  class  UpdateRecord{
 		String tourid=parts[1];
 		Double payment=Double.parseDouble(parts[2]);
 		Connection connection = KitchenSinkController.getConnection();
+		PreparedStatement searchStmt = connection.prepareStatement("select name from customertable where name=? and tourjoined=?");
+		searchStmt.setString(1, customername); 
+		searchStmt.setString(2, tourid);
+		ResultSet rsForSearch=searchStmt.executeQuery();
+		if(rsForSearch.next()) {
 		PreparedStatement stmt = connection.prepareStatement("update customertable set amountpaid=? where name=? and tourjoined=?");
 		stmt.setDouble(1, payment); 
 		stmt.setString(2, customername); 
 		stmt.setString(3, tourid); 
 		stmt.executeUpdate();
 		stmt.close();
+		searchStmt.close();
+		rsForSearch.close();
 		connection.close();
 		return "Update successfully.";}
-		else
-			return "Invalid input.";
+		else {
+		searchStmt.close();
+		rsForSearch.close();
+		connection.close();}}
+		return "Invalid input. Maybe there are some error in the information provided";
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 			return (e.toString()+ "payment");}
-	}
+}
 	public String Discount(String information) {
 		try {		
 		String[] parts=information.split("-");
