@@ -49,7 +49,7 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
-		if(time[3].equals("10")) {
+		if(time[3].equals("12")) {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
@@ -155,12 +155,11 @@ public class NotifyingCustomer implements Observer{
 	//check the condition (3 days before a tour) and determine whether the tour is confirmed, full or cancelled. Update this status in database;
 	private void NotifyStatus(){
 		String targetDate=TargetDate(3);
-		String remindDate=TargetDate(2);
 		String CancelMessage="";
 		try {
 			Connection connection = KitchenSinkController.getConnection();
-			PreparedStatement notifyCancelled =connection.prepareStatement("Select booktableid from BookingTable where departureDate=? and status='availiable' and cast(currentCustomer as int)<cast(minimumcustomer as int)");
-			PreparedStatement notifyConfirmed =connection.prepareStatement("Select booktableid, tourguide, tourguideaccount from BookingTable where status='availiable' and cast(currentCustomer as int)>=cast(minimumcustomer as int)");
+			PreparedStatement notifyCancelled =connection.prepareStatement("Select booktableid from BookingTable where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement notifyConfirmed =connection.prepareStatement("Select booktableid, tourguide, tourguideaccount from BookingTable where status='availiable' and cast(confirmedCustomer as int)>=cast(minimumcustomer as int)");
 
 			notifyCancelled.setString(1, targetDate);
 			ResultSet cancelRs=notifyCancelled.executeQuery();
@@ -168,6 +167,10 @@ public class NotifyingCustomer implements Observer{
 
 			while(cancelRs.next()) {
 				String cancelTour=cancelRs.getString(1);
+				PreparedStatement UpdateCustomerTableCancelled =connection.prepareStatement("Update customertable set status='cancelled' where tourjoined=? and status='paid' or status='booked' ");
+				UpdateCustomerTableCancelled.setString(1,cancelTour);
+				UpdateCustomerTableCancelled.executeQuery();
+				UpdateCustomerTableCancelled.close();
 				PreparedStatement notifyUserCancel =connection.prepareStatement("Select userid from customertable where tourjoined=?");
 				notifyUserCancel.setString(1, cancelTour);
 				ResultSet rsNotifyCancel=notifyUserCancel.executeQuery();
@@ -183,7 +186,7 @@ public class NotifyingCustomer implements Observer{
 			while(confirmRs.next()) {
 				String confirmedTour=confirmRs.getString(1);
 				String guideInformation="Name: "+ confirmRs.getString(2) + " LINE account: "+ confirmRs.getString(3) ;
-				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=?");
+				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=? and status='paid'");
 				notifyUserConfirm.setString(1, confirmedTour);
 				ResultSet rsNotifyConfirm=notifyUserConfirm.executeQuery();
 				while(rsNotifyConfirm.next()) {
@@ -195,18 +198,17 @@ public class NotifyingCustomer implements Observer{
 			}
 			confirmRs.close();
 
-			PreparedStatement UpdateCancelled =connection.prepareStatement("Update BookingTable set status='cancelled' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
-			PreparedStatement UpdateFull =connection.prepareStatement("Update BookingTable set status='full' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			PreparedStatement UpdateCancelled =connection.prepareStatement("Update BookingTable set status='cancelled' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)>cast(minimumcustomer as int)");
 			PreparedStatement UpdateConfirmed =connection.prepareStatement("Update BookingTable set status='confirmed' where departureDate=? and status='availiable' and cast(confirmedCustomer as int)<cast(minimumcustomer as int)");
+			UpdateCancelled.setString(1, targetDate);
+			UpdateConfirmed.setString(1, targetDate);
+		
 			UpdateCancelled.executeUpdate();
-			UpdateFull.executeUpdate();
 			UpdateConfirmed.executeUpdate();
-
 
 			notifyCancelled.close();
 			notifyConfirmed.close();
 			UpdateCancelled.close();
-			UpdateFull.close();
 			UpdateConfirmed.close();
 			connection.close();
 
