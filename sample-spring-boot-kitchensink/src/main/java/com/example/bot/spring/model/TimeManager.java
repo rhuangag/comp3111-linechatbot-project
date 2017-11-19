@@ -45,6 +45,19 @@ public class TimeManager extends Observable {
 	public int incomputeNextDelay1 = 0;
 	public int incomputeNextDelay2 = 0;
 	
+	public void setZonedDateTime(ZonedDateTime z) {
+		dateTime = z;
+	}
+	
+	public void setTime(String t) {
+		time = t;
+	}
+	
+	public void testNotify() {
+		setChanged();
+		notifyObservers(this);
+	}
+	
 	
 	//Constructor
 	private TimeManager() {
@@ -68,7 +81,7 @@ public class TimeManager extends Observable {
 	 */
 	public String getTime() {
 		long temp1 = computeNextDelay(50,0);
-		long temp2 = computeNextDelay(1,0);
+		long temp2 = computeNextDelay(0,0);
 		return time;
 	}
 	

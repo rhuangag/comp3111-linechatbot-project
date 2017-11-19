@@ -88,4 +88,22 @@ public class CustomerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Tour ID: ");
 	}
+	
+	//test whether the vector is empty
+	@Test
+	public void testFindHistory2() {
+		boolean thrown = false;
+		Customer tester = new Customer("U4e37da0ad17a38c22b3011d3d1b3644d");
+        String result = null;
+		try {
+			result = tester.getHistory();
+			result = tester.getHistory();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Tour ID: ");
+	}
+
+	
 }
