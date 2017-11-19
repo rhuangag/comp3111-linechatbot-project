@@ -493,10 +493,11 @@ public class TextHandler {
     		//now check two keywords
         		String query="SELECT keyword1 FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
     			PreparedStatement findkey = connection.prepareStatement(query);
-    			ResultSet key=null;
+    			
     			String keyword1=null;
         		for (int i=0; i<parts.length-1;i++) {
         			findkey.setString(1, parts[i]);
+        			ResultSet key=null;
         			key =findkey.executeQuery();
         			if (key.next()){ 
         				keyword1=key.getString(1);
@@ -516,9 +517,12 @@ public class TextHandler {
         						connection.close();
             					return filter.filterSearch(reply);        					
         				}
+        				k.close();
+						findkeyword2.close();
         				}
+        			key.close(); 
         		}
-        		key.close();       			
+        		      			
     			findkey.close();
     		
     		//now find three keyword
