@@ -491,7 +491,7 @@ public class TextHandler {
         			}
     			}
     		//now check two keywords
-        		String query="SELECT keyword2,reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
+/*        		String query="SELECT keyword2,reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
     			PreparedStatement findkey = connection.prepareStatement(query);
     			ResultSet key=null;
     			String keyword2=null;
@@ -512,7 +512,7 @@ public class TextHandler {
         				}
         		}
         		key.close();       			
-    			findkey.close();
+    			findkey.close();*/
     		
     		//now find three keyword
 
