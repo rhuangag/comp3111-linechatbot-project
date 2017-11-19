@@ -69,9 +69,16 @@ public class TextHandler {
     	try {
     		//find the last quetion type for the specific customer who is sending text now
     		Connection connection = KitchenSinkController.getConnection();	
-    		String query = "SELECT type FROM questionRecord where customerid=?";
+			PreparedStatement count = connection.prepareStatement("select count(index) from questionrecord where customerid=?");
+			count.setString(1, customer.getID());
+			ResultSet index=count.executeQuery();
+			int number=index.getInt(1);
+			count.close();
+			index.close();
+    		String query = "SELECT type FROM questionRecord where customerid=? and index=?";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		stmt.setString(1,customer.getID());
+    		stmt.setInt(2,number);
     		ResultSet rs =stmt.executeQuery();
     		//check whether the customer ask questions before
     		if (rs.next()) {
@@ -125,6 +132,8 @@ public class TextHandler {
     					if (answer=="Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)") {
     						type=MEANINGLESS;
     						record(customer);
+    						rs.close();
+    						stmt.close();
     						PreparedStatement clearTempFilterTable = connection.prepareStatement
     								("Delete from TemporaryFilterTable where userId =?");
     						clearTempFilterTable.setString(1, customer.getID());
@@ -189,6 +198,7 @@ public class TextHandler {
     			else if (temp==UpdatePayment||temp==DiscountEvent) {
     				rs.close();
 					stmt.close();
+					connection.close();
     				type=MEANINGLESS;
 					record(customer);
 					UpdateRecord update=new UpdateRecord(customer);
@@ -645,15 +655,21 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord values ( ?,?,?)";
-			        
+			String query1 = " insert into questionRecord values ( ?,?,?,?)";
 			
+			PreparedStatement count = connection.prepareStatement("select count(index) from questionrecord where customerid=?");
+			count.setString(1, customer.getID());
+			ResultSet index=count.executeQuery();
+			int number=index.getInt(1)+1;
+			count.close();
+			index.close();
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
 			
 			stmt.setString(1, text); 
 			stmt.setInt(2, type);
 			stmt.setString(3, customer.getID());
+			stmt.setInt(4, number);
 			stmt.executeUpdate();
 			if (type<8&&type!=2)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
