@@ -247,10 +247,10 @@ public class TextHandler {
     		type=GiveMeFile;
     		record(customer);
     		String t="";
-    		//Report report1 = new Report("usefulquestionrecord");
-    		//t="usefulquestion \n \n" + report1.writeReport();
-    		//Report report2 = new Report("feedbacktable");
-    		//t=t+"\n \n \n"+"feedbacktable"+"\n"+report2.writeReport();
+    		Report report1 = new Report("usefulquestionrecord");
+    		t="usefulquestion \n \n" + report1.writeReport();
+    		Report report2 = new Report("feedbacktable");
+    		t=t+"\n \n \n"+"feedbacktable"+"\n"+report2.writeReport();
     		return t;
     	}
     	else
