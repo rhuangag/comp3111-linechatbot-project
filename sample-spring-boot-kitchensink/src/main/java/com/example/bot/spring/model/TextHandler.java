@@ -506,6 +506,7 @@ public class TextHandler {
             			findkeyword2.setString(1, parts[i+1]);
             			findkeyword2.setString(2, keyword1);
             			ResultSet k=null;
+            			k=findkeyword2.executeQuery();
         				if (k.next()) {
         						reply=k.getString(1);
         						type=FILTER_I;
