@@ -74,7 +74,7 @@ public class Booking {
 		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%', ?,'%')";
 		
 		PreparedStatement discountcheck1 = connection.prepareStatement("Select * from discountuserlist where userid"
-				+ " like " + this.customerBelonging.getID() + " and tourID like '" + tourID + "'");
+				+ " like '" + this.customerBelonging.getID() + "' and tourID like '" + tourID + "'");
 		ResultSet dl = discountcheck1.executeQuery();
 		if (dl.next()) {
 			PreparedStatement discountapply1 = connection.prepareStatement("Select * from discounttourlist where"
@@ -205,6 +205,8 @@ public class Booking {
     		String asking = "Could you please tell us the number of adults? \n"
     				+ "The capacity of the trip is " + moredata.getInt(1) + "\n"
     				+ "and currently there are " + moredata.getInt(2)+ " people already.";
+    		datas.close();
+    		moredata.close();
     		Querydata.close();
     		QueryMax.close();
     		stmt.executeUpdate();

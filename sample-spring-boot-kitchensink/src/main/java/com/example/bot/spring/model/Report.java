@@ -28,7 +28,6 @@ import java.io.RandomAccessFile;
  *
  */
 public class Report {
-	private String currentdate;
 	private String dbname;
 	
 	/**
@@ -36,8 +35,7 @@ public class Report {
 	 * @param date This is the date when the file is created.
 	 * @param dbName This is the type of report that are going to be generated.
 	 */
-	public Report(String date, String dbName) {
-		this.currentdate = date + ".txt";
+	public Report(String dbName) {
 		this.dbname = dbName;
 	}
 	/**
@@ -86,7 +84,7 @@ public class Report {
 	 */
 	public String writeReport(){
 		try {
-			String name = this.currentdate + this.dbname;
+			String name = this.dbname;
 			ByteArrayInputStream stream = new ByteArrayInputStream(name.getBytes());
 			File filename = null;
 			OutputStream os = new FileOutputStream(filename);
