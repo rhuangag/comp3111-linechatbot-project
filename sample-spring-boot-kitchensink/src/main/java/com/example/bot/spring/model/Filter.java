@@ -279,7 +279,7 @@ public class Filter {
 		}
 		
 		PreparedStatement findConfirmedButAcceptBooking = connection.prepareStatement
-				("SELECT  departuredate from bookingtable where status='confrimed1' and tourID =?");
+				("SELECT  departuredate from bookingtable where status='confrimed' and tourID =?");
 		findConfirmedButAcceptBooking.setString(1, TourID);
 		ResultSet rsFindConfirmedButAcceptBooking=findConfirmedButAcceptBooking.executeQuery();
 		String confirmedButAcceptBook="";

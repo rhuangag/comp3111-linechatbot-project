@@ -35,18 +35,26 @@ public class Customer{
 		//TODO
 		//Find the customer history in the database and put each row as a string in the vector "history"
 		public void findHistory(String userID) {
+			double paidAmount=0;
 			if (!history.isEmpty())
 				history.clear();
 			try {
-				Connection connection = KitchenSinkController.getConnection();
+				Connection connection = KitchenSinkController.getConnection();	
 				PreparedStatement stmt = connection.prepareStatement
 						("SELECT TourID, TourName, DepartureDate, Duration, Price, Status from CustomerRecord where UserID "
 								+ "like concat('%', ?, '%')");
 				stmt.setString(1, userID);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
+					String targettour=rs.getString("TourID");
+					PreparedStatement stmtGetPaid=connection.prepareStatement("SELECT amountPaid from customertable where userID=? and tourjoined=?");
+					stmtGetPaid.setString(1, userID);
+					stmtGetPaid.setString(2, targettour);
+					ResultSet rsForGetPaid=stmtGetPaid.executeQuery();
+					if(rsForGetPaid.next())
+					paidAmount=rsForGetPaid.getDouble("amountPaid");
 					String result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nDepartureDate: "+rs.getString("DepartureDate")+ 
-							"\nDuration: "+rs.getString("Duration")+"\nPrice: "+rs.getString("Price")+"\nStatus: "+rs.getString("Status")+"\n";
+							"\nDuration: "+rs.getString("Duration")+"\nPrice: "+rs.getString("Price")+"\nYou have paid:"+paidAmount+ "\nStatus:"+rs.getString("Status")+"\n";
 					history.add(result);
 				}
 				rs.close();
