@@ -60,18 +60,8 @@ public class NotifyingCustomer implements Observer{
 
 	//functional function in this class
 	private void pushPromotion() {		
-		String imageUrl1 = KitchenSinkController.createUri("/static/promotion/beach3.jpg");
-		String imageUrl2 = KitchenSinkController.createUri("/static/promotion/gd1.jpg");
-		String imageUrl3 = KitchenSinkController.createUri("/static/promotion/cellphone.jpg");
-		String imageUrl4 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
-		CarouselTemplate carouselTemplate = new CarouselTemplate(
-				Arrays.asList(
-						new CarouselColumn(imageUrl1, "beach","",null),
-						new CarouselColumn(imageUrl2, "Guangzhou","",null),
-						new CarouselColumn(imageUrl3, "photograph","",null),
-						new CarouselColumn(imageUrl4, "Come and join us","",null)
-						));
-		TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+		String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		ImageMessage imageMessage = new ImageMessage (imageUrl);
 
 		Vector<String> userID = new Vector<String>();
 
@@ -95,7 +85,7 @@ public class NotifyingCustomer implements Observer{
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(
 					userid,
-					templateMessage
+					imageMessage
 					);
 			KitchenSinkController.pushMessageController(pushMessage);
 		}
