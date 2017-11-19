@@ -98,7 +98,7 @@ public class Report {
 			PreparedStatement read = connection.prepareStatement("Select * from " + this.dbname);
 			ResultSet readrs= read.executeQuery();
 			if (this.dbname == "usefulquestionrecord") {
-				fulltext = "type integer  customerID                   usefulquestion\n";
+				fulltext = "type integer  customerID                             usefulquestion\n";
 				while (readrs.next()) {
 					fulltext += readrs.getInt(2);
 					fulltext += "             ";
@@ -109,7 +109,7 @@ public class Report {
 				}
 			}
 			else if (this.dbname == "feedbacktable") {
-				fulltext = "tourID  userID                      feedback\n";
+				fulltext = "tourID   userID                          feedback\n";
 				while (readrs.next()) {
 					fulltext += readrs.getString(2);
 					fulltext += "   ";
