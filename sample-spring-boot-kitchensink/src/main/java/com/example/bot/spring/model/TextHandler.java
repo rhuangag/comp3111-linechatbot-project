@@ -518,6 +518,7 @@ public class TextHandler {
 
     	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
     	    	ResultSet onekey=null;
+    	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
     	    		findonekey.setString(1, parts[i]);
     	    		onekey =findonekey.executeQuery();
