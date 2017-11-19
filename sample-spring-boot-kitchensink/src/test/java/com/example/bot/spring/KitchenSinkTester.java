@@ -1,4 +1,3 @@
-/*
 package com.example.bot.spring;
 
 
@@ -43,17 +42,36 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.DatabaseEngine;
+import com.example.bot.spring.TextHandler;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })
+@SpringBootTest(classes = {  TextHandler.class})
 public class KitchenSinkTester {
-	@Autowired
-	private DatabaseEngine databaseEngine;
 	
-	
-	
+	private TextHandler texthandler=new TextHandler("t");
+/*	@Test
+	public void testNotFound() throws Exception {
+		boolean thrown = false;
+		try {
+			this.databaseEngine.search("no");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(thrown).isEqualTo(true);
+	}
+*/	
+	@Test
+	public void testFound() throws Exception {
+		boolean thrown = false;
+		int result = 1;
+		try {
+			result = this.texthandler.getType();
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo(2);
+	}
 
 }
-*/

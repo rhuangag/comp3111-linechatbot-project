@@ -1,4 +1,4 @@
-/*
+
 package com.example.bot.spring;
 
 
@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { RecommendationTest.class, Customer.class })
+@SpringBootTest(classes = {  Customer.class })
 public class RecommendationTest {
 	
 	
@@ -73,4 +73,3 @@ public class RecommendationTest {
 				"Weekday Price: 499");
 	}
 }
-*/

@@ -461,51 +461,6 @@ public class TextHandler {
     	    	String reply=null;
     	    	int countloop=0;
     	    	Connection connection = KitchenSinkController.getConnection();
-    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
-    	    	ResultSet onekey=null;
-    	    	for (int i=0; i<parts.length;i++) {
-    	    		findonekey.setString(1, parts[i]);
-    	    		onekey =findonekey.executeQuery();
-    	    		if (onekey.next()) {
-    	    			reply=onekey.getString(1);
-    	    			break;}
-    	    		countloop++;    	    		
-    	    	}
-    			onekey.close();
-    			findonekey.close();
-    			
-    	    	//the only one keyword not found
-    	    	
-    	    	if (countloop!=parts.length) {
-    	    		type=FILTER_I;
-    	    		record(customer);
-    	    		connection.close();
-    	    		return filter.filterSearch(reply);	  				
-    	    	}
-    		//now check two keywords
-    			if (keywordMatch(parts,"twokeyword","keyword1")) {
-	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
-	    			ResultSet twokey2=null;
-	    			countloop=0;
-    	    		for (int i=0; i<parts.length;i++) {
-    	    			findtwokey2.setString(1, parts[i]);
-    	    			twokey2 =findtwokey2.executeQuery();
-    	    			if (twokey2.next()) {
-    	    				reply=twokey2.getString(1);
-    	    				break;}
-    	    			countloop++;
-    	    			
-    	    	}
-    	    		twokey2.close();
-	    			findtwokey2.close();
-    			if (countloop!=parts.length){
-    				type=FILTER_I;
-    				record(customer);
-    				connection.close();
-    				return filter.filterSearch(reply);
-    			}
-    		}
-    		//now find three keyword
     			if (keywordMatch(parts,"threekeyword","keyword1")) {
         			if (keywordMatch(parts,"threekeyword","keyword2")) {
         				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
@@ -530,6 +485,52 @@ public class TextHandler {
             			}
         			}
     			}
+    		//now check two keywords
+    			if (keywordMatch(parts,"twokeyword","keyword1")) {
+	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
+	    			ResultSet twokey2=null;
+	    			countloop=0;
+    	    		for (int i=0; i<parts.length;i++) {
+    	    			findtwokey2.setString(1, parts[i]);
+    	    			twokey2 =findtwokey2.executeQuery();
+    	    			if (twokey2.next()) {
+    	    				reply=twokey2.getString(1);
+    	    				break;}
+    	    			countloop++;
+    	    			
+    	    	}
+    	    		twokey2.close();
+	    			findtwokey2.close();
+    			if (countloop!=parts.length){
+    				type=FILTER_I;
+    				record(customer);
+    				connection.close();
+    				return filter.filterSearch(reply);
+    			}
+    		}
+    		//now find three keyword
+
+    	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
+    	    	ResultSet onekey=null;
+    	    	for (int i=0; i<parts.length;i++) {
+    	    		findonekey.setString(1, parts[i]);
+    	    		onekey =findonekey.executeQuery();
+    	    		if (onekey.next()) {
+    	    			reply=onekey.getString(1);
+    	    			break;}
+    	    		countloop++;    	    		
+    	    	}
+    			onekey.close();
+    			findonekey.close();
+    			
+    	    	//the only one keyword not found
+    	    	
+    	    	if (countloop!=parts.length) {
+    	    		type=FILTER_I;
+    	    		record(customer);
+    	    		connection.close();
+    	    		return filter.filterSearch(reply);	  				
+    	    	}
     		String[] number=text.replaceAll("[^0-9]", ",").split(",");
     		String temp="";
     		
