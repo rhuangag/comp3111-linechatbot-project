@@ -42,68 +42,39 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.Customer;
+import com.example.bot.spring.TimeManager;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { CustomerTester.class})
-public class CustomerTester {
+public class TimeManagerTester {
 	@Test
-    public void testGetId(){
-		boolean thrown = false;
-		Customer tester = new Customer("test");
-        String result = null;
+    public void testcouputeNextDelay1() {
+    	boolean thrown = false;
+		TimeManager tester = TimeManager.getTimer();
+		String temp = tester.getTime();
+        int result = 0;
 		try {
-			result = tester.getID();
+			result = tester.incomputeNextDelay1;
     	 	}catch(Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("test");	
+		assertThat(result).isEqualTo(1);
     }
 	
 	@Test
-	public void testGetHistory() {
-		boolean thrown = false;
-		Customer tester = new Customer("test");
-        String result = null;
+    public void testcouputeNextDelay2() {
+    	boolean thrown = false;
+		TimeManager tester = TimeManager.getTimer();
+		String temp = tester.getTime();
+        int result = 0;
 		try {
-			result = tester.getHistory();
+			result = tester.incomputeNextDelay2;
     	 	}catch(Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("There is no record.");
-	}
-	
-	@Test
-	public void testFindHistory() {
-		boolean thrown = false;
-		Customer tester = new Customer("U4e37da0ad17a38c22b3011d3d1b3644d");
-        String result = null;
-		try {
-			result = tester.getHistory();
-    	 	}catch(Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("Tour ID: ");
-	}
-	
-	//test whether the vector is empty
-	@Test
-	public void testFindHistory2() {
-		boolean thrown = false;
-		Customer tester = new Customer("U4e37da0ad17a38c22b3011d3d1b3644d");
-        String result = null;
-		try {
-			result = tester.getHistory();
-			result = tester.getHistory();
-    	 	}catch(Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("Tour ID: ");
-	}
+		assertThat(result).isEqualTo(1);
+    }
 
-	
 }
