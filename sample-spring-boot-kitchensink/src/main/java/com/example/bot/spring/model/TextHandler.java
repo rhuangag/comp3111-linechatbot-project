@@ -97,14 +97,15 @@ public class TextHandler {
     				connection.close();
     				
     				Booking booking=new Booking(customer);
+    				String reply=booking.askForInformation(type ,text);
     				//now just assume the customer will perfectly reply the correct information in the prototype
-    				if (booking.askForInformation(type ,text)== "Booking Cancled, thanks for coming!") {
+    				if (reply== "Booking Cancled, thanks for coming!") {
     				type=MEANINGLESS;
     				record(customer);
     				return "Your booking is interrupted. Please book again.";}
     				type=temp+1;
     				record(customer);
-    				return booking.askForInformation(type ,text);
+    				return reply;
     				}
     			else if(temp==FILTER_I) {
     					//the customer just do the filter searching and we have returned a list of tour
