@@ -121,7 +121,8 @@ public class TextHandler {
     						connection.close();
     						return PasswordMatch(customer);
     					}
-    					if (filter.viewDetails(number_text)=="Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)") {
+    					String answer=filter.viewDetails(number_text);
+    					if (answer=="Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)") {
     						type=MEANINGLESS;
     						record(customer);
     						return filter.viewDetails(number_text);
@@ -129,7 +130,7 @@ public class TextHandler {
     					//answer is a reply that confirming the information
     					type=FILTER_II;
     					record(customer);
-    					String answer=filter.viewDetails(number_text);
+    					
     					String answer_reply=answer;
     					String[] parts = answer.split(" ");
     					String tourID=parts[0];
@@ -244,8 +245,13 @@ public class TextHandler {
       	if (functionMatch(GiveMeFile,parts)&& a)
     	{
     		type=GiveMeFile;
-    		record(customer);   		
-    		return "a file";
+    		record(customer);
+    		String t="";
+    		Report report1 = new Report("usefulquestionrecord");
+    		t="usefulquestion \n \n" + report1.writeReport();
+    		Report report2 = new Report("feedbacktable");
+    		t=t+"\n \n \n"+"feedbacktable"+"\n"+report2.writeReport();
+    		return t;
     	}
     	else
     		return UpdateRecord(customer);
