@@ -101,10 +101,10 @@ public class TextHandler {
     				String reply=booking.askForInformation(type ,text);
     				//now just assume the customer will perfectly reply the correct information in the prototype
     				if (reply== "Booking Cancled, thanks for coming!" || reply.contains("ERROR")) {
-    				type=MEANINGLESS;
-    				record(customer);
-    				return "Your booking is interrupted. Please book again.";}
-    				
+    					type=MEANINGLESS;
+    					record(customer);
+    					return "Your booking is interrupted. Please book again.";
+    					}
     				record(customer);
     				return reply;
     				}
