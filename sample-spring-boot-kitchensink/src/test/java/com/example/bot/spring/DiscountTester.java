@@ -53,7 +53,7 @@ import java.time.format.DateTimeFormatter;
 import com.example.bot.spring.Discount;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { CustomerTester.class})
+@SpringBootTest(classes = { DiscountTester.class})
 public class DiscountTester {
     @Test
     public void testUpdate1() {
