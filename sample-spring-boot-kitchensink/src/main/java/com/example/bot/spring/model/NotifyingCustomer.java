@@ -167,10 +167,12 @@ public class NotifyingCustomer implements Observer{
 
 			while(cancelRs.next()) {
 				String cancelTour=cancelRs.getString(1);
-				PreparedStatement UpdateCustomerTableCancelled =connection.prepareStatement("Update customertable set status='cancelled' where tourjoined=? and status='paid' or status='booked' ");
+				
+				PreparedStatement UpdateCustomerTableCancelled =connection.prepareStatement("Update customertable set status='cancelled' where tourjoined=? and (status='paid' or status='booked') ");
 				UpdateCustomerTableCancelled.setString(1,cancelTour);
-				UpdateCustomerTableCancelled.executeQuery();
+				UpdateCustomerTableCancelled.executeUpdate();
 				UpdateCustomerTableCancelled.close();
+				
 				PreparedStatement notifyUserCancel =connection.prepareStatement("Select userid from customertable where tourjoined=?");
 				notifyUserCancel.setString(1, cancelTour);
 				ResultSet rsNotifyCancel=notifyUserCancel.executeQuery();
@@ -185,6 +187,12 @@ public class NotifyingCustomer implements Observer{
 
 			while(confirmRs.next()) {
 				String confirmedTour=confirmRs.getString(1);
+				
+				PreparedStatement UpdateCustomerTableConfirmed =connection.prepareStatement("Update customertable set status='confirmed' where tourjoined=? and  ");
+				UpdateCustomerTableConfirmed.setString(1,confirmedTour);
+				UpdateCustomerTableConfirmed.executeUpdate();
+				UpdateCustomerTableConfirmed.close();
+				
 				String guideInformation="Name: "+ confirmRs.getString(2) +"\n"+" LINE account: "+ confirmRs.getString(3)+"\n" +"Enjoy your tour!" ;
 				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=? and status='paid'");
 				notifyUserConfirm.setString(1, confirmedTour);
