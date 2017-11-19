@@ -684,7 +684,7 @@ public class TextHandler {
 			stmt.setString(3, customer.getID());
 			stmt.setInt(4, number);
 			stmt.executeUpdate();
-			if (type<8&&type!=2)
+			if (type==5)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
 			PreparedStatement stmt2 = connection.prepareStatement(query2);
