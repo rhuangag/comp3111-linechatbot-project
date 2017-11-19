@@ -502,7 +502,7 @@ public class TextHandler {
         			if (key.next()){ 
         				keyword2=key.getString(1);
         				reply=key.getString(2);
-        				if (parts[i+1]!=null) {
+        				if (!parts[i+1].isEmpty()) {
         					check=parts[i+1];
         					if (keyword2.contains(check)) {
         						type=FILTER_I;
