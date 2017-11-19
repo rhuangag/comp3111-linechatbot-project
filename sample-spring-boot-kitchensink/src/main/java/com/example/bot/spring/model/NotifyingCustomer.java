@@ -11,6 +11,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.template.CarouselColumn;
 import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.TemplateMessage;
@@ -61,7 +62,7 @@ public class NotifyingCustomer implements Observer{
 	//functional function in this class
 	private void pushPromotion() {		
 		String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
-		ImageMessage imageMessage = new ImageMessage (imageUrl);
+		ImageMessage imageMessage = new ImageMessage (imageUrl,"");
 
 		Vector<String> userID = new Vector<String>();
 
