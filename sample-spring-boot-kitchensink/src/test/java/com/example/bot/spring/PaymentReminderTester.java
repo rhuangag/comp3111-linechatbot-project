@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 /*package com.example.bot.spring;
+=======
+/*
+package com.example.bot.spring;
+>>>>>>> aeca1e0816f7a881d4bc2625bc0be1c068f3fa42
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -155,4 +160,8 @@ public class PaymentReminderTester {
 
     }
 }
+<<<<<<< HEAD
 */
+=======
+*/
+>>>>>>> aeca1e0816f7a881d4bc2625bc0be1c068f3fa42
