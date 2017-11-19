@@ -263,8 +263,8 @@ public class Booking {
 			ResultSet datas = Querydata.executeQuery();
 			datas.next();
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
-					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
-					+ datas.getString(3));
+					+ " from bookingtable where tourid like '" + datas.getString(2) + "' and departuredate like '"
+					+ datas.getString(3) +"'");
 			ResultSet moredata = QueryMax.executeQuery();
 			moredata.next();
 			if ((moredata.getInt(2)+datas.getInt(7)+datas.getInt(8)+ Integer.parseInt(numberOfToodlers)) > moredata.getInt(1))
