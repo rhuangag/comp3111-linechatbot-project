@@ -100,7 +100,7 @@ public class NotifyingCustomer implements Observer{
 			KitchenSinkController.pushMessageController(pushMessage);
 		}
 		//test
-		message = "Promotion testing";
+		String message = "Promotion testing";
 		TextMessage textMessage = new TextMessage(message);
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(
