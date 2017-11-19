@@ -491,27 +491,29 @@ public class TextHandler {
         			}
     			}
     		//now check two keywords
-        		String query="SELECT keyword2,reply FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
+        		String query="SELECT keyword1 FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
     			PreparedStatement findkey = connection.prepareStatement(query);
     			ResultSet key=null;
-    			String keyword2=null;
-    			String check =null;
+    			String keyword1=null;
         		for (int i=0; i<parts.length-1;i++) {
         			findkey.setString(1, parts[i]);
         			key =findkey.executeQuery();
         			if (key.next()){ 
-        				keyword2=key.getString(1);
-        				reply=key.getString(2);
-        				if (!parts[i+1].isEmpty()) {
-        					check=parts[i+1];
-        					if (keyword2.contains(check)) {
+        				keyword1=key.getString(1);
+        				key.close();
+						findkey.close();
+            			PreparedStatement findkeyword2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%') and keyword1=?");
+            			findkeyword2.setString(1, parts[i+1]);
+            			findkeyword2.setString(2, keyword1);
+            			ResultSet k=null;
+        				if (k.next()) {
+        						reply=k.getString(1);
         						type=FILTER_I;
         						record(customer);
-        						key.close();
-        						findkey.close();
+        						k.close();
+        						findkeyword2.close();
         						connection.close();
-            					return filter.filterSearch(reply);
-        					}
+            					return filter.filterSearch(reply);        					
         				}
         				}
         		}
