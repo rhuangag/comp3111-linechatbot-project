@@ -49,12 +49,17 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
+		//change it to 3 later
 		if(time[3]=="10") {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
 			pushPromotion();
 
+		}
+		if(time[4]=="10") {
+			currentDate = time[2]+"/"+time[1]+"/"+time[0];
+			pushPromotion();
 		}
 
 	}
