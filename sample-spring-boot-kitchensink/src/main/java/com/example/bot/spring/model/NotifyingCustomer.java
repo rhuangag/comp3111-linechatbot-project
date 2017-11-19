@@ -52,8 +52,7 @@ public class NotifyingCustomer implements Observer{
 		String[] time = temp.getTime().split("/");
 		if(time[3].equals("10")) {
 			NotifyStatus(targetDay);
-			//promotionStatus(time[0],time[1],time[2]);
-			pushPromotion();
+			promotionStatus(time[0],time[1],time[2]);
 
 		}
 

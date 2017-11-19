@@ -50,5 +50,19 @@ import com.example.bot.spring.Customer;
 public class PromotionTest {
 	
 	@Test
+	public void testPromotion() throws Exception {
+		TimeManager.getTimer().setTime("2017/11/19/10/00");
+		boolean thrown = false;
+		
+		
+		try {
+			 TimeManager.getTimer().testNotify();
+		}catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(thrown).isEqualTo(false);
+		
+	}
 	
 }
