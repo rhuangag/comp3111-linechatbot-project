@@ -64,10 +64,10 @@ public class NotifyingCustomer implements Observer{
 		//String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
 		//ImageMessage imageMessage = new ImageMessage (imageUrl,"u");
 
-		String imageUrl = KitchenSinkController.createUri("/static/buttons/1040.jpg");
+		String imageUrl = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
         CarouselTemplate carouselTemplate = new CarouselTemplate(
                 Arrays.asList(
-                        new CarouselColumn(imageUrl, "promotion", "promotion", null),
+                        new CarouselColumn(imageUrl, "promotion", "come and join us", null),
                         new CarouselColumn(imageUrl, "promotion", "promotion", null)
                 ));
         TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
