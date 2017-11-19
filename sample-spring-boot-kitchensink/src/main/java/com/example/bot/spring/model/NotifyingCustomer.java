@@ -57,7 +57,6 @@ public class NotifyingCustomer implements Observer{
 		}
 
 	}
-
 	//functional function in this class
 	private void pushPromotion() {		
 		String imageUrl1 = KitchenSinkController.createUri("beach3.jpg");
