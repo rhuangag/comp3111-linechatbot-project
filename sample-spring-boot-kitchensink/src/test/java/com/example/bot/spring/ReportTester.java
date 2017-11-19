@@ -1,4 +1,4 @@
-package com.example.bot.spring;
+/*package com.example.bot.spring;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,9 +48,10 @@ import com.example.bot.spring.Customer;
 @SpringBootTest(classes = { ReportTester.class})
 public class ReportTester {
 	@Test
-    public void testdb1(){
+    public void testdb1a(){
 		boolean thrown = false;
-		Report tester = new Report("usefulquestionrecord");
+		Customer customer = new Customer("123");
+		Report tester = new Report("usefulquestionrecord", customer);
         String result = null;
 		try {
 			result = tester.writeReport();
@@ -58,13 +59,14 @@ public class ReportTester {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("type integer ");
+		assertThat(result).isEqualTo("123");
     }
 	
 	@Test
-    public void testdb2(){
+    public void testdb1b(){
 		boolean thrown = false;
-		Report tester = new Report("feedbacktable");
+		Customer customer = new Customer("u7a9aaa014c1b67bcd0a50f8597b11562");
+		Report tester = new Report("usefulquestionrecord", customer);
         String result = null;
 		try {
 			result = tester.writeReport();
@@ -72,8 +74,39 @@ public class ReportTester {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("tourID   userID ");
+		assertThat(result).isEqualTo("123");
+    }
+	
+	@Test
+    public void testdb2a(){
+		boolean thrown = false;
+		Customer customer = new Customer("123");
+		Report tester = new Report("feedbacktable", customer);
+        String result = null;
+		try {
+			result = tester.writeReport();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("123");
+    }
+	
+	@Test
+    public void testdb2b(){
+		boolean thrown = false;
+		Customer customer = new Customer("u7a9aaa014c1b67bcd0a50f8597b11562");
+		Report tester = new Report("feedbacktable", customer);
+        String result = null;
+		try {
+			result = tester.writeReport();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("123");
     }
 	
 	
 }
+*/

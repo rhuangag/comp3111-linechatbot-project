@@ -57,15 +57,13 @@ public  class  UpdateRecord{
 		stmt.executeUpdate();
 		stmt.close();
 		
-		
-		
 		searchStmt.close();
 		rsForSearch.close();
 		
-		PreparedStatement searchStmtCheckIfPaid = connection.prepareStatement("select * from customertable where name=? and tourjoined=? and (amountPaid-tourfee)>-0.1 and (amountPaid-tourfee)<0.1");
+		PreparedStatement searchStmtCheckIfPaid = connection.prepareStatement("select * from customertable where name=? and tourjoined=? and (amountPaid-tourfee)>-0.1");
 		searchStmtCheckIfPaid.setString(1, customername); 
 		searchStmtCheckIfPaid.setString(2, tourid);
-		ResultSet rsStmtCheckIfPaid=searchStmt.executeQuery();
+		ResultSet rsStmtCheckIfPaid=searchStmtCheckIfPaid.executeQuery();
 		if(rsStmtCheckIfPaid.next()) {
 			PreparedStatement updateStmtCheckIfPaid = connection.prepareStatement("update customertable set status='paid' where name=? and tourjoined=? and (amountPaid-tourfee)>-0.1 and (amountPaid-tourfee)<0.1");
 			updateStmtCheckIfPaid.setString(1, customername); 

@@ -1,5 +1,29 @@
 package com.example.bot.spring;
 
+import java.awt.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.PushMessage;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.TimeZone;
+import java.time.LocalDateTime;
+import java.time.*;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.time.format.DateTimeFormatter;
+
+import java.util.Observable;
+
+import lombok.extern.slf4j.Slf4j;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,14 +53,16 @@ import java.io.RandomAccessFile;
  */
 public class Report {
 	private String dbname;
+	private Customer customerbelonging;
 	
 	/**
 	 * Constructor of Report. It initializes the object with the date of the report output and the database name(question or feedback) for output.
 	 * @param date This is the date when the file is created.
 	 * @param dbName This is the type of report that are going to be generated.
 	 */
-	public Report(String dbName) {
+	public Report(String dbName, Customer c) {
 		this.dbname = dbName;
+		this.customerbelonging = c;
 	}
 
 	/*
@@ -99,31 +125,59 @@ public class Report {
 			ResultSet readrs= read.executeQuery();
 			if (this.dbname == "usefulquestionrecord") {
 				fulltext = "type integer  customerID                             usefulquestion\n";
+				int count =0;
 				while (readrs.next()) {
+					count++;
 					fulltext += readrs.getInt(2);
 					fulltext += "             ";
 					fulltext += readrs.getString(3);
 					fulltext += "  ";
 					fulltext += readrs.getString(1);
 					fulltext += "\n";
+					if(count == 10) {
+						TextMessage textMessage = new TextMessage(fulltext);
+						PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
+						KitchenSinkController.pushMessageController(pushMessage);
+						count = 0;
+						fulltext = "";
+					}
+					if (fulltext != "") {
+						TextMessage textMessage = new TextMessage(fulltext);
+						PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
+						KitchenSinkController.pushMessageController(pushMessage);
+					}
 				}
 			}
 			else if (this.dbname == "feedbacktable") {
 				fulltext = "tourID   userID                          feedback\n";
+				int count =0;
 				while (readrs.next()) {
+					count++;
 					fulltext += readrs.getString(2);
 					fulltext += "   ";
 					fulltext += readrs.getString(1);
 					fulltext += "  ";
 					fulltext += readrs.getString(3);
 					fulltext += "\n";
+					if(count == 10) {
+						TextMessage textMessage = new TextMessage(fulltext);
+						PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
+						KitchenSinkController.pushMessageController(pushMessage);
+						count = 0;
+						fulltext = "";
+					}
+					if (fulltext != "") {
+						TextMessage textMessage = new TextMessage(fulltext);
+						PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
+						KitchenSinkController.pushMessageController(pushMessage);
+					}
 				}
 			}
 			readrs.close();
 			read.close();
 			//boolean writeR = this.writeTxtFile(fulltext, filename);
 			connection.close();
-			return fulltext;
+			return "123";
     	}catch (Exception e){
 			//log.info("Exception while reading database: {}", e.toString());
 			return (e.toString()+"report");}
