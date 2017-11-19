@@ -49,7 +49,7 @@ public class NotifyingCustomer implements Observer{
 	public void update(Observable o, Object arg){
 		TimeManager temp = (TimeManager)o;
 		String[] time = temp.getTime().split("/");
-		if(time[3].equals("12")) {
+		if(time[3].equals("13")) {
 			currentDate = time[2]+"/"+time[1]+"/"+time[0];
 			NotifyStatus();
 			//promotionStatus(time[0],time[1],time[2]);
@@ -188,7 +188,7 @@ public class NotifyingCustomer implements Observer{
 			while(confirmRs.next()) {
 				String confirmedTour=confirmRs.getString(1);
 				
-				PreparedStatement UpdateCustomerTableConfirmed =connection.prepareStatement("Update customertable set status='confirmed' where tourjoined=? and  ");
+				PreparedStatement UpdateCustomerTableConfirmed =connection.prepareStatement("Update customertable set status='confirmed' where tourjoined=? and status='paid'");
 				UpdateCustomerTableConfirmed.setString(1,confirmedTour);
 				UpdateCustomerTableConfirmed.executeUpdate();
 				UpdateCustomerTableConfirmed.close();
