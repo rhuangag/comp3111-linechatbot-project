@@ -591,14 +591,14 @@ public class TextHandler {
     	    		connection.close();
     	    		return filter.filterSearch(reply);	  				
     	    	}
-    		//String[] number=text.replaceAll("[^0-9]", ",").split(",");
+    		String[] number=text.replaceAll("[^0-9]", ",").split(",");
     		String temp="";
     		
-    		for (int i=0;i<parts.length;i++) {
-    			if (isNumeric(parts[i])) {
+    		for (int i=0;i<number.length;i++) {
+    			if (isNumeric(number[i])) {
     				
-    				temp+=parts[i];
-    				if (i!=parts.length-1)
+    				temp+=number[i];
+    				if (i!=number.length-1)
     					temp+=",";
     				
     			}
