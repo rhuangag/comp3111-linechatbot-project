@@ -185,7 +185,7 @@ public class NotifyingCustomer implements Observer{
 
 			while(confirmRs.next()) {
 				String confirmedTour=confirmRs.getString(1);
-				String guideInformation="Name: "+ confirmRs.getString(2) + " LINE account: "+ confirmRs.getString(3) ;
+				String guideInformation="Name: "+ confirmRs.getString(2) +"\n"+" LINE account: "+ confirmRs.getString(3)+"\n" +"Enjoy your tour!" ;
 				PreparedStatement notifyUserConfirm =connection.prepareStatement("Select userid from customertable where tourjoined=? and status='paid'");
 				notifyUserConfirm.setString(1, confirmedTour);
 				ResultSet rsNotifyConfirm=notifyUserConfirm.executeQuery();
@@ -228,7 +228,7 @@ public class NotifyingCustomer implements Observer{
 
 	//push a message to the customer who booked the tour when the status of a tour changed to confirmed or cancelled due to participants number
 	private void pushConfirmMessage(String userID, String tour, String guideInformation){
-		String message=CONFIRMMESSAGE[0]+tour+CONFIRMMESSAGE[1]+guideInformation;
+		String message=CONFIRMMESSAGE[0]+tour+CONFIRMMESSAGE[1]+"\n"+guideInformation;
 		TextMessage textMessage = new TextMessage(message);
 		PushMessage pushMessage = new PushMessage(
 		        userID,
