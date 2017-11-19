@@ -150,7 +150,7 @@ public class KitchenSinkController {
 	@EventMapping
 	public void handleFollowEvent(FollowEvent event) {
 		try{
-		Connection connection = KitchenSinkController.getConnection();
+		Connection connection = getConnection();
 		PreparedStatement search = connection.prepareStatement("select * from friends where userid=?");
 		search.setString(1, event.getSource().getUserId());
 		ResultSet rs=search.executeQuery();
