@@ -197,8 +197,8 @@ public class Booking {
 			ResultSet datas = Querydata.executeQuery();
 			datas.next();
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
-					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
-					+ datas.getString(3));
+					+ " from bookingtable where tourid like '" + datas.getString(2) + "' and departuredate like '"
+					+ datas.getString(3) + "'");
 			ResultSet moredata = QueryMax.executeQuery();   
 			moredata.next();
 			PreparedStatement stmt = connection.prepareStatement(InsertDB);
