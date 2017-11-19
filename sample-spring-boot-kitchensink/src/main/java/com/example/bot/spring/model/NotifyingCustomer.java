@@ -13,6 +13,9 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+
+
+
 import com.linecorp.bot.model.message.ImagemapMessage;
 import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
 import com.linecorp.bot.model.action.MessageAction;
@@ -69,9 +72,14 @@ public class NotifyingCustomer implements Observer{
 	}
 
 	//functional function in this class
-	public void pushPromotion() {		
-		String imageUrl1 = KitchenSinkController.createUri("src/main/resources/static/promotion/join-now.jpg");
-		String imageUrl2 = KitchenSinkController.createUri("src/main/resources/static/promotion/join-now-low.jpg");
+	public void pushPromotion() {	
+		//ObjectMapper objectMapper = new ObjectMapper()
+        //        .registerModule(new ParameterNamesModule());
+		
+		String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
+		
+		//TextMessage m = new TextMessage(imageUrl1+imageUrl2);
 		ImageMessage m = new ImageMessage (imageUrl1,imageUrl2);
 		
 		//ImagemapMessage m = new ImagemapMessage(imageUrl1, "altText", new ImagemapBaseSize(1040, 1040),
