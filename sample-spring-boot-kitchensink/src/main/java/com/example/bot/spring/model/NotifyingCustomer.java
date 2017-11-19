@@ -56,6 +56,8 @@ public class NotifyingCustomer implements Observer{
 			promotionStatus(time[0],time[1],time[2]);
 
 		}
+		
+		pushPromotion();
 
 	}
 
@@ -68,7 +70,7 @@ public class NotifyingCustomer implements Observer{
         CarouselTemplate carouselTemplate = new CarouselTemplate(
                 Arrays.asList(
                         new CarouselColumn(imageUrl, "promotion", "come and join us", null),
-                        new CarouselColumn(imageUrl, "promotion", "promotion", null)
+                        new CarouselColumn(imageUrl, "promotion", "emmmm", null)
                 ));
         TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
 		
