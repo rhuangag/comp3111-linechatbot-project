@@ -196,7 +196,7 @@ public class TextHandler {
     					connection.close();
     					type=MEANINGLESS;
     					record(customer);
-    					return "Do you have any other questions?";}
+    					return "Stop searching.";}
     			}
     			else if (temp==UpdatePayment||temp==DiscountEvent) {
     				rs.close();
