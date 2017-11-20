@@ -11,6 +11,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,9 +73,21 @@ public class DiscountTester {
 		
         int result = 0;
 		try {
+			Connection connection = KitchenSinkController.getConnection();
+			PreparedStatement ps = connection.prepareStatement("insert into discounttourlist "
+					+ "values ('2D00120171119', '50%', 0.5, 2, 2, '20171119', '1400')");
+			ps.executeUpdate();
+			
 			tm.setZonedDateTime(target);
 			tm.testNotify();
 			result = tester.inupdate1;
+			
+			PreparedStatement ps2 = connection.prepareStatement("delete from discounttourlist "
+					+ "where date = '20171119' ");
+			ps2.executeUpdate();
+			ps.close();
+			ps2.close();
+			connection.close();
     	 	}catch(Exception e) {
 			thrown = true;
 		}

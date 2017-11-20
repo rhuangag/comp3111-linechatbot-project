@@ -61,14 +61,15 @@ public class NotifyingCustomer implements Observer{
 		TimeManager temp = (TimeManager)o;
 		String targetDay=FORMAT.format(temp.getDateTime().plusDays(3));
 		String[] time = temp.getTime().split("/");
-		if(time[3].equals("17")) {
+		if(time[3].equals("13")) {
 			NotifyStatus(targetDay);
-			promotionStatus(time[0],time[1],time[2]);
 
 		}
+		if(time[3].equals("17")) {
+			promotionStatus(time[0],time[1],time[2]);
+		}
 		
-		//pushPromotion();
-
+		
 	}
 
 	//functional function in this class
@@ -79,7 +80,7 @@ public class NotifyingCustomer implements Observer{
 		//String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
 		//String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
 		
-		//TextMessage m = new TextMessage(imageUrl1+imageUrl2);
+		
 		//ImageMessage m = new ImageMessage (imageUrl1,imageUrl2);
 		
 		//ImagemapMessage m = new ImagemapMessage(imageUrl1, "altText", new ImagemapBaseSize(1040, 1040),
