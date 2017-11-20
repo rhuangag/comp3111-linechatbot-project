@@ -58,7 +58,7 @@ public class PromotionTest {
 		
 		//tm.addObserver(notify);
 		try {
-			 //tm.testNotify();
+			//tm.testNotify();
 			notify.pushPromotion();
 		}catch (Exception e) {
 			thrown = true;

@@ -61,7 +61,7 @@ public class NotifyingCustomer implements Observer{
 		TimeManager temp = (TimeManager)o;
 		String targetDay=FORMAT.format(temp.getDateTime().plusDays(3));
 		String[] time = temp.getTime().split("/");
-		if(time[3].equals("10")) {
+		if(time[3].equals("16")) {
 			NotifyStatus(targetDay);
 			promotionStatus(time[0],time[1],time[2]);
 
@@ -112,20 +112,20 @@ public class NotifyingCustomer implements Observer{
 		
 		//String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
 		//String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
-		ImageMessage m = new ImageMessage ("http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg"
-				,"http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg");
+		//ImageMessage m = new ImageMessage ("http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg"
+		//		,"http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg");
 		
 		//TemplateMessage m = KitchenSinkController.testPushPromotion();
 		
-		for(String userid : userID) {
-			PushMessage pushMessage = new PushMessage(
-					userid,
-					m
-					);
-			KitchenSinkController.pushMessageController(pushMessage);
-		}
+		//for(String userid : userID) {
+		//	PushMessage pushMessage = new PushMessage(
+		//			userid,
+		//			m
+		//			);
+		//	KitchenSinkController.pushMessageController(pushMessage);
+		//}
 		//test
-		String message = "Promotion message: http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg";
+		String message = "Do you feel tired of the stressful and boring daily life? Do you want to experience a totally different kind of culture? \n Weekly promotion is comming! Let's find some beautiful places to get lost. \n More information: http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg";
 		TextMessage textMessage = new TextMessage(message);
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(
@@ -142,7 +142,7 @@ public class NotifyingCustomer implements Observer{
 		Calendar c = Calendar.getInstance();
 		c.set(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
 
-		if((c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)||(c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY))
+		if((c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)||(c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY))
 			pushPromotion();
 	}
 /*
