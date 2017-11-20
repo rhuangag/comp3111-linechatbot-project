@@ -7,6 +7,13 @@ import java.sql.ResultSet;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+/**
+ * 
+ * The class Text Handler is a subject work in mediator pattern. This work as mediater that control the interactions between Filter, Booking, UpdateRecord, Report and Customer (see detial descriptions in javadocs in those classes).
+ * The Text Handler is used to recognize and identify the type of requirement from customer and called different functions based on the type of recent requirement from customer and customers' current input.
+ * 
+ *
+ */
 public class TextHandler {
     //Declaration of data members
 	String text;
@@ -48,7 +55,7 @@ public class TextHandler {
     	    text=t;
     	   // keyword=null;
     	    type = UNKNOWN;
-    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , " ").replaceAll("[\n]" , " ").toLowerCase().split(" ");
+    	    parts = t.replaceAll("[^a-zA-Z0-9-\\s]" , "").replaceAll("[\n]" , "").toLowerCase().split(" ");
     }
     
     //Methods
@@ -69,17 +76,9 @@ public class TextHandler {
     	try {
     		//find the last quetion type for the specific customer who is sending text now
     		Connection connection = KitchenSinkController.getConnection();	
-			PreparedStatement count = connection.prepareStatement("select count(index) from questionrecord where customerid=?");
-			count.setString(1, customer.getID());
-			ResultSet index=count.executeQuery();
-			index.next();
-			int number=index.getInt(1);
-			count.close();
-			index.close();
-    		String query = "SELECT type FROM questionRecord where customerid=? and index=?";
+    		String query = "SELECT type FROM questionRecord where customerid=?";
     		PreparedStatement stmt = connection.prepareStatement(query);
     		stmt.setString(1,customer.getID());
-    		stmt.setInt(2,number);
     		ResultSet rs =stmt.executeQuery();
     		//check whether the customer ask questions before
     		if (rs.next()) {
@@ -90,35 +89,26 @@ public class TextHandler {
     		//we find the customer did ask question before, temp is the type of last question	
     			if (temp>=BOOK_I && temp<BOOK_XII) {
     			    //the customer is in the booking process
-    				
+    				type=temp+1;
+    				record(customer);
     				
     				rs.close();
     				stmt.close();
     				connection.close();
     				
     				Booking booking=new Booking(customer);
-    				type=temp+1;
-    				String reply=booking.askForInformation(type ,text);
     				//now just assume the customer will perfectly reply the correct information in the prototype
-    				if (reply== "Booking Cancled, thanks for coming!" || reply.contains("ERROR")) {
-    					type=MEANINGLESS;
-    					record(customer);
-    					return "Your booking is interrupted. Please book again.";
-    					}
+    				if (booking.askForInformation(type ,text)== "Booking Cancled, thanks for coming!") {
+    				type=MEANINGLESS;
     				record(customer);
-    				return reply;
+    				return "Your booking is interrupted. Please book again.";}
+    				return booking.askForInformation(type ,text);
     				}
     			else if(temp==FILTER_I) {
     					//the customer just do the filter searching and we have returned a list of tour
     					Filter filter =new Filter(customer.getID());
 
-    					String number_text="";
-    					for (int i=0;i<parts.length;i++) {
-    						if (isNumeric(parts[i])) {
-    							number_text=parts[i];
-    							break;
-    						}
-    					}
+    					String number_text=text.replaceAll("[^0-9]" , "");
     					if (number_text.isEmpty()) {
     						rs.close();
     						stmt.close();
@@ -131,24 +121,11 @@ public class TextHandler {
     						connection.close();
     						return PasswordMatch(customer);
     					}
-    					String answer=filter.viewDetails(number_text);
-    					if (answer=="Sorry that there is no such a choice. You may ask for specific tours again and please show me the coorect choice :)") {
-    						type=MEANINGLESS;
-    						record(customer);
-    						rs.close();
-    						stmt.close();
-    						PreparedStatement clearTempFilterTable = connection.prepareStatement
-    								("Delete from TemporaryFilterTable where userId =?");
-    						clearTempFilterTable.setString(1, customer.getID());
-    						clearTempFilterTable.executeUpdate();
-    						clearTempFilterTable.close();
-    						connection.close();
-    						return answer;
-    					}
+    						
     					//answer is a reply that confirming the information
     					type=FILTER_II;
     					record(customer);
-    					
+    					String answer=filter.viewDetails(number_text);
     					String answer_reply=answer;
     					String[] parts = answer.split(" ");
     					String tourID=parts[0];
@@ -196,12 +173,11 @@ public class TextHandler {
     					connection.close();
     					type=MEANINGLESS;
     					record(customer);
-    					return "Stop searching.";}
+    					return "Do you have any other questions?";}
     			}
     			else if (temp==UpdatePayment||temp==DiscountEvent) {
     				rs.close();
 					stmt.close();
-					connection.close();
     				type=MEANINGLESS;
 					record(customer);
 					UpdateRecord update=new UpdateRecord(customer);
@@ -264,16 +240,8 @@ public class TextHandler {
       	if (functionMatch(GiveMeFile,parts)&& a)
     	{
     		type=GiveMeFile;
-    		record(customer);
-    		//String t="";
-    		Report report1 = new Report("usefulquestionrecord",customer);
-    		String astring = report1.writeReport();
-    		//t="usefulquestion \n " + report1.writeReport();
-    		Report report2 = new Report("feedbacktable",customer);
-    		String bstring = report2.writeReport();
-    		return "Above is the data collected so far.";
-    		//t=t+"\n "+"feedbacktable"+"\n"+report2.writeReport();
-    		//return t;
+    		record(customer);   		
+    		return "a file";
     	}
     	else
     		return UpdateRecord(customer);
@@ -325,7 +293,7 @@ public class TextHandler {
  			ResultSet number=counting.executeQuery();
  			number.next();
  			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
- 			ResultSet rs=capacity.executeQuery();
+ 			ResultSet rs=counting.executeQuery();
  			rs.next();
  			if (number.getInt(1)>=rs.getInt(1)) {
  				rs.close();
@@ -340,7 +308,6 @@ public class TextHandler {
  			
  			else {
  				rs.close();
- 				capacity.close();
  				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
  	 			ResultSet discount=checkdiscount.executeQuery();
  				if (!discount.next()) {
@@ -349,7 +316,6 @@ public class TextHandler {
  				number.close();
  				counting.close();
  				discount.close();
- 				checkdiscount.close();
  							
  				PreparedStatement insertdiscount = connection.prepareStatement(" insert into discountuserlist values ( ?,?)");
  				
@@ -361,14 +327,10 @@ public class TextHandler {
  				connection.close();
  				return "Congratulations! You get the discount.";}
  				else
- 				{   rs.close();
- 					capacity.close();
- 					number.close();
- 	 				counting.close();
+ 				{
  					type= MEANINGLESS;
  	 				record(customer);
  	 				discount.close();
- 	 				checkdiscount.close();
  	 				connection.close();
  	 				return "You have already got the discount.";
  				}
@@ -506,81 +468,8 @@ public class TextHandler {
     	    	String reply=null;
     	    	int countloop=0;
     	    	Connection connection = KitchenSinkController.getConnection();
-    	    	if (parts.length>2) {
-        		String query="SELECT keyword1 FROM threekeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
-    			PreparedStatement findthreekey = connection.prepareStatement(query);
-    			
-    			String keyword1=null;
-        		for (int i=0; i<parts.length-2;i++) {
-        			findthreekey.setString(1, parts[i]);
-        			ResultSet threekey=null;
-        			threekey =findthreekey.executeQuery();
-        			if (threekey.next()){ 
-        				keyword1=threekey.getString(1);
-        				threekey.close();
-						findthreekey.close();
-            			PreparedStatement findkeyword23 = connection.prepareStatement("SELECT keyword3,reply FROM threekeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%') and keyword1=?");
-            			findkeyword23.setString(1, parts[i+1]);
-            			findkeyword23.setString(2, keyword1);
-            			ResultSet k=null;
-            			k=findkeyword23.executeQuery();
-        				if (k.next()) {
-        					if (k.getString(1).contains(parts[i+2])) {
-        						reply=k.getString(2);
-        						type=FILTER_I;
-        						record(customer);
-        						k.close();
-        						findkeyword23.close();
-        						connection.close();
-            					return filter.filterSearch(reply);  }      					
-        				}
-        				k.close();
-						findkeyword23.close();
-        				}
-        			threekey.close(); 
-        		}
-        		      			
-    			findthreekey.close();}
-    		//now check two keywords
-        		String query="SELECT keyword1 FROM twokeyword WHERE lower(keyword1) LIKE concat('%',concat(',',?,','),'%')";
-    			PreparedStatement findkey = connection.prepareStatement(query);
-    			
-    			String keyword1=null;
-        		for (int i=0; i<parts.length-1;i++) {
-        			findkey.setString(1, parts[i]);
-        			ResultSet key=null;
-        			key =findkey.executeQuery();
-        			if (key.next()){ 
-        				keyword1=key.getString(1);
-        				key.close();
-						findkey.close();
-            			PreparedStatement findkeyword2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%') and keyword1=?");
-            			findkeyword2.setString(1, parts[i+1]);
-            			findkeyword2.setString(2, keyword1);
-            			ResultSet k=null;
-            			k=findkeyword2.executeQuery();
-        				if (k.next()) {
-        						reply=k.getString(1);
-        						type=FILTER_I;
-        						record(customer);
-        						k.close();
-        						findkeyword2.close();
-        						connection.close();
-            					return filter.filterSearch(reply);        					
-        				}
-        				k.close();
-						findkeyword2.close();
-        				}
-        			key.close(); 
-        		}
-        		      			
-    			findkey.close();
-    		
-    		//now find three keyword
-
     	    	PreparedStatement findonekey = connection.prepareStatement("SELECT reply FROM onekeyword WHERE lower(keyword1) =?");
     	    	ResultSet onekey=null;
-    	    	countloop=0;
     	    	for (int i=0; i<parts.length;i++) {
     	    		findonekey.setString(1, parts[i]);
     	    		onekey =findonekey.executeQuery();
@@ -600,11 +489,59 @@ public class TextHandler {
     	    		connection.close();
     	    		return filter.filterSearch(reply);	  				
     	    	}
+    		//now check two keywords
+    			if (keywordMatch(parts,"twokeyword","keyword1")) {
+	    			PreparedStatement findtwokey2 = connection.prepareStatement("SELECT reply FROM twokeyword WHERE lower(keyword2) LIKE concat('%',concat(',',?,','),'%')");
+	    			ResultSet twokey2=null;
+	    			countloop=0;
+    	    		for (int i=0; i<parts.length;i++) {
+    	    			findtwokey2.setString(1, parts[i]);
+    	    			twokey2 =findtwokey2.executeQuery();
+    	    			if (twokey2.next()) {
+    	    				reply=twokey2.getString(1);
+    	    				break;}
+    	    			countloop++;
+    	    			
+    	    	}
+    	    		twokey2.close();
+	    			findtwokey2.close();
+    			if (countloop!=parts.length){
+    				type=FILTER_I;
+    				record(customer);
+    				connection.close();
+    				return filter.filterSearch(reply);
+    			}
+    		}
+    		//now find three keyword
+    			if (keywordMatch(parts,"threekeyword","keyword1")) {
+        			if (keywordMatch(parts,"threekeyword","keyword2")) {
+        				PreparedStatement findthreekey3 = connection.prepareStatement("SELECT reply FROM threekeyword WHERE lower(keyword3) LIKE concat('%',concat(',',?,','),'%')");
+            	    	ResultSet threekey3=null;
+            	    	countloop=0;
+            	    	for (int i=0; i<parts.length;i++) {
+            	    		findthreekey3.setString(1, parts[i]);
+            	    		threekey3 =findthreekey3.executeQuery();
+            	    		if (threekey3.next()) {
+            	    			reply=threekey3.getString(1);
+            	    			break;}
+            	    		countloop++;
+            	    		
+            	    	}
+            			threekey3.close();
+            			findthreekey3.close();
+            			if (countloop!=parts.length) {
+            				type=FILTER_I;
+            				record(customer);
+            				connection.close();
+            				return filter.filterSearch(reply); 
+            			}
+        			}
+    			}
     		String[] number=text.replaceAll("[^0-9]", ",").split(",");
     		String temp="";
     		
     		for (int i=0;i<number.length;i++) {
-    			if (isNumeric(number[i])) {
+    			if (!number[i].isEmpty()) {
     				
     				temp+=number[i];
     				if (i!=number.length-1)
@@ -615,9 +552,9 @@ public class TextHandler {
     		if (temp.isEmpty()) {
     			connection.close();
     			return newBooking(customer);}
-    		if (text.contains("cheaper than")||text.contains("less than"))
+    		if (text.contains("cheaper than")|text.contains("less than"))
     				temp="<"+temp;
-    		if (text.contains("higher than")||text.contains("more than"))
+    		if (text.contains("higher than")|text.contains("more than"))
     				temp=">"+temp;
 
 			if (filter.filterSearch(temp)=="Sorry, we cannot find any match answer for your question :( We already record your question and will forward it to the tour company.") {
@@ -667,24 +604,17 @@ public class TextHandler {
     	try {
 			Connection connection = KitchenSinkController.getConnection();
 			//record the question to the question-recording database table named questionRecord
-			String query1 = " insert into questionRecord values ( ?,?,?,?)";
+			String query1 = " insert into questionRecord values ( ?,?,?)";
+			        
 			
-			PreparedStatement count = connection.prepareStatement("select count(index) from questionrecord where customerid=?");
-			count.setString(1, customer.getID());
-			ResultSet index=count.executeQuery();
-			index.next();
-			int number=index.getInt(1)+1;
-			count.close();
-			index.close();
 			PreparedStatement stmt = connection.prepareStatement(query1);
 			//use a static data member to record the no.
 			
 			stmt.setString(1, text); 
 			stmt.setInt(2, type);
 			stmt.setString(3, customer.getID());
-			stmt.setInt(4, number);
 			stmt.executeUpdate();
-			if (type==5)
+			if (type<8&&type!=2)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
 			PreparedStatement stmt2 = connection.prepareStatement(query2);
@@ -731,8 +661,7 @@ public class TextHandler {
     private boolean keywordMatch(String[] parts,String table,String colomn) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
-    		String query="SELECT reply FROM "+table+" WHERE lower("+colomn+") LIKE concat('%',concat(',',?,','),'%')";
-			PreparedStatement findkey = connection.prepareStatement(query);
+			PreparedStatement findkey = connection.prepareStatement("SELECT reply FROM "+table+" WHERE lower("+colomn+") LIKE concat('%',concat(',',?,','),'%')");
 			ResultSet key=null;
 			int countloop=0;
     		for (int i=0; i<parts.length;i++) {
@@ -752,12 +681,4 @@ public class TextHandler {
     		log.info("Exception while reading file: {}", e.toString());
     		return false;}
     }
-	private boolean isNumeric(String str){  
-		  for (int i = str.length();--i>=0;){    
-		   if (!Character.isDigit(str.charAt(i))){  
-		    return false;  
-		   }  
-		  }  
-		  return true;  
-		}  
 }
