@@ -10,7 +10,7 @@ import java.util.*;
 
 /**
  * The class Cutomer models a the customer behavior and stores the information(user ID and customer history) of a customer.
- * 
+ * This class is invovled in the mediator pattern: Mediator TextHandler will check this class and provide customer's userID to other classs when needed.
  * 
  * 
  *

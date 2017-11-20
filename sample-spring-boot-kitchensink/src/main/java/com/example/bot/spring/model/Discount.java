@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * The class Discount is an observer in the observer pattern. When the time of the dicount events come, it pushes the event message.
- * 
+ *
  *
  */
 @Slf4j
