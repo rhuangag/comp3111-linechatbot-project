@@ -71,7 +71,7 @@ public class Customer{
 					if(rsForGetPaid.next())
 					{paidAmount=rsForGetPaid.getDouble("amountPaid");}
 					String result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nDepartureDate: "+rs.getString("DepartureDate")+ 
-							"\nDuration: "+rs.getString("Duration")+"\nPrice: "+rs.getString("Price")+"\nYou have paid:"+paidAmount+ "\nStatus:"+status+"\n";
+							"\nDuration: "+rs.getString("Duration")+"\nPrice: "+rs.getString("Price")+"\nYou have paid: "+paidAmount+ "\nStatus:"+status+"\n";
 					stmtGetPaid.close();
 					rsForGetPaid.close();
 					history.add(result);

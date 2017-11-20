@@ -92,7 +92,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+/**
+ * 
+ * The class KitchenSinkController is the controller class of MVC model to respond to customer and regulate our functional classes
+ * 
+ */
 @Slf4j
 @LineMessageHandler
 public class KitchenSinkController {
@@ -102,7 +106,11 @@ public class KitchenSinkController {
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
 	
-
+/**
+ * This method is used to recognize the text input from the user
+ * @param event This is the text input from customer
+ * @throws Exception This will happen when something goes wrong
+ */
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -112,18 +120,31 @@ public class KitchenSinkController {
 		handleTextContent(event.getReplyToken(), event, message);
 	}
 
+	/**
+	 * This method is used to recognize the sticker input from the user
+	 * @param event This is the sticker input from customer
+	 */
 	@EventMapping
 	public void handleStickerMessageEvent(MessageEvent<StickerMessageContent> event) {
 		String replyToken = event.getReplyToken();
 		this.replyText(replyToken, "Sorry we cannot understand this kind of input.");
 	}
 
+	/**
+	 *  This method is used to recognize the location message input from the user
+	 * @param event This is the location message input from customer
+	 */
 	@EventMapping
 	public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
 		String replyToken = event.getReplyToken();
 		this.replyText(replyToken, "Sorry we cannot understand this kind of input.");
 	}
 
+	/**
+	 * This method is used to recognize the image input from the user
+	 * @param event This is the image input from customer
+	 * @throws IOException This will happen when some errors happen in input or output stream
+	 */
 	@EventMapping
 	public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		String replyToken =event.getReplyToken();
@@ -136,17 +157,30 @@ public class KitchenSinkController {
 
 	}
 
+	/**
+	 * This method is used to recognize the audio input from the user
+	 * @param event This is the audio input from customer
+	 * @throws IOException This will happen when some errors happen in input or output stream
+	 */
 	@EventMapping
 	public void handleAudioMessageEvent(MessageEvent<AudioMessageContent> event) throws IOException {
 		String replyToken = event.getReplyToken();
 		this.replyText(replyToken, "Sorry we cannot understand this kind of input.");
 	}
 
+	/**
+	 * This method is used to recognize the unfollow request from the user
+	 * @param event This is the unfollow request from customer
+	 */
 	@EventMapping
 	public void handleUnfollowEvent(UnfollowEvent event) {
 		log.info("unfollowed this bot: {}", event);
 	}
 
+	/**
+	 * This method is used to recognize the follow request from the user
+	 * @param event This is the follow request from customer
+	 */
 	@EventMapping
 	public void handleFollowEvent(FollowEvent event) {
 		try{
@@ -170,24 +204,40 @@ public class KitchenSinkController {
 		this.replyText(replyToken, "Welcome to the chatbot!");
 	}
 
+	/**
+	 * This method is used to recognize the Join request from the user
+	 * @param event This is the Join request from customer
+	 */
 	@EventMapping
 	public void handleJoinEvent(JoinEvent event) {
 		String replyToken = event.getReplyToken();
 		this.replyText(replyToken, "Joined " + event.getSource());
 	}
 
+	/**
+	 * This method is used to recognize Post Back action from the user
+	 * @param event This is the post back action from customer
+	 */
 	@EventMapping
 	public void handlePostbackEvent(PostbackEvent event) {
 		String replyToken = event.getReplyToken();
 		this.replyText(replyToken, "Got postback " + event.getPostbackContent().getData());
 	}
 
+	/**
+	 * This method is used to recognize Beacon action from the user
+	 * @param event This is the Beacon action from customer
+	 */
 	@EventMapping
 	public void handleBeaconEvent(BeaconEvent event) {
 		String replyToken = event.getReplyToken();
 		this.replyText(replyToken, "Got beacon message " + event.getBeacon().getHwid());
 	}
 
+	/**
+	 * This method is used to recognize other events from user
+	 * @param event This is the other event input from customer
+	 */
 	@EventMapping
 	public void handleOtherEvent(Event event) {
 		log.info("Received message(Ignored): {}", event);
@@ -274,7 +324,9 @@ public class KitchenSinkController {
 
 	
 
-
+/**
+ * This is the constructor of KitchenSinkController.
+ */
 	public KitchenSinkController() {
 		itscLOGIN = System.getenv("ITSC_LOGIN");
 	}
@@ -320,6 +372,12 @@ public class KitchenSinkController {
     }
     
 	
+	/**
+	 * This is used to connect our database in heroku
+	 * @return This returns the connection to our heroku database
+	 * @throws URISyntaxException This happens when URI is has syntax error 
+	 * @throws SQLException This happen when SQL database related issues goes wrong
+	 */
 	public static Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
