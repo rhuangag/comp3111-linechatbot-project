@@ -1,5 +1,5 @@
 package com.example.bot.spring;
-/*
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -155,7 +155,7 @@ public class TextHandlerTester {
 	}
 	
 	public void edateTest() throws Exception {
-		TextHandler texthandler=new TextHandler("07/10/2017");
+		TextHandler texthandler=new TextHandler("01/12/2017");
 		Customer customer=new Customer("aaa");
 		boolean thrown = false;
 		String result = null;
@@ -225,7 +225,7 @@ public class TextHandlerTester {
 	}
 	
 	public void jchildrenTest() throws Exception {
-		TextHandler texthandler=new TextHandler("2");
+		TextHandler texthandler=new TextHandler("0");
 		Customer customer=new Customer("aaa");
 		boolean thrown = false;
 		String result = null;
@@ -239,7 +239,7 @@ public class TextHandlerTester {
 	}
 	
 	public void ktoodlersTest() throws Exception {
-		TextHandler texthandler=new TextHandler("1");
+		TextHandler texthandler=new TextHandler("0");
 		Customer customer=new Customer("aaa");
 		boolean thrown = false;
 		String result = null;
@@ -460,6 +460,8 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Invalid input");
 	}
+	
+	
 	@Test
 	public void testOrder() throws Exception{
 		testOrderone();
@@ -490,4 +492,4 @@ public class TextHandlerTester {
 		updatedisTest();
 		invaidTest();
 	}
-}*/
+}

@@ -67,7 +67,7 @@ public class PaymentReminderTester {
 		
 		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withHour(12);
+        ZonedDateTime target = zonedNow.withHour(13);
         
 		tm.addObserver(tester);
 		
@@ -115,7 +115,7 @@ public class PaymentReminderTester {
 		
 		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withDayOfMonth(6).withHour(12);
+        ZonedDateTime target = zonedNow.withDayOfMonth(6).withHour(13);
         
 		tm.addObserver(tester);
 		
@@ -139,7 +139,7 @@ public class PaymentReminderTester {
 		
 		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
         ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withDayOfMonth(6).withHour(12);
+        ZonedDateTime target = zonedNow.withDayOfMonth(6).withHour(13);
         
 		tm.addObserver(tester);
 		
