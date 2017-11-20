@@ -40,6 +40,14 @@ public class PaymentReminder implements Observer {
 	public int inupdate2 = 0;
 	public int inreminder = 0;
 	public int inreminder2 = 0;
+	
+	/**
+	 * The constructor of class PaymentReminder.
+	 */
+	public PaymentReminder() {
+		
+	}
+	
 	//Implement Observer
 	/**
 	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager.

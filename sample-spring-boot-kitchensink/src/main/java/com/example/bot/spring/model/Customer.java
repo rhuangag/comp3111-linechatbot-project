@@ -132,7 +132,7 @@ public class Customer{
 	//Analyse the customer history and return the recommendation
 	/**
 	 * This method analyse the previous customer records and give a recommendation 
-	 * @return java.lang.Sting This returns the reply message containing the recommended tour.
+	 * @return java.lang.String This returns the reply message containing the recommended tour.
 	 */
 	public String getRecommendation() {
 		

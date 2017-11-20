@@ -102,8 +102,8 @@ public class Report {
 		}
 	*/
 	/**
-	 * This method can read the database and write the output file with the data.
-	 * @return java.lang.String This returns a message "built!" when the report is written correctly, and returns the error message when an Exception is thrown.
+	 * This method can read the database and generate output message with the data.
+	 * @return java.lang.String This returns a message contains the question records and feedback record.
 	 */
 	public String writeReport(){
 		try {
