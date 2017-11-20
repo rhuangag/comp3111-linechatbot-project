@@ -314,7 +314,7 @@ public class TextHandler {
     	{
     		type=UpdatePayment;
     		record(customer);   		
-    		return "Please input the information in this format: username-tourid-payment, eg. LI Hua-2D0031112-199.6";
+    		return "Please input the information in this format: username-tourid-payment, eg. LI Hua-2D00311122017-199.6";
     	}
     	else if (functionMatch(DiscountEvent,parts)&& a) {
     		type=DiscountEvent;
