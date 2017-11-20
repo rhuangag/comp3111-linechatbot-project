@@ -9,11 +9,21 @@ import java.util.*;
 import java.math.BigDecimal;
 import java.math.*;
 
-
+/**
+ * 
+ * The class Booking is used when the customer starts a booking. It can ask for information and collect the information from the customer.
+ * It is involved in the mediator pattern: mediator TextHandler can create a Booking object when a booking starts. All the information about the customer is passed by the mediator.
+ *
+ */
 @Slf4j
 public class Booking {
 	//data member for this class
 	private Customer customerBelonging;
+	
+	/**
+	 * Constructor of class Booking. It stores a Customer object for booking the tour.
+	 * @param customerBelong This is used to temporarily store the customer's information
+	 */
 	//Methods
 	public Booking(Customer customerBelong)
 	{
@@ -21,7 +31,12 @@ public class Booking {
 	}
 	//TODO
 	//Store the information collected and return an output to ask for next information
-	
+	/**
+	 * This method can determine which step of booking the customer is in and ask for appropriate information and collect those information.
+	 * @param phase This is used to determine the step of the booking
+	 * @param information This is the answer of the previous question
+	 * @return java.lang.String This returns the next question for the collection of information.
+	 */
 	public String askForInformation(int phase, String information) {
 		switch (phase)
 		{
@@ -57,7 +72,7 @@ public class Booking {
 	
 	//TODO
 	//The 1st step of booking. Return an output to ask the date of the tour
-	public String askForDate(String tourID) {
+	private String askForDate(String tourID) {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		boolean getdiscount = false;
@@ -84,7 +99,7 @@ public class Booking {
 			insertdb = "Insert Into " + this.customerBelonging.getID() + "(customerID,tourID,dateDeparture,CustomerName,ID,phone,Adults,"
 					+ "Children,Toodlers,SpecialRequest,age,fee, discount, discountcapacity)VALUES ('"
 					+ this.customerBelonging.getID()+"', '" + tourID + "', null, null, null, null, 0, 0, 0,"
-					+ " null, null, 0, " + da.getDouble(3) + ", " + da.getInt(4) + ")";
+					+ " null, null, 0, " + da.getDouble(3) + ", " + da.getInt(5) + ")";
 			discountapply1.close();
 			getdiscount = true;
 		}
@@ -122,7 +137,7 @@ public class Booking {
 	
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask name of the customer
-    public String askForName(String date) {
+    private String askForName(String date) {
     	try {
     	Connection connection = KitchenSinkController.getConnection();
 		String InsertDB = "Update " + this.customerBelonging.getID() + " SET dateDeparture = '" + date + "'";
@@ -137,7 +152,7 @@ public class Booking {
 			log.info("Exception while reading database: {}", e.toString());
 			return (e.toString()+"asking2");}
     }
-    public String askage(String ID) {
+    private String askage(String ID) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
@@ -155,7 +170,7 @@ public class Booking {
     }
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
-    public String askForID(String name){
+    private String askForID(String name){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET CustomerName = '" + name + "'";
@@ -171,7 +186,7 @@ public class Booking {
     			log.info("Exception while reading database: {}", e.toString());
     			return (e.toString()+"asking4");}
     }
-    public String askphone(String age){
+    private String askphone(String age){
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET age = '" + age + "'";
@@ -189,7 +204,7 @@ public class Booking {
 	
 	//TODO
 	//The 2nd step of booking. Record the date in the temporary database and return an output to ask no. of adults
-    public String askForAdults(String phone) {
+    private String askForAdults(String phone) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET phone = '" + phone + "'";
@@ -220,13 +235,13 @@ public class Booking {
     
     //TODO
     //The 3rd step of booking. Record the no. of adults in the temporary database and return an output to ask no. of children(0-3)
-	public String askForChildrent(String numberOfAdults){
+	private String askForChildrent(String numberOfAdults){
 		try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Adults = " + numberOfAdults;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of children?";
+    		String asking = "Could you please tell us the number of children?(4-11)";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
@@ -238,13 +253,13 @@ public class Booking {
 	
 	//TODO
 	//The 4th step of booking. Record the no. of children in the temporary database and return an output to ask no. of Toodlers(4-11)
-	public String askForToodler(String numberOfChildren) {
+	private String askForToodler(String numberOfChildren) {
 		try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Children = " + numberOfChildren;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of toodlers?";
+    		String asking = "Could you please tell us the number of toodlers?(0-3)";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
@@ -256,7 +271,7 @@ public class Booking {
 	//TODO
 	//The 5th step of booking. Record the no. of Toodlers in the temporary database, use calculate() to calculate the fee,
 	//and return an output including all the information collected and the fee to double check with the customer
-	public String askrequest(String numberOfToodlers) {
+	private String askrequest(String numberOfToodlers) {
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement Querydata = connection.prepareStatement("Select * from "+ this.customerBelonging.getID());
@@ -285,7 +300,7 @@ public class Booking {
 			log.info("Exception while reading database: {}", e.toString());
 			return (e.toString()+"request");}
 	}
-	public String doubleCheck(String request) {
+	private String doubleCheck(String request) {
 		try {
 		Connection connection = KitchenSinkController.getConnection();
 		String InsertDB = "Update " + this.customerBelonging.getID() + " SET SpecialRequest = '" + request + "'";
@@ -356,7 +371,7 @@ public class Booking {
 	//TODO
 	//The 6th(last) step of booking. Transfer all the data recorded in the temporary database to the booking table,
 	//return an output to notify the customer that this booking is confirmed, and ask for the feedback
-	public String confirm(String checkAnswer) {
+	private String confirm(String checkAnswer) {
 		try
 		{
 			if (!checkAnswer.toLowerCase().contains("confirm"))
@@ -404,7 +419,7 @@ public class Booking {
 	//TODO
 	//Record the feedback, transter all the data in the log database to the feedback table, delete the log table,
 	//and return an output to thank the customer
-	public String getFeedback(String feedback) {
+	private String getFeedback(String feedback) {
 		try {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement query = connection.prepareStatement("Select * from "
@@ -431,7 +446,7 @@ public class Booking {
 	//TODO
 	//During the booking, if customer enter something unrelated to the booking information, stop current booking,
 	//delete data in temporary database and return an output to notify the customer that this booking is cancelled
-	public String breakBooking() {
+	private String breakBooking() {
 		try {
 			Connection connection = KitchenSinkController.getConnection();
     		PreparedStatement deletethetable = connection.prepareStatement("Drop table "
