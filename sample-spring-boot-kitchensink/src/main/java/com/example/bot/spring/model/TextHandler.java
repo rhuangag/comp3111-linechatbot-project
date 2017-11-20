@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-
 /**
  * 
  * The class Text Handler is a subject work in mediator pattern. This work as mediater that control the interactions between Filter, Booking, UpdateRecord, Report and Customer (see detial descriptions in javadocs in those classes).
@@ -692,7 +691,7 @@ public class TextHandler {
 			stmt.setString(3, customer.getID());
 			stmt.setInt(4, number);
 			stmt.executeUpdate();
-			if (type<8&&type!=2)
+			if (type==5)
 			{String query2 = " insert into usefulquestionRecord  values ( ?,?,?)";
 			
 			PreparedStatement stmt2 = connection.prepareStatement(query2);
