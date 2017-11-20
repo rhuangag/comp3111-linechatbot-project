@@ -625,7 +625,7 @@ public class TextHandler {
     		String temp="";
     		
     		for (int i=0;i<number.length;i++) {
-    			if (isNumeric(number[i])) {
+    			if (!number[i].isEmpty()&&(isNumeric(number[i]))) {
     				
     				temp+=number[i];
     				if (i!=number.length-1)
