@@ -9,9 +9,6 @@ import java.util.*;
 import java.math.BigDecimal;
 import java.math.*;
 
-
-@Slf4j
-
 /**
  * 
  * The class UpdateRecord can allow employee of the companey update the payment data of customer, set discount event or ask for question record from customer.
@@ -19,6 +16,7 @@ import java.math.*;
  * If yes, TextHandler will allow employee to update date about customer's payment or discount tour setting by calling this class.
  * 
  */
+@Slf4j
 public  class  UpdateRecord{
 	//data member for this class
 	private Customer customerBelonging;
@@ -83,7 +81,7 @@ public  class  UpdateRecord{
 		searchStmt.close();
 		rsForSearch.close();
 		
-		PreparedStatement searchStmtCheckIfPaid = connection.prepareStatement("select * from customertable where name=? and tourjoined=? and (amountPaid-tourfee)>-0.1");
+		PreparedStatement searchStmtCheckIfPaid = connection.prepareStatement("select * from customertable where name=? and tourjoined=? and (amountPaid-tourfee)>-0.1 and status='booked'");
 		searchStmtCheckIfPaid.setString(1, customername); 
 		searchStmtCheckIfPaid.setString(2, tourid);
 		ResultSet rsStmtCheckIfPaid=searchStmtCheckIfPaid.executeQuery();

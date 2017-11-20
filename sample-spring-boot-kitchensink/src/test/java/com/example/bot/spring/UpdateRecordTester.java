@@ -1,6 +1,7 @@
-/*
- * package com.example.bot.spring;
- 
+package com.example.bot.spring;
+
+
+
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,10 +14,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -42,6 +40,7 @@ import com.linecorp.bot.model.event.FollowEvent;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.MessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 
@@ -55,71 +54,156 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.time.format.DateTimeFormatter;
 
-
-import com.example.bot.spring.Discount;
+import com.example.bot.spring.UpdateRecord;
+import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { DiscountTester.class})
-public class DiscountTester {
-    @Test
-    public void testUpdate1() {
-    	boolean thrown = false;
-		Discount tester = new Discount();
-		TimeManager tm = TimeManager.getTimer();
-		
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
-        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withYear(2017).withMonth(11).withDayOfMonth(19).withHour(14).withMinute(0);
-        
-		tm.addObserver(tester);
-		
-        int result = 0;
-		try {
-			Connection connection = KitchenSinkController.getConnection();
-			PreparedStatement ps = connection.prepareStatement("insert into discounttourlist "
-					+ "values ('2D00120171119', '50%', 0.5, 2, 2, '20171119', '1400')");
-			ps.executeUpdate();
-			
-			tm.setZonedDateTime(target);
-			tm.testNotify();
-			result = tester.inupdate1;
-			
-			PreparedStatement ps2 = connection.prepareStatement("delete from discounttourlist "
-					+ "where date = '20171119' ");
-			ps2.executeUpdate();
-			ps.close();
-			ps2.close();
-			connection.close();
-    	 	}catch(Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(1);
-    }
-    
-    @Test
-    public void testUpdate2() {
-    	boolean thrown = false;
-		Discount tester = new Discount();
-		TimeManager tm = TimeManager.getTimer();
-		
-		ZoneId currentZone = ZoneId.of("Asia/Shanghai");
-        ZonedDateTime zonedNow = ZonedDateTime.now(currentZone);
-        ZonedDateTime target = zonedNow.withYear(2002).withMonth(1).withDayOfMonth(1).withHour(1).withMinute(0);
-        
-		tm.addObserver(tester);
-		
-        int result = 0;
-		try {
-			tm.setZonedDateTime(target);
-			tm.testNotify();
-			result = tester.inupdate2;
-    	 	}catch(Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(1);
-    }
+@SpringBootTest(classes = { UpdateRecordTester.class})
+	public class UpdateRecordTester{
+	Customer example=new Customer("www");
+	UpdateRecord tester = new UpdateRecord(example);
+
+public void testAskForInformation1() {
+boolean thrown =false;
+String result="";
+try {
+result=tester.askForInformation(0, "qwe");
 }
 
-*/
+catch (Exception e) {
+
+thrown = true;
+
+}
+
+assertThat(thrown).isEqualTo(false);
+
+assertThat(result).isEqualTo("Invalid input.");
+
+ 	}
+
+
+public void testAskForInformation2() {
+
+boolean thrown =false;
+
+String result="";
+
+try {
+
+result=tester.askForInformation(103, "qwe");
+
+}
+
+catch (Exception e) {
+
+thrown = true;
+
+}
+
+assertThat(thrown).isEqualTo(false);
+
+assertThat(result).contains("Invalid input. Maybe there");
+
+ 	}
+
+
+public void testAskForInformation3() {
+
+boolean thrown =false;
+
+String result="";
+
+try {
+
+result=tester.askForInformation(104, "qwe");
+
+}
+
+catch (Exception e) {
+
+thrown = true;
+
+}
+
+assertThat(thrown).isEqualTo(false);
+
+assertThat(result).isEqualTo("Invalid input.");
+
+ 	}
+
+
+public void testAskForInformation4() {
+
+boolean thrown =false;
+
+String result="";
+
+try {
+
+result=tester.askForInformation(103, "wu wei-2D10020171123-300");
+
+}
+
+catch (Exception e) {
+
+thrown = true;
+
+}
+
+assertThat(thrown).isEqualTo(false);
+
+assertThat(result).contains("Update success");
+
+ 	}
+
+
+
+public void testAskForInformation5() {
+
+boolean thrown =false;
+
+String result="";
+
+try {
+
+result=tester.askForInformation(103, "wu wei-2D00320171111-0");
+
+}
+
+catch (Exception e) {
+
+thrown = true;
+
+}
+
+assertThat(thrown).isEqualTo(false);
+
+assertThat(result).contains("Update success");
+
+ 	}
+
+
+@Test
+
+public void testInOrder(){
+
+testAskForInformation1();
+
+testAskForInformation2();
+
+testAskForInformation3();
+
+testAskForInformation4();
+
+testAskForInformation5();
+
+
+
+}
+
+
+
+    
+
+}

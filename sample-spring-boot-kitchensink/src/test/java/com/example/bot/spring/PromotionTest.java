@@ -1,4 +1,5 @@
-/*package com.example.bot.spring;
+/*
+package com.example.bot.spring;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,17 +43,30 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import java.time.*;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.time.format.DateTimeFormatter;
-
-
-import com.example.bot.spring.PaymentReminder;
+import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { FilterTester.class})
-public class NotifyingCustomerTester{}
+@SpringBootTest(classes = { PromotionTest.class })
+public class PromotionTest {
+	
+	@Test
+	public void testPromotion() throws Exception {
+		NotifyingCustomer notify = new NotifyingCustomer();
+		TimeManager tm = TimeManager.getTimer();
+		tm.setTime("2017/11/20/10/00");
+		boolean thrown = false;
+		
+		tm.addObserver(notify);
+		try {
+			tm.testNotify();
+			//notify.pushPromotion();
+		}catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(thrown).isEqualTo(false);
+		
+	}
+	
+}
 */

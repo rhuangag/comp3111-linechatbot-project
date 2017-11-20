@@ -447,6 +447,19 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("we cannot understand or find");
 	}
+	public void invaidTest() throws Exception {
+		TextHandler texthandler=new TextHandler("water theme day");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Invalid input");
+	}
 	@Test
 	public void testOrder() throws Exception{
 		testOrderone();
@@ -475,5 +488,6 @@ public class TextHandlerTester {
 		filterthreenotfoundTest();
 		updateTest();
 		updatedisTest();
+		invaidTest();
 	}
 }
