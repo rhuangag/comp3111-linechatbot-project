@@ -36,6 +36,13 @@ public class Discount implements Observer{
 	public int inupdate2 = 0;
 	
 	/**
+	 * The constructor the the class Discount.
+	 */
+	public Discount() {
+		
+	}
+	
+	/**
 	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager. 
 	 * When the current time reaches the event time, it pushes to event messages to all LINE friends of the chatbot.
 	 */
