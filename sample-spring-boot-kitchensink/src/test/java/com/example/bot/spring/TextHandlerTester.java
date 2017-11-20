@@ -91,7 +91,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Stop searching.");
 	}
-	@Test
+	
 	public void testOrderone() throws Exception{
 		onebookingTest();
 		onechooseTest();
@@ -311,6 +311,9 @@ public class TextHandlerTester {
 	}
 	@Test
 	public void testOrder() throws Exception{
+		testOrderone();
+		test();
+		numberTest();
 		HiTest();
 		bookingTest();
 		chooseTest();
@@ -326,8 +329,14 @@ public class TextHandlerTester {
 		mconfirmTest();
 		nthankTest();
 		ofeedbackTest();
+		cancelTest();
+		twokeyTest();
+		threekeyTest();
+		
+		updateTest();
+		updatedisTest();
 	}
-	@Test
+	
 	public void test() throws Exception {
 		TextHandler texthandler=new TextHandler("t");
 		Customer customer=new Customer("aaa");
@@ -341,7 +350,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("we cannot understand or find any match answer");
 	}
-	@Test
+	
 	public void twokeyTest() throws Exception {
 		TextHandler texthandler=new TextHandler("hot spring");
 		Customer customer=new Customer("aaa");
@@ -355,7 +364,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("5. 3D991 Qingyuan historic-landscape tour");
 	}
-	@Test
+	
 	public void threekeyTest() throws Exception {
 		TextHandler texthandler=new TextHandler("water theme park");
 		Customer customer=new Customer("aaa");
@@ -369,7 +378,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("1. 2D003");
 	}
-	@Test
+	
 	public void numberTest() throws Exception {
 		TextHandler texthandler=new TextHandler("500");
 		Customer customer=new Customer("aaa");
@@ -383,7 +392,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("1. 2D001");
 	}
-	@Test
+	
 	public void cancelTest() throws Exception {
 		TextHandler texthandler=new TextHandler("cancel");
 		Customer customer=new Customer("aaa");
@@ -397,7 +406,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Sorry but you provided invalid or incorrect tourID");
 	}
-	@Test
+	
 	public void updateTest() throws Exception {
 		TextHandler texthandler=new TextHandler("password");
 		Customer customer=new Customer("aaa");
@@ -411,7 +420,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("please reply givemefile");
 	}
-	@Test
+
 	public void updatedisTest() throws Exception {
 		TextHandler texthandler=new TextHandler("discountevent");
 		Customer customer=new Customer("aaa");
