@@ -36,9 +36,21 @@ public class PaymentReminder implements Observer {
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH");
 	
 	//For test ONLY
+	/**
+	 * This is for Test ONLY
+	 */
 	public int inupdate1 = 0;
+	/**
+	 * This is for Test ONLY
+	 */
 	public int inupdate2 = 0;
+	/**
+	 * This is for Test ONLY
+	 */
 	public int inreminder = 0;
+	/**
+	 * This is for Test ONLY
+	 */
 	public int inreminder2 = 0;
 	
 	/**
