@@ -152,7 +152,7 @@ public class Booking {
 			log.info("Exception while reading database: {}", e.toString());
 			return (e.toString()+"asking2");}
     }
-    public String askage(String ID) {
+    private String askage(String ID) {
     	try {
     		Connection connection = KitchenSinkController.getConnection();
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET ID = '" + ID + "'";
