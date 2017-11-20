@@ -22,9 +22,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ * The class KitchenSinkWebMvcConfigurer manages the configuration of the program.
+ *
+ */
 @Configuration
 @Slf4j
 public class KitchenSinkWebMvcConfigurer extends WebMvcConfigurerAdapter {
+	/**
+	 * This method add resource handlers to the program.
+	 * @param registry This is used for configuration.
+	 */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 

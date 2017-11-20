@@ -23,10 +23,20 @@ import java.nio.file.Path;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * 
+ * The class KitchenSinkApplication is the main class. It runs the reply system and the push message system.
+ *
+ */
 @SpringBootApplication
 public class KitchenSinkApplication {
     static Path downloadedContentDir;
-
+    
+    /**
+     * This method is the main() of the system. It runs the reply system. In addtion, it sets the observer pattern and starts the timer. 
+     * @param args This is used in the main() function
+     * @throws IOException This throws an exception when errors happen in the input stream and output stream.
+     */
     public static void main(String[] args) throws IOException {
         downloadedContentDir = Files.createTempDirectory("line-bot");
         TimeManager tm = TimeManager.getTimer();
