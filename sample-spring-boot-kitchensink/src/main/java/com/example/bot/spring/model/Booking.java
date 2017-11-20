@@ -408,7 +408,7 @@ public class Booking {
     		PreparedStatement updatebookingtable = connection.prepareStatement("Update bookingtable SET "
     				+ "currentcustomer = currentcustomer + " + SUM + " where booktableID like '"
     				+ all.getString(2) + A + "'");
-    		
+    		updatebookingtable.executeUpdate();
     		all.close();
     		duration.close();
     		searchduration.close();
