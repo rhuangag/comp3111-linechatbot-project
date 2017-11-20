@@ -1,5 +1,7 @@
 package com.example.bot.spring;
 
+import static java.util.Collections.emptyList;
+
 import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +13,15 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+
+
+
+import com.linecorp.bot.model.message.ImagemapMessage;
+import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
+import com.linecorp.bot.model.action.MessageAction;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.template.CarouselColumn;
 import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.TemplateMessage;
@@ -52,28 +63,34 @@ public class NotifyingCustomer implements Observer{
 		String[] time = temp.getTime().split("/");
 		if(time[3].equals("10")) {
 			NotifyStatus(targetDay);
-			//promotionStatus(time[0],time[1],time[2]);
-			pushPromotion();
 
 		}
-
+		if(time[3].equals("17")) {
+			promotionStatus(time[0],time[1],time[2]);
+		}
+		
+		
 	}
 
 	//functional function in this class
-	private void pushPromotion() {		
-		String imageUrl1 = KitchenSinkController.createUri("beach3.jpg");
-		String imageUrl2 = KitchenSinkController.createUri("gd1.jpg");
-		String imageUrl3 = KitchenSinkController.createUri("cellphone.jpg");
-		String imageUrl4 = KitchenSinkController.createUri("join-now.jpg");
-		CarouselTemplate carouselTemplate = new CarouselTemplate(
-				Arrays.asList(
-						new CarouselColumn(imageUrl1, "beach","",null),
-						new CarouselColumn(imageUrl2, "Guangzhou","",null),
-						new CarouselColumn(imageUrl3, "photograph","",null),
-						new CarouselColumn(imageUrl4, "Come and join us","",null)
-						));
-		TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+	private void pushPromotion() {	
+		//ObjectMapper objectMapper = new ObjectMapper()
+        //        .registerModule(new ParameterNamesModule());
+		
+		//String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		//String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
+		
+		
+		//ImageMessage m = new ImageMessage (imageUrl1,imageUrl2);
+		
+		//ImagemapMessage m = new ImagemapMessage(imageUrl1, "altText", new ImagemapBaseSize(1040, 1040),
+        //        emptyList());
+		
+		//String message = "ooooo";
+		//TextMessage m = new TextMessage(message);
+		
 
+		
 		Vector<String> userID = new Vector<String>();
 
 		try {
@@ -93,10 +110,28 @@ public class NotifyingCustomer implements Observer{
 		} catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 		}	
+		
+		//String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		//String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
+		//ImageMessage m = new ImageMessage ("http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg"
+		//		,"http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg");
+		
+		//TemplateMessage m = KitchenSinkController.testPushPromotion();
+		
+		//for(String userid : userID) {
+		//	PushMessage pushMessage = new PushMessage(
+		//			userid,
+		//			m
+		//			);
+		//	KitchenSinkController.pushMessageController(pushMessage);
+		//}
+		//test
+		String message = "Do you feel tired of the stressful and boring daily life? Do you want to experience a totally different kind of culture? \n Weekly promotion is comming! Let's find some beautiful places to get lost. \n More information: http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg";
+		TextMessage textMessage = new TextMessage(message);
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(
 					userid,
-					templateMessage
+					textMessage
 					);
 			KitchenSinkController.pushMessageController(pushMessage);
 		}
@@ -108,7 +143,7 @@ public class NotifyingCustomer implements Observer{
 		Calendar c = Calendar.getInstance();
 		c.set(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
 
-		if((c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)||(c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY))
+		if((c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)||(c.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY))
 			pushPromotion();
 	}
 /*

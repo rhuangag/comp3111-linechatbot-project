@@ -49,6 +49,9 @@ public class Customer{
 				while(rs.next()) {
 					String targettour=rs.getString("TourID");
 					
+					String[] part = rs.getString("Departuredate").split("/");
+					targettour = targettour+part[2]+part[1]+part[0];
+					
 					PreparedStatement stmtGetPaid=connection.prepareStatement("SELECT amountPaid from customertable where userID=? and tourjoined like concat('%', ?, '%')");
 					stmtGetPaid.setString(1, userID);
 					stmtGetPaid.setString(2, targettour);

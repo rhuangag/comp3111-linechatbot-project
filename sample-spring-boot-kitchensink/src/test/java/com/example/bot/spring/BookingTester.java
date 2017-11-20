@@ -1,4 +1,4 @@
-package com.example.bot.spring;
+/*package com.example.bot.spring;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +43,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.bot.spring.Booking;
-/*
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { BookingTester.class})
 public class BookingTester {
@@ -74,9 +74,9 @@ public class BookingTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).isEqualTo("test");
     }
-    */
+    
 
-	/*
+	
 	@Test
 	public void testGetHistory() {
 		boolean thrown = false;

@@ -119,13 +119,26 @@ public class TextHandler {
     				type=temp+1;
     				String reply=booking.askForInformation(type ,text);
     				//now just assume the customer will perfectly reply the correct information in the prototype
-    				if (reply== "Booking Cancled, thanks for coming!" || reply.contains("ERROR")) {
+    				/*if (reply== "Booking Cancled, thanks for coming!" || reply.contains("ERROR")) {
     					type=MEANINGLESS;
     					record(customer);
     					return "Your booking is interrupted. Please book again.";
     					}
     				record(customer);
+    				return reply;*/
+    				if (reply == "Booking Cancled, thanks for coming!" || reply.contains("ERROR") || reply.contains("PSQLE")) {
+    					type=MEANINGLESS;
+    					record(customer);
+    					try {
+    						booking.askForInformation(0,"ha");
+    					} catch (Exception e){
+    						return "Your booking is interrupted. Please book again.(Maybe you had some invalid input)";
+    						}
+    					return "Your booking is interrupted. Please book again.(Maybe you had some invalid input)";
+    					}
+    				record(customer);
     				return reply;
+    				
     				}
     			else if(temp==FILTER_I) {
     					//the customer just do the filter searching and we have returned a list of tour
@@ -343,7 +356,8 @@ public class TextHandler {
  			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
  			ResultSet number=counting.executeQuery();
  			number.next();
- 			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
+ 			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist where tourid=?");
+ 			capacity.setString(1,tourid);
  			ResultSet rs=capacity.executeQuery();
  			rs.next();
  			if (number.getInt(1)>=rs.getInt(1)) {
@@ -360,8 +374,9 @@ public class TextHandler {
  			else {
  				rs.close();
  				capacity.close();
- 				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
- 	 			ResultSet discount=checkdiscount.executeQuery();
+ 				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist where userid=?");
+ 	 			checkdiscount.setString(1, customer.getID());
+ 				ResultSet discount=checkdiscount.executeQuery();
  				if (!discount.next()) {
  				type=DISCOUNT;
  				record(customer);
@@ -623,7 +638,7 @@ public class TextHandler {
     		String temp="";
     		
     		for (int i=0;i<number.length;i++) {
-    			if (isNumeric(number[i])) {
+    			if (!number[i].isEmpty()&&(isNumeric(number[i]))) {
     				
     				temp+=number[i];
     				if (i!=number.length-1)
