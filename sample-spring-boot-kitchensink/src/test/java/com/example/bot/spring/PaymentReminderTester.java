@@ -1,4 +1,4 @@
-/*package com.example.bot.spring;
+package com.example.bot.spring;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,8 +53,8 @@ import java.time.format.DateTimeFormatter;
 import com.example.bot.spring.PaymentReminder;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { CustomerTester.class})
-public class PaymenetReminderTester {
+@SpringBootTest(classes = { PaymentReminderTester.class})
+public class PaymentReminderTester {
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm");
 	
 	//this also cover that no tour is found
@@ -155,4 +155,3 @@ public class PaymenetReminderTester {
 
     }
 }
-*/

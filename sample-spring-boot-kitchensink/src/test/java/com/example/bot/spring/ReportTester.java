@@ -42,36 +42,71 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.TextHandler;
-
+import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {  TextHandler.class})
-public class KitchenSinkTester {
-	
-	private TextHandler texthandler=new TextHandler("t");
-/*	@Test
-	public void testNotFound() throws Exception {
-		boolean thrown = false;
-		try {
-			this.databaseEngine.search("no");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(true);
-	}
-	
+@SpringBootTest(classes = { ReportTester.class})
+public class ReportTester {
 	@Test
-	public void testFound() throws Exception {
+    public void testdb1a(){
 		boolean thrown = false;
-		int result = 1;
+		Customer customer = new Customer("123");
+		Report tester = new Report("usefulquestionrecord", customer);
+        String result = null;
 		try {
-			result = this.texthandler.getType();
-		} catch (Exception e) {
+			result = tester.writeReport();
+    	 	}catch(Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(2);
-	}
-
-}*/
+		assertThat(result).isEqualTo("123");
+    }
+	
+	@Test
+    public void testdb1b(){
+		boolean thrown = false;
+		Customer customer = new Customer("u7a9aaa014c1b67bcd0a50f8597b11562");
+		Report tester = new Report("usefulquestionrecord", customer);
+        String result = null;
+		try {
+			result = tester.writeReport();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("123");
+    }
+	
+	@Test
+    public void testdb2a(){
+		boolean thrown = false;
+		Customer customer = new Customer("123");
+		Report tester = new Report("feedbacktable", customer);
+        String result = null;
+		try {
+			result = tester.writeReport();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("123");
+    }
+	
+	@Test
+    public void testdb2b(){
+		boolean thrown = false;
+		Customer customer = new Customer("u7a9aaa014c1b67bcd0a50f8597b11562");
+		Report tester = new Report("feedbacktable", customer);
+        String result = null;
+		try {
+			result = tester.writeReport();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("123");
+    }
+	
+	
+}
+*/

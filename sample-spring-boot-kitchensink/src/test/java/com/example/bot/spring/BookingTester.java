@@ -1,4 +1,4 @@
-/*package com.example.bot.spring;
+package com.example.bot.spring;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,36 +42,84 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.TextHandler;
-
-
+import com.example.bot.spring.Booking;
+/*
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {  TextHandler.class})
-public class KitchenSinkTester {
-	
-	private TextHandler texthandler=new TextHandler("t");
-/*	@Test
-	public void testNotFound() throws Exception {
-		boolean thrown = false;
-		try {
-			this.databaseEngine.search("no");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(true);
-	}
-	
+@SpringBootTest(classes = { BookingTester.class})
+public class BookingTester {
 	@Test
-	public void testFound() throws Exception {
+    public void testCreateDBS(){
 		boolean thrown = false;
-		int result = 1;
+		Customer customer =new Customer("adummycustomerfortesting");
+		Booking tester = new Booking(customer);
+        String result = null;
 		try {
-			result = this.texthandler.getType();
-		} catch (Exception e) {
+			result = tester.askforinformation(8, "2D001");
+    	 	}catch(Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo(2);
-	}
+		assertThat(result).isEqualTo("");
+    }
+	public void testCreateDBS(){
+		boolean thrown = false;
+		Customer customer =new Customer("adummycustomerfortesting");
+		Booking tester = new Booking(customer);
+        String result = null;
+		try {
+			result = tester.askforinformation(8, "2D001");
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("test");
+    }
+    */
 
-}*/
+	/*
+	@Test
+	public void testGetHistory() {
+		boolean thrown = false;
+		Booking tester = new Booking("test");
+        String result = null;
+		try {
+			result = tester.getHistory();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("There is no record.");
+	}
+	
+	@Test
+	public void testFindHistory() {
+		boolean thrown = false;
+		Booking tester = new Booking("U4e37da0ad17a38c22b3011d3d1b3644d");
+        String result = null;
+		try {
+			result = tester.getHistory();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Tour ID: ");
+	}
+	
+	//test whether the vector is empty
+	@Test
+	public void testFindHistory2() {
+		boolean thrown = false;
+		Booking tester = new Booking("U4e37da0ad17a38c22b3011d3d1b3644d");
+        String result = null;
+		try {
+			result = tester.getHistory();
+			result = tester.getHistory();
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Tour ID: ");
+	}
+}
+
+*/

@@ -11,11 +11,11 @@ import java.math.*;
 
 
 @Slf4j
-public class Booking {
+public class Booking2 {
 	//data member for this class
 	private Customer customerBelonging;
 	//Methods
-	public Booking(Customer customerBelong)
+	public Booking2(Customer customerBelong)
 	{
 		this.customerBelonging = customerBelong;
 	}
@@ -84,7 +84,7 @@ public class Booking {
 			insertdb = "Insert Into " + this.customerBelonging.getID() + "(customerID,tourID,dateDeparture,CustomerName,ID,phone,Adults,"
 					+ "Children,Toodlers,SpecialRequest,age,fee, discount, discountcapacity)VALUES ('"
 					+ this.customerBelonging.getID()+"', '" + tourID + "', null, null, null, null, 0, 0, 0,"
-					+ " null, null, 0, " + da.getDouble(3) + ", " + da.getInt(5) + ")";
+					+ " null, null, 0, " + da.getDouble(3) + ", " + da.getInt(4) + ")";
 			discountapply1.close();
 			getdiscount = true;
 		}
@@ -117,7 +117,7 @@ public class Booking {
 		return asking;
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return ((e.toString()+ "asking1"));}
+			return (this.breakBooking()+ (e.toString()+ "asking1"));}
 	}
 	
 	//TODO
@@ -135,7 +135,7 @@ public class Booking {
     	    return asking;
     	}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+"asking2");}
+			return (this.breakBooking()+e.toString()+"asking2");}
     }
     public String askage(String ID) {
     	try {
@@ -151,7 +151,7 @@ public class Booking {
     
     	}catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (e.toString()+ "asking3");}
+    			return (this.breakBooking()+e.toString()+ "asking3");}
     }
     //TODO
     //The 3rd step of booking. Record the name in the temporary database and return an output to ask ID of the customer
@@ -169,7 +169,7 @@ public class Booking {
     
     	}catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (e.toString()+"asking4");}
+    			return (this.breakBooking()+e.toString()+"asking4");}
     }
     public String askphone(String age){
     	try {
@@ -184,7 +184,7 @@ public class Booking {
         	    return asking;    	
     	    }catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (e.toString()+"asking5");}
+    			return (this.breakBooking()+e.toString()+"asking5");}
     }
 	
 	//TODO
@@ -197,8 +197,8 @@ public class Booking {
 			ResultSet datas = Querydata.executeQuery();
 			datas.next();
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
-					+ " from bookingtable where tourid like '" + datas.getString(2) + "' and departuredate like '"
-					+ datas.getString(3) + "'");
+					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
+					+ datas.getString(3));
 			ResultSet moredata = QueryMax.executeQuery();   
 			moredata.next();
 			PreparedStatement stmt = connection.prepareStatement(InsertDB);
@@ -215,7 +215,7 @@ public class Booking {
         	    return asking;    	
     	    }catch (Exception e){
     			log.info("Exception while reading database: {}", e.toString());
-    			return (e.toString()+"asking6");}
+    			return (breakBooking()+e.toString()+"asking6");}
     }
     
     //TODO
@@ -226,14 +226,14 @@ public class Booking {
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Adults = " + numberOfAdults;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of children?(4-11)";
+    		String asking = "Could you please tell us the number of children?";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+"asking7");}
+			return (breakBooking()+e.toString()+"asking7");}
 	}
 	
 	//TODO
@@ -244,14 +244,14 @@ public class Booking {
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Children = " + numberOfChildren;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of toodlers?(0-3)";
+    		String asking = "Could you please tell us the number of toodlers?";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
         	    return asking;    
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+"asking8");}
+			return (breakBooking()+e.toString()+"asking8");}
 	}
 	//TODO
 	//The 5th step of booking. Record the no. of Toodlers in the temporary database, use calculate() to calculate the fee,
@@ -261,17 +261,13 @@ public class Booking {
 			Connection connection = KitchenSinkController.getConnection();
 			PreparedStatement Querydata = connection.prepareStatement("Select * from "+ this.customerBelonging.getID());
 			ResultSet datas = Querydata.executeQuery();
-			datas.next();
 			PreparedStatement QueryMax = connection.prepareStatement("Select tourcapacity, currentcustomer"
-					+ " from bookingtable where tourid like '" + datas.getString(2) + "' and departuredate like '"
-					+ datas.getString(3) +"'");
+					+ " from bookingtable where tourid like " + datas.getString(2) + " and departuredate like "
+					+ datas.getString(3));
 			ResultSet moredata = QueryMax.executeQuery();
-			moredata.next();
 			if ((moredata.getInt(2)+datas.getInt(7)+datas.getInt(8)+ Integer.parseInt(numberOfToodlers)) > moredata.getInt(1))
 				return this.breakBooking();
 			QueryMax.close();
-			datas.close();
-			moredata.close();
 			Querydata.close();
 			String InsertDB = "Update " + this.customerBelonging.getID() + " SET Toodlers = " + numberOfToodlers;
 			PreparedStatement stmt1 = connection.prepareStatement(InsertDB);
@@ -283,7 +279,7 @@ public class Booking {
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+"request");}
+			return (breakBooking()+e.toString()+"request");}
 	}
 	public String doubleCheck(String request) {
 		try {
@@ -350,7 +346,7 @@ public class Booking {
 		return DoubleCheckList;
 		}catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+"check");}
+			return (breakBooking()+e.toString()+"check");}
 	}
 	
 	//TODO
@@ -399,7 +395,7 @@ public class Booking {
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+"confirm");}
+			return (breakBooking()+e.toString()+"confirm");}
 	}
 	//TODO
 	//Record the feedback, transter all the data in the log database to the feedback table, delete the log table,
@@ -425,7 +421,7 @@ public class Booking {
 		}
 		catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
-			return (e.toString()+ "feedback");}
+			return (breakBooking()+e.toString()+ "feedback");}
 	}
 	
 	//TODO

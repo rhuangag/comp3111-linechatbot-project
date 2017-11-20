@@ -16,8 +16,6 @@
 
 // ./gradlew clean && ./gradlew uploadArchives -Prelease
 
-
-
 buildscript {
     repositories {
         mavenCentral()
@@ -63,15 +61,13 @@ subprojects {
     apply plugin: 'propdeps-eclipse'
     
     apply plugin: "jacoco"
-
-	jacocoTestReport {
-		reports {
-			xml.enabled false
-			csv.enabled false
-			html.destination file("${buildDir}/jacocoHtml")
-		}
-	}
-    
+     jacocoTestReport {
+     reports {
+      xml.enabled false
+       csv.enabled false
+      html.destination file("${buildDir}/jacocoHtml")
+     }
+     }
 //  disable this to speed up deploying a test      
 //    apply plugin: 'findbugs'
     apply plugin: 'java'
@@ -222,6 +218,3 @@ repositories {
 task wrapper(type: Wrapper) {
     gradleVersion = '3.0'
 }
-
-
-
