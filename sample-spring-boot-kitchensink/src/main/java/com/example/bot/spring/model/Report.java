@@ -124,14 +124,16 @@ public class Report {
 			PreparedStatement read = connection.prepareStatement("Select * from " + this.dbname);
 			ResultSet readrs= read.executeQuery();
 			if (this.dbname == "usefulquestionrecord") {
-				fulltext = "type integer  customerID                             usefulquestion\n";
-				int count =0;
+				//fulltext = "type integer  customerID                             usefulquestion\n";
+				fulltext = "usefulquestion\n";
+
+				int count = 0;
 				while (readrs.next()) {
 					count++;
-					fulltext += readrs.getInt(2);
+					/* fulltext += readrs.getInt(2);
 					fulltext += "             ";
 					fulltext += readrs.getString(3);
-					fulltext += "  ";
+					fulltext += "  "; */
 					fulltext += readrs.getString(1);
 					fulltext += "\n";
 					if(count == 10) {
@@ -149,14 +151,16 @@ public class Report {
 				}
 			}
 			else if (this.dbname == "feedbacktable") {
-				fulltext = "tourID   userID                          feedback\n";
+				//fulltext = "tourID   userID                          feedback\n";
+				fulltext = "tourID        feedback\n";
+
 				int count =0;
 				while (readrs.next()) {
 					count++;
 					fulltext += readrs.getString(2);
 					fulltext += "   ";
-					fulltext += readrs.getString(1);
-					fulltext += "  ";
+					/*fulltext += readrs.getString(1);
+					fulltext += "  "; */
 					fulltext += readrs.getString(3);
 					fulltext += "\n";
 					if(count == 10) {
@@ -166,12 +170,12 @@ public class Report {
 						count = 0;
 						fulltext = "";
 					}
-					if (fulltext != "") {
-						TextMessage textMessage = new TextMessage(fulltext);
-						PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
-						KitchenSinkController.pushMessageController(pushMessage);
-					}
 				}
+				if (fulltext != "") {
+					TextMessage textMessage = new TextMessage(fulltext);
+					PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
+					KitchenSinkController.pushMessageController(pushMessage);
+				}	
 			}
 			readrs.close();
 			read.close();

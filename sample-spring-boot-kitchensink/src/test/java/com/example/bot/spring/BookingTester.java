@@ -1,4 +1,3 @@
-/*
 package com.example.bot.spring;
 
 
@@ -49,20 +48,34 @@ import com.example.bot.spring.Booking;
 @SpringBootTest(classes = { BookingTester.class})
 public class BookingTester {
 	@Test
-    public void testSuccessfulBooking(){
+    public void testCreateDBS(){
 		boolean thrown = false;
-		Customer customer =new Customer("u7a9aaa014c1b67bcd0a50f8597b11562");
+		Customer customer =new Customer("adummycustomerfortesting");
 		Booking tester = new Booking(customer);
         String result = null;
 		try {
-			result = tester.getID();
+			result = tester.askforinformation(8, "2D001");
     	 	}catch(Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("test");	
+		assertThat(result).isEqualTo("");
+    }
+	public void testCreateDBS(){
+		boolean thrown = false;
+		Customer customer =new Customer("adummycustomerfortesting");
+		Booking tester = new Booking(customer);
+        String result = null;
+		try {
+			result = tester.askforinformation(8, "2D001");
+    	 	}catch(Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("test");
     }
     */
+
 	/*
 	@Test
 	public void testGetHistory() {
@@ -108,5 +121,5 @@ public class BookingTester {
 		assertThat(result).contains("Tour ID: ");
 	}
 }
-	*/
 
+*/

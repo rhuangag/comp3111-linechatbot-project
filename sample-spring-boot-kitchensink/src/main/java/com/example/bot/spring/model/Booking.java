@@ -84,7 +84,7 @@ public class Booking {
 			insertdb = "Insert Into " + this.customerBelonging.getID() + "(customerID,tourID,dateDeparture,CustomerName,ID,phone,Adults,"
 					+ "Children,Toodlers,SpecialRequest,age,fee, discount, discountcapacity)VALUES ('"
 					+ this.customerBelonging.getID()+"', '" + tourID + "', null, null, null, null, 0, 0, 0,"
-					+ " null, null, 0, " + da.getDouble(3) + ", " + da.getInt(4) + ")";
+					+ " null, null, 0, " + da.getDouble(3) + ", " + da.getInt(5) + ")";
 			discountapply1.close();
 			getdiscount = true;
 		}
@@ -226,7 +226,7 @@ public class Booking {
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Adults = " + numberOfAdults;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of children?";
+    		String asking = "Could you please tell us the number of children?(4-11)";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
@@ -244,7 +244,7 @@ public class Booking {
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Children = " + numberOfChildren;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of toodlers?";
+    		String asking = "Could you please tell us the number of toodlers?(0-3)";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
