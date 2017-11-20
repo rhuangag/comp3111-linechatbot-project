@@ -1,4 +1,4 @@
-/*
+
 package com.example.bot.spring;
 
 
@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
-
+/*
 import com.google.common.io.ByteStreams;
 
 import com.linecorp.bot.client.LineMessagingClient;
@@ -56,4 +56,4 @@ import com.example.bot.spring.PaymentReminder;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {NotifyingCustomerTester.class})
 public class NotifyingCustomerTester{}
-*/	
+*/

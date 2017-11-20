@@ -1,4 +1,4 @@
-
+/*
 package com.example.bot.spring;
 
 
@@ -52,14 +52,14 @@ public class PromotionTest {
 	@Test
 	public void testPromotion() throws Exception {
 		NotifyingCustomer notify = new NotifyingCustomer();
-		//TimeManager tm = TimeManager.getTimer();
-		//tm.setTime("2017/11/19/10/00");
+		TimeManager tm = TimeManager.getTimer();
+		tm.setTime("2017/11/20/10/00");
 		boolean thrown = false;
 		
-		//tm.addObserver(notify);
+		tm.addObserver(notify);
 		try {
-			//tm.testNotify();
-			notify.pushPromotion();
+			tm.testNotify();
+			//notify.pushPromotion();
 		}catch (Exception e) {
 			thrown = true;
 		}
@@ -69,3 +69,4 @@ public class PromotionTest {
 	}
 	
 }
+*/

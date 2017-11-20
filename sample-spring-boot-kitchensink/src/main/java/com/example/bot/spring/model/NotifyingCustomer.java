@@ -61,7 +61,7 @@ public class NotifyingCustomer implements Observer{
 		TimeManager temp = (TimeManager)o;
 		String targetDay=FORMAT.format(temp.getDateTime().plusDays(3));
 		String[] time = temp.getTime().split("/");
-		if(time[3].equals("16")) {
+		if(time[3].equals("17")) {
 			NotifyStatus(targetDay);
 			promotionStatus(time[0],time[1],time[2]);
 
@@ -72,7 +72,7 @@ public class NotifyingCustomer implements Observer{
 	}
 
 	//functional function in this class
-	public void pushPromotion() {	
+	private void pushPromotion() {	
 		//ObjectMapper objectMapper = new ObjectMapper()
         //        .registerModule(new ParameterNamesModule());
 		
