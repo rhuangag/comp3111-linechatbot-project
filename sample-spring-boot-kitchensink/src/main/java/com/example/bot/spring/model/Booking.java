@@ -414,7 +414,7 @@ public class Booking {
     		checkdiscount.setString(1, customerBelonging.getID());
     		ResultSet docheck=checkdiscount.executeQuery();
     		if (docheck.next()) {
-        		PreparedStatement deletediscount = connection.prepareStatement("delete from discountuserlist where userid=?");
+        		PreparedStatement deletediscount = connection.prepareStatement("update discountuserlist set userid='used' where userid=?");
         		deletediscount.setString(1, customerBelonging.getID());
         		deletediscount.executeUpdate();
         		deletediscount.close();
