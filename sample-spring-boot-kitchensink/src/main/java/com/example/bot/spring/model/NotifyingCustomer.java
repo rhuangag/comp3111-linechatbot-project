@@ -35,7 +35,7 @@ public class NotifyingCustomer implements Observer{
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
     /**
-     * Constructor of class NotifyingCustomer. It initializes the data members of the object.
+     * Constructor of class NotifyingCustomer. 
      */
 	public NotifyingCustomer(){
 		
