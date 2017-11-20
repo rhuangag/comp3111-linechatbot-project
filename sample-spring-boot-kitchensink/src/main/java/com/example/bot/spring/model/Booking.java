@@ -89,11 +89,13 @@ public class Booking {
 		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%', ?,'%')";
 		
 		PreparedStatement discountcheck1 = connection.prepareStatement("Select * from discountuserlist where userid"
-				+ " like '" + this.customerBelonging.getID() + "' and tourID like '" + tourID + "'");
+				+ " like '" + this.customerBelonging.getID() + "' and tourID like concat('%', ?,'%')");
+		discountcheck1.setString(1, tourID);
 		ResultSet dl = discountcheck1.executeQuery();
 		if (dl.next()) {
 			PreparedStatement discountapply1 = connection.prepareStatement("Select * from discounttourlist where"
-					+ " tourID like " + tourID);
+					+ " tourID like concat('%', ?,'%')");
+			discountapply1.setString(1, tourID);
 			ResultSet da = discountapply1.executeQuery();
 			da.next();
 			insertdb = "Insert Into " + this.customerBelonging.getID() + "(customerID,tourID,dateDeparture,CustomerName,ID,phone,Adults,"
