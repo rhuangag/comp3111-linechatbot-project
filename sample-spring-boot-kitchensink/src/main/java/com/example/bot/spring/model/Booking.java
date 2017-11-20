@@ -384,6 +384,7 @@ public class Booking {
 			this.customerBelonging.getID());
     		ResultSet all = getall.executeQuery();
     		all.next();
+    		int SUM = all.getInt(7) + all.getInt(8) + all.getInt(9);
     		//getstring(3) need to fix.
     		String A = "";
     		A = A + all.getString(3).split("/")[2];
@@ -404,7 +405,14 @@ public class Booking {
     				+ "', '" + all.getString(3) + "', '" + duration.getString(4) + "', '" + all.getDouble(12) 
     				+ "', 'booked' , '" + duration.getString(3) + "')");
     		insertCR.executeUpdate();
+    		PreparedStatement updatebookingtable = connection.prepareStatement("Update bookingtable SET "
+    				+ "currentcustomer = currentcustomer + " + SUM + " where booktableID like '"
+    				+ all.getString(2) + A + "'");
+    		
+    		all.close();
+    		duration.close();
     		searchduration.close();
+    		updatebookingtable.close();
     		insertCT.close();
     		getall.close();
     		insertCR.close();
