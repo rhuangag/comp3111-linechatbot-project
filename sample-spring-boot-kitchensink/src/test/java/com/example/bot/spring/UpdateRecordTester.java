@@ -1,5 +1,5 @@
 package com.example.bot.spring;
-
+/*
 
 
 
@@ -206,4 +206,4 @@ testAskForInformation5();
 
     
 
-}
+}*/

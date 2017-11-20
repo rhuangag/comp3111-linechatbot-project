@@ -53,13 +53,13 @@ public class PromotionTest {
 	public void testPromotion() throws Exception {
 		NotifyingCustomer notify = new NotifyingCustomer();
 		TimeManager tm = TimeManager.getTimer();
-		tm.setTime("2017/11/20/10/00");
 		boolean thrown = false;
 		
 		tm.addObserver(notify);
 		try {
+			tm.setTime("2017/11/20/17/00");
 			tm.testNotify();
-			//notify.pushPromotion();
+			
 		}catch (Exception e) {
 			thrown = true;
 		}
