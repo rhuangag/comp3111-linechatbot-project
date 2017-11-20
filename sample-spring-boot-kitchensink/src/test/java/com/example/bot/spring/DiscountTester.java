@@ -1,5 +1,5 @@
-/*
- * package com.example.bot.spring;
+
+ package com.example.bot.spring;
  
 
 
@@ -122,4 +122,3 @@ public class DiscountTester {
     }
 }
 
-*/

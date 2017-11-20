@@ -1,4 +1,4 @@
-/*package com.example.bot.spring;
+package com.example.bot.spring;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -425,4 +425,4 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Please input the information");
 	}
-}*/
+}
