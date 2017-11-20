@@ -32,8 +32,22 @@ public class Discount implements Observer{
 	private static final DateTimeFormatter FORMAT= DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 	
 	//for test ONLY
+	/**
+	 * This is for Test ONLY
+	 */
 	public int inupdate1 = 0;
+	
+	/**
+	 * This is for Test ONLY
+	 */
 	public int inupdate2 = 0;
+	
+	/**
+	 * The constructor the the class Discount.
+	 */
+	public Discount() {
+		
+	}
 	
 	/**
 	 * This method is used in the observer pattern to receive the notification from the subject class TimeManager. 
