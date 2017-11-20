@@ -408,6 +408,20 @@ public class Booking {
     		PreparedStatement updatebookingtable = connection.prepareStatement("Update bookingtable SET "
     				+ "currentcustomer = currentcustomer + " + SUM + " where booktableID like '"
     				+ all.getString(2) + A + "'");
+    		
+    		
+    		PreparedStatement checkdiscount = connection.prepareStatement("select userid from discountuserlist where userid=?");
+    		checkdiscount.setString(1, customerBelonging.getID());
+    		ResultSet docheck=checkdiscount.executeQuery();
+    		if (docheck.next()) {
+        		PreparedStatement deletediscount = connection.prepareStatement("delete from discountuserlist where userid=?");
+        		deletediscount.setString(1, customerBelonging.getID());
+        		deletediscount.executeUpdate();
+        		deletediscount.close();
+    		}
+    		docheck.close();
+    		checkdiscount.close();
+    		
     		updatebookingtable.executeUpdate();
     		all.close();
     		duration.close();
