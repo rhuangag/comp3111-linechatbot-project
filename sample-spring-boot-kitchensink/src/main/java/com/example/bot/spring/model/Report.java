@@ -143,11 +143,11 @@ public class Report {
 						count = 0;
 						fulltext = "";
 					}
-					if (fulltext != "") {
+				}
+				if (fulltext != "") {
 						TextMessage textMessage = new TextMessage(fulltext);
 						PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
 						KitchenSinkController.pushMessageController(pushMessage);
-					}
 				}
 			}
 			else if (this.dbname == "feedbacktable") {
@@ -158,7 +158,7 @@ public class Report {
 				while (readrs.next()) {
 					count++;
 					fulltext += readrs.getString(2);
-					fulltext += "   ";
+					fulltext += "      ";
 					/*fulltext += readrs.getString(1);
 					fulltext += "  "; */
 					fulltext += readrs.getString(3);
