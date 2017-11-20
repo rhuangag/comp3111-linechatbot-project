@@ -1,6 +1,6 @@
 package com.example.bot.spring;
 
-
+/*
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -50,94 +50,10 @@ import java.util.concurrent.TimeUnit;
 import java.time.format.DateTimeFormatter;
 
 
-import com.example.bot.spring.UpdateRecord;
-import com.example.bot.spring.Customer;
-
+import com.example.bot.spring.PaymentReminder;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { UpdateRecordTester.class})
-public class UpdateRecordTester{
-	Customer example=new Customer("www");
-	UpdateRecord tester = new UpdateRecord(example);
-	
-	public void testAskForInformation1() {
-		boolean thrown =false;
-	 	String result="";
-	 	try {
-		result=tester.askForInformation(0, "qwe");
-		}
-		catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).isEqualTo("Invalid input.");
- 	}
-	
-	public void testAskForInformation2() {
-		boolean thrown =false;
-	 	String result="";
-	 	try {
-		result=tester.askForInformation(103, "qwe");
-		}
-		catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Invalid input. Maybe there");
- 	}
-	
-	public void testAskForInformation3() {
-		boolean thrown =false;
-	 	String result="";
-	 	try {
-		result=tester.askForInformation(104, "qwe");
-		}
-		catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).isEqualTo("Invalid input.");
- 	}
-	
-	public void testAskForInformation4() {
-		boolean thrown =false;
-	 	String result="";
-	 	try {
-		result=tester.askForInformation(103, "wu wei-2D10020171123-300");
-		}
-		catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Update success");
- 	}
-	
-	
-	public void testAskForInformation5() {
-		boolean thrown =false;
-	 	String result="";
-	 	try {
-		result=tester.askForInformation(103, "wu wei-2D00320171111-0");
-		}
-		catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Update success");
- 	}
-	
-	@Test
-	public void testInOrder(){
-		testAskForInformation1();
-		testAskForInformation2();
-		testAskForInformation3();
-		testAskForInformation4();
-		testAskForInformation5();
-		
-		
-	}
-	
-	
-    
-}
+@SpringBootTest(classes = { FilterTester.class})
+public class NotifyingCustomerTester{}
+*/
 		

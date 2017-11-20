@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 /**
  * 
  * The class Text Handler is a subject work in mediator pattern. This work as mediater that control the interactions between Filter, Booking, UpdateRecord, Report and Customer (see detial descriptions in javadocs in those classes).
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * 
  *
  */
+@Slf4j
 public class TextHandler {
     //Declaration of data members
 	String text;
@@ -22,38 +22,38 @@ public class TextHandler {
 	String[] parts;
 	
 	//define different types for questions
-	public  final int FAQ=1;
-    public  final int MEANINGLESS=2;
-    public  final int UNKNOWN=3;
-    public  final int CANCEL=4;
-    public  final int FILTER_I=5;
-    public  final int RECOMMENDATION=6;
-    public  final int HISTORY=7;
-    public  final int FILTER_II=8;
-    public  final int BOOK_I=9;
-    public  final int BOOK_II=10;
-    public  final int BOOK_III=11;
-    public  final int BOOK_IV=12;
-    public  final int BOOK_V=13;
-    public  final int BOOK_VI=14;
-    public  final int BOOK_VII=15;
-    public  final int BOOK_VIII=16;
-    public  final int BOOK_IX=17;
-    public  final int BOOK_X=18;
-    public  final int BOOK_XI=19;
-    public  final int BOOK_XII=20;
-    public  final int DISCOUNT=100;
-    public  final int PassWord=101;
-    public  final int GiveMeFile=102;
-    public  final int UpdatePayment=103;
-    public  final int DiscountEvent=104;
+	private  final int FAQ=1;
+    private  final int MEANINGLESS=2;
+    private  final int UNKNOWN=3;
+    private  final int CANCEL=4;
+    private  final int FILTER_I=5;
+    private  final int RECOMMENDATION=6;
+    private  final int HISTORY=7;
+    private  final int FILTER_II=8;
+    private  final int BOOK_I=9;
+    private  final int BOOK_II=10;
+    private  final int BOOK_III=11;
+    private  final int BOOK_IV=12;
+    private  final int BOOK_V=13;
+    private  final int BOOK_VI=14;
+    private  final int BOOK_VII=15;
+    private  final int BOOK_VIII=16;
+    private  final int BOOK_IX=17;
+    private  final int BOOK_X=18;
+    private  final int BOOK_XI=19;
+    private  final int BOOK_XII=20;
+    private  final int DISCOUNT=100;
+    private  final int PassWord=101;
+    private  final int GiveMeFile=102;
+    private  final int UpdatePayment=103;
+    private  final int DiscountEvent=104;
 
     
     
     //Constructor
     /**
-     * This is the constructor of TextHandler
-     * @param t java.lang.String this is the input String from customer
+     * Constructor of the class TextHandler. It stores the String and initializes other data members.
+     * @param t This is the text to be handled
      */
     public TextHandler(String t) {
     	    text=t;
@@ -63,13 +63,21 @@ public class TextHandler {
     }
     
     //Methods
-    
+    /**
+     * This method is an access method to get the type of the text message.
+     * @return This returns the type of the message
+     */
     public int getType() {
 	    return type;
 }
     
     //TODO
     //Analyse the text input and initialize the data member  type 
+    /**
+     * This method can analyse the text message and return appropriate message.
+     * @param customer This is used to provide the customer's information
+     * @return java.lang.String This returns the appropriate message to reply 
+     */
     public String messageHandler(Customer customer) {
     	String reply=null;
     	reply=checkStatus(customer);   	
