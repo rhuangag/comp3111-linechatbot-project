@@ -85,8 +85,8 @@ public class NotifyingCustomer implements Observer{
 		//ImagemapMessage m = new ImagemapMessage(imageUrl1, "altText", new ImagemapBaseSize(1040, 1040),
         //        emptyList());
 		
-		//String message1 = "ooooo";
-		//TextMessage m = new TextMessage(message1);
+		//String message = "ooooo";
+		//TextMessage m = new TextMessage(message);
 		
 
 		
@@ -112,10 +112,10 @@ public class NotifyingCustomer implements Observer{
 		
 		//String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
 		//String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
-		//ImageMessage m = new ImageMessage ("http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg"
-		//		,"http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg");
+		ImageMessage m = new ImageMessage ("http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg"
+				,"http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg");
 		
-		TemplateMessage m = KitchenSinkController.testPushPromotion();
+		//TemplateMessage m = KitchenSinkController.testPushPromotion();
 		
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(
@@ -125,7 +125,7 @@ public class NotifyingCustomer implements Observer{
 			KitchenSinkController.pushMessageController(pushMessage);
 		}
 		//test
-		String message = "Promotion testing";
+		String message = "Promotion message: http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg";
 		TextMessage textMessage = new TextMessage(message);
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(

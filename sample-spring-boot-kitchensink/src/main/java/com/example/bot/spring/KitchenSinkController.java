@@ -351,7 +351,7 @@ public class KitchenSinkController {
 		}
 		
 	}
-	
+	/*
 	static TemplateMessage testPushPromotion() {
         String imageUrl = KitchenSinkController.createUri("/static/buttons/1040.jpg");
 
@@ -375,5 +375,6 @@ public class KitchenSinkController {
         
         return m;
 	}
+	*/
 
 }
