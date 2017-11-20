@@ -1,4 +1,4 @@
-/*package com.example.bot.spring;
+package com.example.bot.spring;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -309,33 +309,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("feedback is received");
 	}
-	@Test
-	public void testOrder() throws Exception{
-		testOrderone();
-		test();
-		numberTest();
-		HiTest();
-		bookingTest();
-		chooseTest();
-		dnoTest();
-		edateTest();
-		fnameTest();
-		gidTest();
-		hageTest();
-		iadultsTest();
-		jchildrenTest();
-		ktoodlersTest();
-		lrequestTest();
-		mconfirmTest();
-		nthankTest();
-		ofeedbackTest();
-		cancelTest();
-		twokeyTest();
-		threekeyTest();
-		
-		updateTest();
-		updatedisTest();
-	}
+
 	
 	public void test() throws Exception {
 		TextHandler texthandler=new TextHandler("t");
@@ -434,4 +408,72 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Please input the information");
 	}
-}*/
+	public void bupdatedisTest() throws Exception {
+		TextHandler texthandler=new TextHandler("discountevent");
+		Customer customer=new Customer("bbb");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("we cannot understand or find");
+	}
+	public void filtertwonotfoundTest() throws Exception {
+		TextHandler texthandler=new TextHandler("hot tree");
+		Customer customer=new Customer("bbb");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("we cannot understand or find");
+	}
+	public void filterthreenotfoundTest() throws Exception {
+		TextHandler texthandler=new TextHandler("water theme day");
+		Customer customer=new Customer("bbb");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("we cannot understand or find");
+	}
+	@Test
+	public void testOrder() throws Exception{
+		testOrderone();
+		test();
+		numberTest();
+		HiTest();
+		bookingTest();
+		chooseTest();
+		dnoTest();
+		edateTest();
+		fnameTest();
+		gidTest();
+		hageTest();
+		iadultsTest();
+		jchildrenTest();
+		ktoodlersTest();
+		lrequestTest();
+		mconfirmTest();
+		nthankTest();
+		ofeedbackTest();
+		cancelTest();
+		twokeyTest();
+		threekeyTest();
+		bupdatedisTest();
+		filtertwonotfoundTest();
+		filterthreenotfoundTest();
+		updateTest();
+		updatedisTest();
+	}
+}
