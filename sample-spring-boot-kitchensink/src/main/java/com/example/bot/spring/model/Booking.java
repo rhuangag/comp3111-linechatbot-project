@@ -93,7 +93,7 @@ public class Booking {
 		ResultSet dl = discountcheck1.executeQuery();
 		if (dl.next()) {
 			PreparedStatement discountapply1 = connection.prepareStatement("Select * from discounttourlist where"
-					+ " tourID like " + tourID);
+					+ " tourID like '" + tourID+"'");
 			ResultSet da = discountapply1.executeQuery();
 			da.next();
 			insertdb = "Insert Into " + this.customerBelonging.getID() + "(customerID,tourID,dateDeparture,CustomerName,ID,phone,Adults,"
