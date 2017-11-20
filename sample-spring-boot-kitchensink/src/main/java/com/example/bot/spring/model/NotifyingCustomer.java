@@ -61,7 +61,7 @@ public class NotifyingCustomer implements Observer{
 		TimeManager temp = (TimeManager)o;
 		String targetDay=FORMAT.format(temp.getDateTime().plusDays(3));
 		String[] time = temp.getTime().split("/");
-		if(time[3].equals("13")) {
+		if(time[3].equals("10")) {
 			NotifyStatus(targetDay);
 
 		}

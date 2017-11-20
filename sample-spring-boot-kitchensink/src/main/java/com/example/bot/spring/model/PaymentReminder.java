@@ -69,7 +69,7 @@ public class PaymentReminder implements Observer {
 		TimeManager temp = (TimeManager)o;
 		String currentTime = FORMAT.format(temp.getDateTime().plusDays(5));
 		String[] time = currentTime.split("/");
-		if(time[3].equals("12")) {
+		if(time[3].equals("13")) {
 			inupdate1 = 1;
 			this.targetdate=time[0]+time[1]+time[2];
 			reminder();
