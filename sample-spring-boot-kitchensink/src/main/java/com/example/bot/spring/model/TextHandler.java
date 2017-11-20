@@ -228,7 +228,7 @@ public class TextHandler {
     					connection.close();
     					type=MEANINGLESS;
     					record(customer);
-    					return "Stop searching.";}
+    					return "Stop searching. Please search again and remember to reply yes.";}
     			}
     			else if (temp==UpdatePayment||temp==DiscountEvent) {
     				rs.close();

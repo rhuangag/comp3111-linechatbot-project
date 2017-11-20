@@ -85,7 +85,7 @@ public class Booking {
 				+ this.customerBelonging.getID()+"', '" + tourID + "', null, null, null, null, 0, 0, 0,"
 				+ " null, null, 0, 1, 0)";
 		
-		String asking = "When are you planning to go for the trip? (The dates available are: \n" + "(";
+		String asking = "When are you planning to go for the trip? (The dates available are: \n" ;
 		String queryDate = "Select Distinct departuredate from bookingtable where tourid like concat('%', ?,'%')";
 		
 		PreparedStatement discountcheck1 = connection.prepareStatement("Select * from discountuserlist where userid"
@@ -124,7 +124,7 @@ public class Booking {
 		while (rs.next()){
 			asking = asking + rs.getString(1) + "\n";
 		}
-		asking = asking + ".)";
+		
 		if (getdiscount)
 			asking = asking + "\n note that you will get discount in this booking~!";
 		stmt1.close();
@@ -243,7 +243,7 @@ public class Booking {
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Adults = " + numberOfAdults;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of children?(4-11)";
+    		String asking = "Could you please tell us the number of children?(age: 4-11)";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
@@ -261,7 +261,7 @@ public class Booking {
     		String InsertDB = "Update " + this.customerBelonging.getID() + " SET Children = " + numberOfChildren;
     		
     		PreparedStatement stmt = connection.prepareStatement(InsertDB);
-    		String asking = "Could you please tell us the number of toodlers?(0-3)";
+    		String asking = "Could you please tell us the number of toodlers?(age: 0-3)";
     		stmt.executeUpdate();
     		stmt.close();
     		connection.close();
@@ -408,6 +408,20 @@ public class Booking {
     		PreparedStatement updatebookingtable = connection.prepareStatement("Update bookingtable SET "
     				+ "currentcustomer = currentcustomer + " + SUM + " where booktableID like '"
     				+ all.getString(2) + A + "'");
+    		
+    		
+    		PreparedStatement checkdiscount = connection.prepareStatement("select userid from discountuserlist where userid=?");
+    		checkdiscount.setString(1, customerBelonging.getID());
+    		ResultSet docheck=checkdiscount.executeQuery();
+    		if (docheck.next()) {
+        		PreparedStatement deletediscount = connection.prepareStatement("update discountuserlist set userid='used' where userid=?");
+        		deletediscount.setString(1, customerBelonging.getID());
+        		deletediscount.executeUpdate();
+        		deletediscount.close();
+    		}
+    		docheck.close();
+    		checkdiscount.close();
+    		
     		updatebookingtable.executeUpdate();
     		all.close();
     		duration.close();
