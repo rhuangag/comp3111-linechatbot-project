@@ -343,7 +343,8 @@ public class TextHandler {
  			PreparedStatement counting = connection.prepareStatement("SELECT count(userid) FROM discountuserlist");
  			ResultSet number=counting.executeQuery();
  			number.next();
- 			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist");
+ 			PreparedStatement capacity = connection.prepareStatement("SELECT capacity FROM discounttourlist where tourid=?");
+ 			capacity.setString(1,tourid);
  			ResultSet rs=capacity.executeQuery();
  			rs.next();
  			if (number.getInt(1)>=rs.getInt(1)) {
@@ -360,8 +361,9 @@ public class TextHandler {
  			else {
  				rs.close();
  				capacity.close();
- 				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist");
- 	 			ResultSet discount=checkdiscount.executeQuery();
+ 				PreparedStatement checkdiscount= connection.prepareStatement("SELECT * FROM discountuserlist where userid=?");
+ 	 			checkdiscount.setString(1, customer.getID());
+ 				ResultSet discount=checkdiscount.executeQuery();
  				if (!discount.next()) {
  				type=DISCOUNT;
  				record(customer);
