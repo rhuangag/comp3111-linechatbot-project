@@ -68,7 +68,7 @@ public class CustomerTester {
 	@Test
 	public void testGetHistory() {
 		boolean thrown = false;
-		Customer tester = new Customer("test");
+		Customer tester = new Customer(" ,test ");
         String result = null;
 		try {
 			result = tester.getHistory();
