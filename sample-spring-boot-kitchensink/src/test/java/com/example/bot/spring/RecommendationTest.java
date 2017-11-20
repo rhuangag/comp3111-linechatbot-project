@@ -1,5 +1,5 @@
-/*
 package com.example.bot.spring;
+
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,27 +46,76 @@ import lombok.extern.slf4j.Slf4j;
 import com.example.bot.spring.Customer;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { PromotionTest.class })
-public class PromotionTest {
+@SpringBootTest(classes = { RecommendationTest.class })
+public class RecommendationTest {
 	
+	
+	//format: result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nTour Description: "+rs.getString("TourDescription")+ "\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice");
 	@Test
-	public void testPromotion() throws Exception {
-		NotifyingCustomer notify = new NotifyingCustomer();
-		TimeManager tm = TimeManager.getTimer();
+	
+	//Weekend 2 T/F
+	public void testRecommend_prefer1() throws Exception{
+		Customer customer = new Customer ("test1");
 		boolean thrown = false;
+		String result = null;
 		
-		tm.addObserver(notify);
 		try {
-			tm.setTime("2017/11/20/17/00");
-			tm.testNotify();
-			
+			result = customer.getRecommendation();
 		}catch (Exception e) {
 			thrown = true;
 		}
 		
 		assertThat(thrown).isEqualTo(false);
-		
+		assertThat(result).contains("2D002");
 	}
 	
+	@Test
+	//Weekday 3 F/T
+	public void testRecommend_prefer2() throws Exception{
+		Customer customer = new Customer ("test2");
+		boolean thrown = false;
+		String result = null;
+		
+		try {
+			result = customer.getRecommendation();
+		}catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("2D005");
+	}
+	
+	@Test
+	public void testRecommend_original() throws Exception{
+		Customer customer = new Customer ("test_empty");
+		boolean thrown = false;
+		String result = null;
+		
+		try {
+			result = customer.getRecommendation();
+		}catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(thrown).isEqualTo(false);
+		assertThat(result).contains("2D001");
+	}
+	
+	//@Test
+	//public void testRecommend_full() throws Exception{
+	//	Customer customer = new Customer ("test_full");
+	//	boolean thrown = false;
+	//	String result = null;
+	//	
+	//	try {
+	//		result = customer.getRecommendation();
+	//	}catch (Exception e) {
+	//		thrown = true;
+	//	}
+	//	
+	//	assertThat(thrown).isEqualTo(false);
+	//	assertThat(result).isEqualTo("Sorry, I have no more recommendation to you. Thanks for your support very much.");
+	//}
+
 }
-*/
