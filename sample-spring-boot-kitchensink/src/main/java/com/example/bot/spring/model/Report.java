@@ -170,12 +170,12 @@ public class Report {
 						count = 0;
 						fulltext = "";
 					}
-					if (fulltext != "") {
-						TextMessage textMessage = new TextMessage(fulltext);
-						PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
-						KitchenSinkController.pushMessageController(pushMessage);
-					}
 				}
+				if (fulltext != "") {
+					TextMessage textMessage = new TextMessage(fulltext);
+					PushMessage pushMessage = new PushMessage(this.customerbelonging.getID(), textMessage);
+					KitchenSinkController.pushMessageController(pushMessage);
+				}	
 			}
 			readrs.close();
 			read.close();
