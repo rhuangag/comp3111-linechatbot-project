@@ -250,8 +250,8 @@ public class KitchenSinkController {
 			Thread.currentThread().interrupt();
 		}
 	}
-
-	/*private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
+/*
+	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
 		log.info("Got content-type: {}", responseBody);
 
 		DownloadedContent tempFile = createTempFile(ext);
@@ -262,15 +262,15 @@ public class KitchenSinkController {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
-	}
-
+	}*/
+/*
 	private static DownloadedContent createTempFile(String ext) {
 		String fileName = LocalDateTime.now().toString() + '-' + UUID.randomUUID().toString() + '.' + ext;
 		Path tempFile = KitchenSinkApplication.downloadedContentDir.resolve(fileName);
 		tempFile.toFile().deleteOnExit();
 		return new DownloadedContent(tempFile, createUri("/downloaded/" + tempFile.getFileName()));
-	}*/
-
+	}
+*/
 
 	
 
@@ -282,7 +282,7 @@ public class KitchenSinkController {
 
 	private String itscLOGIN;
 	
-    /*
+/*    
 	//The annontation @Value is from the package lombok.Value
 	//Basically what it does is to generate constructor and getter for the class below
 	//See https://projectlombok.org/features/Value
@@ -291,9 +291,9 @@ public class KitchenSinkController {
 		Path path;
 		String uri;
 	}
-    */
+*/    
     
-	/*
+	
 	//an inner class that gets the user profile and status message
 	class ProfileGetter implements BiConsumer<UserProfileResponse, Throwable> {
 		private KitchenSinkController ksc;
@@ -318,7 +318,7 @@ public class KitchenSinkController {
         	);
     	}
     }
-    */
+    
 	
 	public static Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;

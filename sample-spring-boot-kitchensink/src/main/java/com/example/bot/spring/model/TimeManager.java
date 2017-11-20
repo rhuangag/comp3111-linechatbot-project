@@ -42,17 +42,31 @@ public class TimeManager extends Observable {
 	private static TimeManager uniqueTimer = new TimeManager();
 	
 	//For Test ONLY
+	/**
+	 * This is for Test ONLY
+	 */
 	public int incomputeNextDelay1 = 0;
+	/**
+	 * This is for Test ONLY
+	 */
 	public int incomputeNextDelay2 = 0;
 	
+	/**
+	 * This is for Test ONLY
+	 */
 	public void setZonedDateTime(ZonedDateTime z) {
 		dateTime = z;
 	}
 	
+	/**
+	 * This is for Test ONLY
+	 */
 	public void setTime(String t) {
 		time = t;
 	}
-	
+	/**
+	 * This is for Test ONLY
+	 */
 	public void testNotify() {
 		setChanged();
 		notifyObservers(this);
@@ -103,7 +117,7 @@ public class TimeManager extends Observable {
 			public void run() {
 				passTime();
 			}
-		}, delay, 60*60, TimeUnit.SECONDS);
+		}, delay, 30*60, TimeUnit.SECONDS);
 	}
 	
 	
