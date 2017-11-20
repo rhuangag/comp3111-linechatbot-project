@@ -1,7 +1,6 @@
-
  package com.example.bot.spring;
- 
 
+ 
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;

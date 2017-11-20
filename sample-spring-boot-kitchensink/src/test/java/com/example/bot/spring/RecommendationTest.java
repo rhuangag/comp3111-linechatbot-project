@@ -1,6 +1,7 @@
 package com.example.bot.spring;
 
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,9 +52,10 @@ public class RecommendationTest {
 	
 	//format: result="Tour ID: "+rs.getString("TourID")+ "\nTour Name: "+rs.getString("TourName")+"\nTour Description: "+rs.getString("TourDescription")+ "\nDuration: "+rs.getString("Duration")+"\nDate: "+rs.getString("Date")+"\nWeekend Price: "+rs.getString("WeekendPrice")+"\nWeekday Price: "+rs.getString("WeekdayPrice");
 	@Test
+	
 	//Weekend 2 T/F
 	public void testRecommend_prefer1() throws Exception{
-		Customer customer = new Customer ("U7602b36236a0bc9ea3871c89f4e834dd");
+		Customer customer = new Customer ("test1");
 		boolean thrown = false;
 		String result = null;
 		
@@ -64,13 +66,13 @@ public class RecommendationTest {
 		}
 		
 		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Tour ID:");
+		assertThat(result).contains("2D002");
 	}
 	
 	@Test
-	//Weekday 3 F/F
+	//Weekday 3 F/T
 	public void testRecommend_prefer2() throws Exception{
-		Customer customer = new Customer ("U7a9aaa014c1b67bcd0a50f8597b11562");
+		Customer customer = new Customer ("test2");
 		boolean thrown = false;
 		String result = null;
 		
@@ -81,7 +83,7 @@ public class RecommendationTest {
 		}
 		
 		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Tour ID:");
+		assertThat(result).contains("2D005");
 	}
 	
 	@Test
@@ -97,7 +99,7 @@ public class RecommendationTest {
 		}
 		
 		assertThat(thrown).isEqualTo(false);
-		assertThat(result).contains("Tour ID:");
+		assertThat(result).contains("2D001");
 	}
 	
 	//@Test
@@ -115,4 +117,5 @@ public class RecommendationTest {
 	//	assertThat(thrown).isEqualTo(false);
 	//	assertThat(result).isEqualTo("Sorry, I have no more recommendation to you. Thanks for your support very much.");
 	//}
+
 }

@@ -1,5 +1,5 @@
 package com.example.bot.spring;
-
+/*
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -91,7 +91,7 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Stop searching.");
 	}
-	@Test
+	
 	public void testOrderone() throws Exception{
 		onebookingTest();
 		onechooseTest();
@@ -309,8 +309,162 @@ public class TextHandlerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("feedback is received");
 	}
+
+	
+	public void test() throws Exception {
+		TextHandler texthandler=new TextHandler("t");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("we cannot understand or find any match answer");
+	}
+	
+	public void twokeyTest() throws Exception {
+		TextHandler texthandler=new TextHandler("hot spring");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("5. 3D991 Qingyuan historic-landscape tour");
+	}
+	
+	public void threekeyTest() throws Exception {
+		TextHandler texthandler=new TextHandler("water theme park");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("1. 2D003");
+	}
+	
+	public void numberTest() throws Exception {
+		TextHandler texthandler=new TextHandler("500");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("1. 2D001");
+	}
+	
+	public void cancelTest() throws Exception {
+		TextHandler texthandler=new TextHandler("cancel");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Sorry but you provided invalid or incorrect tourID");
+	}
+	
+	public void updateTest() throws Exception {
+		TextHandler texthandler=new TextHandler("password");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("please reply givemefile");
+	}
+
+	public void updatedisTest() throws Exception {
+		TextHandler texthandler=new TextHandler("discountevent");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Please input the information");
+	}
+	public void bupdatedisTest() throws Exception {
+		TextHandler texthandler=new TextHandler("discountevent");
+		Customer customer=new Customer("bbb");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("we cannot understand or find");
+	}
+	public void filtertwonotfoundTest() throws Exception {
+		TextHandler texthandler=new TextHandler("hot tree");
+		Customer customer=new Customer("bbb");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("we cannot understand or find");
+	}
+	public void filterthreenotfoundTest() throws Exception {
+		TextHandler texthandler=new TextHandler("water theme day");
+		Customer customer=new Customer("bbb");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("we cannot understand or find");
+	}
+	public void invaidTest() throws Exception {
+		TextHandler texthandler=new TextHandler("water theme day");
+		Customer customer=new Customer("aaa");
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = texthandler.messageHandler(customer);
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Invalid input");
+	}
 	@Test
 	public void testOrder() throws Exception{
+		testOrderone();
+		test();
+		numberTest();
 		HiTest();
 		bookingTest();
 		chooseTest();
@@ -326,103 +480,14 @@ public class TextHandlerTester {
 		mconfirmTest();
 		nthankTest();
 		ofeedbackTest();
+		cancelTest();
+		twokeyTest();
+		threekeyTest();
+		bupdatedisTest();
+		filtertwonotfoundTest();
+		filterthreenotfoundTest();
+		updateTest();
+		updatedisTest();
+		invaidTest();
 	}
-	@Test
-	public void test() throws Exception {
-		TextHandler texthandler=new TextHandler("t");
-		Customer customer=new Customer("aaa");
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = texthandler.messageHandler(customer);
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("we cannot understand or find any match answer");
-	}
-	@Test
-	public void twokeyTest() throws Exception {
-		TextHandler texthandler=new TextHandler("hot spring");
-		Customer customer=new Customer("aaa");
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = texthandler.messageHandler(customer);
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("5. 3D991 Qingyuan historic-landscape tour");
-	}
-	@Test
-	public void threekeyTest() throws Exception {
-		TextHandler texthandler=new TextHandler("water theme park");
-		Customer customer=new Customer("aaa");
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = texthandler.messageHandler(customer);
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("1. 2D003");
-	}
-	@Test
-	public void numberTest() throws Exception {
-		TextHandler texthandler=new TextHandler("500");
-		Customer customer=new Customer("aaa");
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = texthandler.messageHandler(customer);
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("1. 2D001");
-	}
-	@Test
-	public void cancelTest() throws Exception {
-		TextHandler texthandler=new TextHandler("cancel");
-		Customer customer=new Customer("aaa");
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = texthandler.messageHandler(customer);
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("Sorry but you provided invalid or incorrect tourID");
-	}
-	@Test
-	public void updateTest() throws Exception {
-		TextHandler texthandler=new TextHandler("password");
-		Customer customer=new Customer("aaa");
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = texthandler.messageHandler(customer);
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("please reply givemefile");
-	}
-	@Test
-	public void updatedisTest() throws Exception {
-		TextHandler texthandler=new TextHandler("discountevent");
-		Customer customer=new Customer("aaa");
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = texthandler.messageHandler(customer);
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("Please input the information");
-	}
-}
+}*/}
