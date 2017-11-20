@@ -1,5 +1,7 @@
-package com.example.bot.spring;
 /*
+package com.example.bot.spring;
+
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -75,5 +77,6 @@ public class TimeManagerTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).isEqualTo(1);
     }
+
 }
 */
