@@ -76,17 +76,19 @@ public class NotifyingCustomer implements Observer{
 		//ObjectMapper objectMapper = new ObjectMapper()
         //        .registerModule(new ParameterNamesModule());
 		
-		String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
-		String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
+		//String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		//String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
 		
 		//TextMessage m = new TextMessage(imageUrl1+imageUrl2);
-		ImageMessage m = new ImageMessage (imageUrl1,imageUrl2);
+		//ImageMessage m = new ImageMessage (imageUrl1,imageUrl2);
 		
 		//ImagemapMessage m = new ImagemapMessage(imageUrl1, "altText", new ImagemapBaseSize(1040, 1040),
         //        emptyList());
 		
 		//String message1 = "ooooo";
 		//TextMessage m = new TextMessage(message1);
+		
+
 		
 		Vector<String> userID = new Vector<String>();
 
@@ -107,6 +109,14 @@ public class NotifyingCustomer implements Observer{
 		} catch (Exception e){
 			log.info("Exception while reading database: {}", e.toString());
 		}	
+		
+		//String imageUrl1 = KitchenSinkController.createUri("/static/promotion/join-now.jpg");
+		//String imageUrl2 = KitchenSinkController.createUri("/static/promotion/join-now-low.jpg");
+		//ImageMessage m = new ImageMessage ("http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg"
+		//		,"http://www.taxshe.com/wp-content/uploads/2015/03/download-12.jpg");
+		
+		TemplateMessage m = KitchenSinkController.testPushPromotion();
+		
 		for(String userid : userID) {
 			PushMessage pushMessage = new PushMessage(
 					userid,

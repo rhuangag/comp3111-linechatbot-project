@@ -1,3 +1,4 @@
+/*
 package com.example.bot.spring;
 
 
@@ -53,6 +54,6 @@ import java.time.format.DateTimeFormatter;
 import com.example.bot.spring.PaymentReminder;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { FilterTester.class})
+@SpringBootTest(classes = {NotifyingCustomerTester.class})
 public class NotifyingCustomerTester{}
-		
+*/	
