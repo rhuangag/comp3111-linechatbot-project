@@ -28,7 +28,7 @@ public class Customer{
 		Vector<String> history;
 		
 		public CustomerHistory() {
-			history=new Vector<String>();
+			history=new Vector <String>();
 		}
 		
 		

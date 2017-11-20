@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 import java.time.format.DateTimeFormatter;
 
 
-import com.example.bot.spring.PaymentReminder;
+import com.example.bot.spring.Filter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { FilterTester.class})

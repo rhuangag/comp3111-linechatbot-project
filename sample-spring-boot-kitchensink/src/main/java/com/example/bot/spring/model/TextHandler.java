@@ -51,6 +51,10 @@ public class TextHandler {
     
     
     //Constructor
+    /**
+     * This is the constructor of TextHandler
+     * @param t java.lang.String this is the input String from customer
+     */
     public TextHandler(String t) {
     	    text=t;
     	   // keyword=null;
