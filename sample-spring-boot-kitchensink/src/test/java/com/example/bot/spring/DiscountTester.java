@@ -120,3 +120,4 @@ public class DiscountTester {
 		assertThat(result).isEqualTo(1);
     }
 }
+    
