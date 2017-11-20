@@ -119,4 +119,5 @@ public class DiscountTester {
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).isEqualTo(1);
     }
+    
 }
