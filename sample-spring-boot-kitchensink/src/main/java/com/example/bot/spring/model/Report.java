@@ -49,7 +49,8 @@ import java.io.RandomAccessFile;
 /**
  * 
  * The class Report can create and write a txt file which includes the useful questions and feedback from the customers.
- *
+ * This class is involved in mediator pattern: mediator TextHandler will check the type of input if customer is the employee that activated client channel (e.g. input the correct password)
+ * If the employee ask for report of useful question record, TextHandler will push the recorded questions.
  */
 public class Report {
 	private String dbname;

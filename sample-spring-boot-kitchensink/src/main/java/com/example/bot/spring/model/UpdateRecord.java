@@ -15,6 +15,8 @@ import java.math.*;
 /**
  * 
  * The class UpdateRecord can allow employee of the companey update the payment data of customer, set discount event or ask for question record from customer.
+ * This class is involved in the mediator pattern: mediator TextHandler will recognize if the customer is employee who activate the client channel by have correct password input. 
+ * If yes, TextHandler will allow employee to update date about customer's payment or discount tour setting by calling this class.
  * 
  */
 public  class  UpdateRecord{

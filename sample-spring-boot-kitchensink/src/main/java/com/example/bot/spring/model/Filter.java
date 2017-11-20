@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * The class Filter can search the tours which fulfill the criteria provided by the users. 
  * It can also show the details of a tour to the user.
- * 
+ * This class is invovled in the mediator pattern: mediator TextHandler will check this class and provide customer possible tours or tours detials and then go into booking if customer want to book. 
  *
  */
 @Slf4j
