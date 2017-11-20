@@ -7,6 +7,13 @@ import java.sql.ResultSet;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+/**
+ * 
+ * The class Text Handler is a subject work in mediator pattern. This work as mediater that control the interactions between Filter, Booking, UpdateRecord, Report and Customer (see detial descriptions in javadocs in those classes).
+ * The Text Handler is used to recognize and identify the type of requirement from customer and called different functions based on the type of recent requirement from customer and customers' current input.
+ * 
+ *
+ */
 public class TextHandler {
     //Declaration of data members
 	String text;
